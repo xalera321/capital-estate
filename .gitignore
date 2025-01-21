@@ -1,0 +1,36 @@
+# ------------------------
+# macOS
+# ------------------------
+.DS_Store
+**/.DS_Store
+**/._.DS_Store
+
+# ------------------------
+# VS Code (игнорируем всё)
+# ------------------------
+.vscode/
+.history/
+
+# ------------------------
+# Клиент (React)
+# ------------------------
+client/node_modules/
+client/build/
+client/.env*.local
+
+# ------------------------
+# Сервер (Node.js)
+# ------------------------
+server/node_modules/
+server/logs/
+server/.env*
+server/storage/uploads/   # Для multer
+
+# ------------------------
+# Общие исключения
+# ------------------------
+.env
+.env.local
+npm-debug.log*
+yarn-error.log*
+.idea/
