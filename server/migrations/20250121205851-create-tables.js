@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        // 1. Создаем основные таблицы
+        // 1. Создаем основные таблицы (Employees удалена)
         await queryInterface.createTable('Admins', {
             id: {
                 type: Sequelize.INTEGER,
@@ -52,28 +52,6 @@ module.exports = {
             deletedAt: { type: Sequelize.DATE }
         });
 
-        await queryInterface.createTable('Employees', {
-            id: {
-                type: Sequelize.INTEGER,
-                primaryKey: true,
-                autoIncrement: true
-            },
-            full_name: {
-                type: Sequelize.STRING,
-                allowNull: false
-            },
-            position: {
-                type: Sequelize.STRING,
-                allowNull: false
-            },
-            phone: {
-                type: Sequelize.STRING
-            },
-            createdAt: { type: Sequelize.DATE, allowNull: false },
-            updatedAt: { type: Sequelize.DATE, allowNull: false },
-            deletedAt: { type: Sequelize.DATE }
-        });
-
         await queryInterface.createTable('Features', {
             id: {
                 type: Sequelize.INTEGER,
@@ -104,6 +82,20 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 allowNull: false
             },
+            // Новые поля добавлены сразу в основную таблицу
+            operation_type: {
+                type: Sequelize.ENUM('rent', 'sale'),
+                allowNull: false,
+                defaultValue: 'sale'
+            },
+            city: {
+                type: Sequelize.STRING,
+                allowNull: false
+            },
+            district: {
+                type: Sequelize.STRING
+            },
+            // Остальные оригинальные поля
             area: {
                 type: Sequelize.FLOAT
             },
@@ -175,16 +167,8 @@ module.exports = {
                 type: Sequelize.STRING,
                 allowNull: false
             },
-            user_email: {
-                type: Sequelize.STRING,
-                allowNull: false
-            },
             user_phone: {
                 type: Sequelize.STRING
-            },
-            theme: {
-                type: Sequelize.ENUM('consultation', 'viewing', 'question'),
-                allowNull: false
             },
             message: {
                 type: Sequelize.TEXT
@@ -197,13 +181,6 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 references: {
                     model: 'Properties',
-                    key: 'id'
-                }
-            },
-            assigned_to: {
-                type: Sequelize.INTEGER,
-                references: {
-                    model: 'Employees',
                     key: 'id'
                 }
             },

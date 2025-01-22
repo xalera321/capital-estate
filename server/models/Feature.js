@@ -1,6 +1,8 @@
 // models/Feature.js
+const { Model } = require('sequelize'); // Добавляем импорт
+
 module.exports = (sequelize, DataTypes) => {
-    class Feature extends sequelize.Model {
+    class Feature extends Model { // Исправляем наследование
         static associate(models) {
             this.belongsToMany(models.Property, {
                 through: 'PropertyFeatures',
@@ -19,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         sequelize,
         modelName: 'Feature',
-        paranoid: true // Добавлено мягкое удаление
+        paranoid: true
     });
 
     return Feature;

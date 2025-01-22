@@ -1,6 +1,8 @@
 // models/PropertyPhoto.js
+const { Model } = require('sequelize'); // Добавляем импорт Model
+
 module.exports = (sequelize, DataTypes) => {
-    class PropertyPhoto extends sequelize.Model {
+    class PropertyPhoto extends Model { // Исправляем наследование
         static associate(models) {
             this.belongsTo(models.Property, {
                 foreignKey: 'property_id',

@@ -1,6 +1,8 @@
 // models/Property.js
+const { Model } = require('sequelize'); // Добавляем импорт Model
+
 module.exports = (sequelize, DataTypes) => {
-    class Property extends sequelize.Model {
+    class Property extends Model { // Исправляем наследование
         static associate(models) {
             this.belongsTo(models.Category, {
                 foreignKey: 'category_id',
@@ -48,6 +50,18 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             validate: { min: { args: [1], msg: 'Общее количество этажей должно быть не менее 1' } }
         },
+        operation_type: {
+            type: DataTypes.ENUM('rent', 'sale'),
+            allowNull: false,
+            defaultValue: 'sale'
+        },
+        city: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        district: {
+            type: DataTypes.STRING
+        },
         description: DataTypes.TEXT,
         is_hidden: {
             type: DataTypes.BOOLEAN,
@@ -67,8 +81,8 @@ module.exports = (sequelize, DataTypes) => {
         sequelize,
         modelName: 'Property',
         defaultScope: { where: { is_hidden: false } },
-        scopes: { admin: { where: {} } }, // Для админки без фильтрации
-        indexes: [ // Добавлены индексы
+        scopes: { admin: { where: {} } },
+        indexes: [
             { fields: ['price'] },
             { fields: ['area'] },
             { fields: ['rooms'] }
