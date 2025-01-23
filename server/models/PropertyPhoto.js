@@ -1,11 +1,11 @@
-// models/PropertyPhoto.js
-const { Model } = require('sequelize'); // Добавляем импорт Model
+const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-    class PropertyPhoto extends Model { // Исправляем наследование
+    class PropertyPhoto extends Model {
         static associate(models) {
             this.belongsTo(models.Property, {
                 foreignKey: 'property_id',
+                as: 'property',
                 onDelete: 'CASCADE'
             });
         }
@@ -15,19 +15,29 @@ module.exports = (sequelize, DataTypes) => {
         url: {
             type: DataTypes.STRING,
             allowNull: false,
-            validate: { isUrl: { msg: 'Некорректный URL фотографии' } }
+            validate: {
+                isUrl: {
+                    msg: 'Invalid URL format'
+                }
+            }
         },
         order: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
-            validate: { min: { args: [0], msg: 'Порядок не может быть отрицательным' } }
+            validate: {
+                min: {
+                    args: [0],
+                    msg: 'Order cannot be negative'
+                }
+            }
         }
     }, {
         sequelize,
         modelName: 'PropertyPhoto',
-        tableName: 'property_photos',
-        timestamps: true,
-        paranoid: true
+        paranoid: true,
+        defaultScope: {
+            order: [['order', 'ASC']]
+        }
     });
 
     return PropertyPhoto;

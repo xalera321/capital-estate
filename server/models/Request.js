@@ -1,8 +1,7 @@
-// models/Request.js
-const { Model } = require('sequelize'); // Добавляем импорт Model
+const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-    class Request extends sequelize.Model {
+    class Request extends Model {
         static associate(models) {
             this.belongsTo(models.Property, {
                 foreignKey: 'property_id',
@@ -38,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
             }
         },
         status: {
-            type: DataTypes.ENUM('new', 'processed', 'completed'),
+            type: DataTypes.ENUM('new', 'in_progress', 'completed'),
             defaultValue: 'new'
         }
     }, {

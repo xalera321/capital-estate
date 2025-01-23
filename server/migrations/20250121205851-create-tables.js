@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        // 1. Создаем основные таблицы (Employees удалена)
+        // 1. Создаем основные таблицы
         await queryInterface.createTable('Admins', {
             id: {
                 type: Sequelize.INTEGER,
@@ -82,7 +82,6 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 allowNull: false
             },
-            // Новые поля добавлены сразу в основную таблицу
             operation_type: {
                 type: Sequelize.ENUM('rent', 'sale'),
                 allowNull: false,
@@ -95,18 +94,21 @@ module.exports = {
             district: {
                 type: Sequelize.STRING
             },
-            // Остальные оригинальные поля
             area: {
-                type: Sequelize.FLOAT
+                type: Sequelize.FLOAT,
+                validate: { min: 0 }
             },
             rooms: {
-                type: Sequelize.INTEGER
+                type: Sequelize.INTEGER,
+                validate: { min: 0 }
             },
             floor: {
-                type: Sequelize.INTEGER
+                type: Sequelize.INTEGER,
+                validate: { min: 0 }
             },
             total_floors: {
-                type: Sequelize.INTEGER
+                type: Sequelize.INTEGER,
+                validate: { min: 1 }
             },
             description: {
                 type: Sequelize.TEXT
@@ -116,14 +118,22 @@ module.exports = {
                 defaultValue: false
             },
             coordinates: {
-                type: Sequelize.JSONB
+                type: Sequelize.JSONB,
+                validate: {
+                    isValid(value) {
+                        if (typeof value !== 'object' || !value?.lat || !value?.lng) {
+                            throw new Error('Invalid coordinates');
+                        }
+                    }
+                }
             },
             category_id: {
                 type: Sequelize.INTEGER,
                 references: {
                     model: 'Categories',
                     key: 'id'
-                }
+                },
+                onDelete: 'SET NULL'
             },
             createdAt: { type: Sequelize.DATE, allowNull: false },
             updatedAt: { type: Sequelize.DATE, allowNull: false },
@@ -139,18 +149,21 @@ module.exports = {
             },
             url: {
                 type: Sequelize.STRING,
-                allowNull: false
+                allowNull: false,
+                validate: { isUrl: true }
             },
             order: {
                 type: Sequelize.INTEGER,
-                defaultValue: 0
+                defaultValue: 0,
+                validate: { min: 0 }
             },
             property_id: {
                 type: Sequelize.INTEGER,
                 references: {
                     model: 'Properties',
                     key: 'id'
-                }
+                },
+                onDelete: 'CASCADE'
             },
             createdAt: { type: Sequelize.DATE, allowNull: false },
             updatedAt: { type: Sequelize.DATE, allowNull: false },
@@ -168,13 +181,17 @@ module.exports = {
                 allowNull: false
             },
             user_phone: {
-                type: Sequelize.STRING
+                type: Sequelize.STRING,
+                validate: {
+                    is: /^\+?[0-9]{7,15}$/
+                }
             },
             message: {
-                type: Sequelize.TEXT
+                type: Sequelize.TEXT,
+                validate: { len: [0, 1000] }
             },
             status: {
-                type: Sequelize.ENUM('new', 'processed', 'completed'),
+                type: Sequelize.ENUM('new', 'in_progress', 'completed'),
                 defaultValue: 'new'
             },
             property_id: {
@@ -182,7 +199,8 @@ module.exports = {
                 references: {
                     model: 'Properties',
                     key: 'id'
-                }
+                },
+                onDelete: 'SET NULL'
             },
             createdAt: { type: Sequelize.DATE, allowNull: false },
             updatedAt: { type: Sequelize.DATE, allowNull: false },
@@ -192,24 +210,31 @@ module.exports = {
         await queryInterface.createTable('PropertyFeatures', {
             property_id: {
                 type: Sequelize.INTEGER,
+                primaryKey: true,
                 references: {
                     model: 'Properties',
                     key: 'id'
-                }
+                },
+                onDelete: 'CASCADE'
             },
             feature_id: {
                 type: Sequelize.INTEGER,
+                primaryKey: true,
                 references: {
                     model: 'Features',
                     key: 'id'
-                }
-            }
+                },
+                onDelete: 'CASCADE'
+            },
+            createdAt: { type: Sequelize.DATE, allowNull: false },
+            updatedAt: { type: Sequelize.DATE, allowNull: false }
         });
 
         // 3. Добавляем индексы
         await queryInterface.addIndex('Properties', ['price']);
         await queryInterface.addIndex('Properties', ['area']);
         await queryInterface.addIndex('Properties', ['rooms']);
+        await queryInterface.addIndex('Properties', ['is_hidden']);
     },
 
     async down(queryInterface) {

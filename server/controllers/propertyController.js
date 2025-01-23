@@ -1,8 +1,9 @@
-const { Property, PropertyPhoto, Feature } = require('../models');
+const { Property, PropertyPhoto, Feature, Category } = require('../models');
+const { Op } = require('sequelize');
 
 exports.createProperty = async (req, res) => {
     try {
-        const { features, ...propertyData } = req.body;
+        const { features, photos, ...propertyData } = req.body;
 
         const property = await Property.create(propertyData);
 
@@ -10,9 +11,25 @@ exports.createProperty = async (req, res) => {
             await property.addFeatures(features);
         }
 
-        res.status(201).json(property);
+        if (photos && photos.length) {
+            const photosData = photos.map(url => ({ url, property_id: property.id }));
+            await PropertyPhoto.bulkCreate(photosData);
+        }
+
+        const createdProperty = await Property.findByPk(property.id, {
+            include: [
+                { model: Category, as: 'category' },
+                { model: Feature, as: 'features' },
+                { model: PropertyPhoto, as: 'photos' }
+            ]
+        });
+
+        res.status(201).json(createdProperty);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({
+            error: 'Validation Error',
+            details: error.errors?.map(e => e.message)
+        });
     }
 };
 
@@ -25,7 +42,7 @@ exports.getProperties = async (req, res) => {
             city,
             district,
             categoryId,
-            type, // тип недвижимости (category name)
+            type,
             minArea,
             maxArea,
             rooms,
@@ -36,10 +53,7 @@ exports.getProperties = async (req, res) => {
         const include = [];
         const order = [];
 
-        // Фильтр по типу операции
         if (operationType) where.operation_type = operationType;
-
-        // Фильтр по цене
         if (minPrice || maxPrice) {
             where.price = {
                 [Op.between]: [
@@ -48,12 +62,10 @@ exports.getProperties = async (req, res) => {
                 ]
             };
         }
-
-        // Фильтр по местоположению
         if (city) where.city = city;
         if (district) where.district = district;
+        if (categoryId) where.category_id = categoryId;
 
-        // Фильтр по типу недвижимости (категории)
         if (type) {
             include.push({
                 model: Category,
@@ -64,7 +76,6 @@ exports.getProperties = async (req, res) => {
             include.push({ model: Category, as: 'category' });
         }
 
-        // Фильтр по площади
         if (minArea || maxArea) {
             where.area = {
                 [Op.between]: [
@@ -73,14 +84,8 @@ exports.getProperties = async (req, res) => {
                 ]
             };
         }
-
-        // Фильтр по количеству комнат
         if (rooms) where.rooms = rooms;
 
-        // Фильтр по категории (ID)
-        if (categoryId) where.category_id = categoryId;
-
-        // Сортировка
         const sortOptions = {
             newest: [['createdAt', 'DESC']],
             price_asc: [['price', 'ASC']],
@@ -108,8 +113,8 @@ exports.getProperties = async (req, res) => {
 
         res.json(properties);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Server error' });
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Server Error' });
     }
 };
 
@@ -133,8 +138,73 @@ exports.getPropertyById = async (req, res) => {
 
         res.json(property);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Server error' });
+        res.status(500).json({ error: 'Server Error' });
+    }
+};
+
+exports.updateProperty = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { features, ...propertyData } = req.body;
+
+        const property = await Property.findByPk(id);
+        if (!property) {
+            return res.status(404).json({ error: 'Property not found' });
+        }
+
+        await property.update(propertyData);
+
+        if (features) {
+            await property.setFeatures(features);
+        }
+
+        const updatedProperty = await Property.findByPk(id, {
+            include: [
+                { model: Category, as: 'category' },
+                { model: Feature, as: 'features' },
+                { model: PropertyPhoto, as: 'photos' }
+            ]
+        });
+
+        res.json(updatedProperty);
+    } catch (error) {
+        res.status(400).json({
+            error: 'Validation Error',
+            details: error.errors?.map(e => e.message)
+        });
+    }
+};
+
+exports.deleteProperty = async (req, res) => {
+    try {
+        const property = await Property.findByPk(req.params.id);
+        if (!property) {
+            return res.status(404).json({ error: 'Property not found' });
+        }
+
+        await property.destroy();
+        res.json({ message: 'Property deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'Server Error' });
+    }
+};
+
+exports.toggleVisibility = async (req, res) => {
+    try {
+        // Используем admin scope для поиска
+        const property = await Property.scope('admin').findByPk(req.params.id);
+
+        if (!property) {
+            return res.status(404).json({ error: 'Property not found' });
+        }
+
+        property.is_hidden = !property.is_hidden;
+        await property.save();
+
+        res.json(property);
+    } catch (error) {
+        console.error('Toggle visibility error:', error);
+        res.status(500).json({ error: 'Server Error' });
     }
 };
 

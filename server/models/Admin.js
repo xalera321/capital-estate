@@ -1,4 +1,3 @@
-// models/Admin.js
 const { Model } = require('sequelize');
 const bcrypt = require('bcrypt');
 

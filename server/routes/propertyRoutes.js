@@ -4,6 +4,9 @@ const {
     getProperties,
     getPropertyById,
     createProperty,
+    updateProperty,
+    deleteProperty,
+    toggleVisibility,
     uploadPhotos
 } = require('../controllers/propertyController');
 const upload = require('../middlewares/upload');
@@ -13,5 +16,8 @@ router.get('/', getProperties);
 router.get('/:id', getPropertyById);
 router.post('/', auth, createProperty);
 router.post('/:id/photos', auth, upload.array('photos', 10), uploadPhotos);
+router.put('/:id', auth, updateProperty);
+router.delete('/:id', auth, deleteProperty);
+router.patch('/:id/toggle-visibility', auth, toggleVisibility);
 
 module.exports = router;

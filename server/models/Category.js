@@ -1,8 +1,7 @@
-// models/Category.js
-const { Model } = require('sequelize'); // Добавляем импорт Model
+const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-    class Category extends Model { // Убираем sequelize. перед Model
+    class Category extends Model {
         static associate(models) {
             this.hasMany(models.Property, {
                 foreignKey: 'category_id',
@@ -15,7 +14,9 @@ module.exports = (sequelize, DataTypes) => {
         name: {
             type: DataTypes.STRING,
             allowNull: false,
-            unique: { msg: 'Категория с таким названием уже существует' }
+            unique: {
+                msg: 'Category name must be unique'
+            }
         },
         description: {
             type: DataTypes.TEXT,

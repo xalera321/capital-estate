@@ -1,21 +1,24 @@
-// models/Property.js
-const { Model } = require('sequelize'); // Добавляем импорт Model
+const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-    class Property extends Model { // Исправляем наследование
+    class Property extends Model {
         static associate(models) {
             this.belongsTo(models.Category, {
                 foreignKey: 'category_id',
                 as: 'category'
             });
+
             this.belongsToMany(models.Feature, {
                 through: 'PropertyFeatures',
-                as: 'features'
+                as: 'features',
+                foreignKey: 'property_id'
             });
+
             this.hasMany(models.PropertyPhoto, {
                 foreignKey: 'property_id',
                 as: 'photos'
             });
+
             this.hasMany(models.Request, {
                 foreignKey: 'property_id',
                 as: 'requests'
@@ -27,28 +30,22 @@ module.exports = (sequelize, DataTypes) => {
         title: {
             type: DataTypes.STRING,
             allowNull: false,
-            validate: { len: { args: [5, 255], msg: 'Название должно быть от 5 до 255 символов' } }
+            validate: {
+                len: {
+                    args: [5, 255],
+                    msg: 'Title must be between 5 and 255 characters'
+                }
+            }
         },
         price: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            validate: { min: { args: [1], msg: 'Цена должна быть больше 0' } }
-        },
-        area: {
-            type: DataTypes.FLOAT,
-            validate: { min: { args: [0], msg: 'Площадь не может быть отрицательной' } }
-        },
-        rooms: {
-            type: DataTypes.INTEGER,
-            validate: { min: { args: [0], msg: 'Количество комнат не может быть отрицательным' } }
-        },
-        floor: {
-            type: DataTypes.INTEGER,
-            validate: { min: { args: [0], msg: 'Этаж не может быть отрицательным' } }
-        },
-        total_floors: {
-            type: DataTypes.INTEGER,
-            validate: { min: { args: [1], msg: 'Общее количество этажей должно быть не менее 1' } }
+            validate: {
+                min: {
+                    args: [1],
+                    msg: 'Price must be greater than 0'
+                }
+            }
         },
         operation_type: {
             type: DataTypes.ENUM('rent', 'sale'),
@@ -59,8 +56,42 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false
         },
-        district: {
-            type: DataTypes.STRING
+        district: DataTypes.STRING,
+        area: {
+            type: DataTypes.FLOAT,
+            validate: {
+                min: {
+                    args: [0],
+                    msg: 'Area cannot be negative'
+                }
+            }
+        },
+        rooms: {
+            type: DataTypes.INTEGER,
+            validate: {
+                min: {
+                    args: [0],
+                    msg: 'Rooms cannot be negative'
+                }
+            }
+        },
+        floor: {
+            type: DataTypes.INTEGER,
+            validate: {
+                min: {
+                    args: [0],
+                    msg: 'Floor cannot be negative'
+                }
+            }
+        },
+        total_floors: {
+            type: DataTypes.INTEGER,
+            validate: {
+                min: {
+                    args: [1],
+                    msg: 'Total floors must be at least 1'
+                }
+            }
         },
         description: DataTypes.TEXT,
         is_hidden: {
@@ -72,7 +103,7 @@ module.exports = (sequelize, DataTypes) => {
             validate: {
                 isValid(value) {
                     if (typeof value !== 'object' || !value?.lat || !value?.lng) {
-                        throw new Error('Координаты должны быть объектом с полями lat и lng');
+                        throw new Error('Invalid coordinates format');
                     }
                 }
             }
@@ -80,14 +111,15 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         sequelize,
         modelName: 'Property',
-        defaultScope: { where: { is_hidden: false } },
-        scopes: { admin: { where: {} } },
-        indexes: [
-            { fields: ['price'] },
-            { fields: ['area'] },
-            { fields: ['rooms'] }
-        ],
-        paranoid: true
+        paranoid: true,
+        defaultScope: {
+            where: { is_hidden: false }
+        },
+        scopes: {
+            admin: {
+                where: {}
+            }
+        }
     });
 
     return Property;

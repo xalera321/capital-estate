@@ -1,12 +1,12 @@
-// models/Feature.js
-const { Model } = require('sequelize'); // Добавляем импорт
+const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-    class Feature extends Model { // Исправляем наследование
+    class Feature extends Model {
         static associate(models) {
             this.belongsToMany(models.Property, {
                 through: 'PropertyFeatures',
-                as: 'properties'
+                as: 'properties',
+                foreignKey: 'feature_id'
             });
         }
     }
@@ -15,8 +15,9 @@ module.exports = (sequelize, DataTypes) => {
         name: {
             type: DataTypes.STRING,
             allowNull: false,
-            unique: { msg: 'Особенность с таким названием уже существует' },
-            validate: { notEmpty: { msg: 'Название особенности обязательно' } }
+            unique: {
+                msg: 'Feature name must be unique'
+            }
         }
     }, {
         sequelize,
