@@ -1,23 +1,36 @@
 const express = require('express');
 const router = express.Router();
+const upload = require('../middlewares/upload');
 const {
+    createProperty,
     getProperties,
     getPropertyById,
-    createProperty,
     updateProperty,
     deleteProperty,
     toggleVisibility,
     uploadPhotos
 } = require('../controllers/propertyController');
-const upload = require('../middlewares/upload');
 const auth = require('../middlewares/auth');
 
+// Получить все объекты
 router.get('/', getProperties);
+
+// Получить конкретный объект
 router.get('/:id', getPropertyById);
+
+// Создать новый объект
 router.post('/', auth, createProperty);
-router.post('/:id/photos', auth, upload.array('photos', 10), uploadPhotos);
+
+// Обновить объект
 router.put('/:id', auth, updateProperty);
+
+// Удалить объект
 router.delete('/:id', auth, deleteProperty);
+
+// Переключить видимость объекта
 router.patch('/:id/toggle-visibility', auth, toggleVisibility);
+
+// Загрузить фото для объекта
+router.post('/:id/photos', auth, upload.array('photos', 10), uploadPhotos);
 
 module.exports = router;

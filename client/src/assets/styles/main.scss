@@ -1,0 +1,17 @@
+// Импорт базовых стилей
+@use 'base/reset';
+
+// Импорт переменных и миксинов
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// Импорт Bootstrap
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '~bootstrap/scss/mixins';
+@import '~bootstrap/scss/utilities';
+@import '~bootstrap/scss/bootstrap';
+
+// Кастомные стили компонентов
+@import 'components/buttons';
+@import 'components/forms';
