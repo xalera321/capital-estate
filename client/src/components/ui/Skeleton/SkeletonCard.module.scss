@@ -1,0 +1,93 @@
+// src/components/ui/Skeleton/SkeletonCard.module.scss
+@use '@styles/variables' as *;
+@use '@styles/mixins' as *;
+
+.skeletonCard {
+  background: $background-light;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: $shadow-sm;
+  position: relative;
+  overflow: hidden;
+}
+
+.image {
+  height: 200px;
+  background: $gray-100;
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 25%,
+      rgba($white, 0.4) 50%,
+      transparent 75%
+    );
+    animation: shimmer 2s infinite;
+  }
+}
+
+.content {
+  padding: $gap-md;
+}
+
+.title {
+  height: 24px;
+  width: 70%;
+  background: $gray-100;
+  border-radius: 4px;
+  margin-bottom: $gap-xs;
+  position: relative;
+  overflow: hidden;
+}
+
+.details {
+  margin-bottom: $gap-md;
+}
+
+.price {
+  height: 28px;
+  width: 50%;
+  background: $gray-100;
+  border-radius: 4px;
+  margin-bottom: $gap-xs;
+}
+
+.meta {
+  display: flex;
+  gap: $gap-sm;
+  
+  span {
+    height: 16px;
+    width: 60px;
+    background: $gray-100;
+    border-radius: 4px;
+  }
+}
+
+.link {
+  height: 36px;
+  width: 100px;
+  background: $gray-100;
+  border-radius: 8px;
+}
+
+// Анимация shimmer эффекта
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+// Адаптивность
+@include mobile {
+  .image {
+    height: 150px;
+  }
+  
+  .price {
+    height: 24px;
+  }
+}

@@ -1,0 +1,78 @@
+@use '@styles/variables' as *;
+@use '@styles/mixins' as *;
+
+.card {
+  background: $background-light;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: $shadow-sm;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+  }
+}
+
+.imageContainer {
+  height: 200px;
+  overflow: hidden;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.content {
+  padding: $gap-md;
+}
+
+.title {
+  font-size: 1.25rem;
+  margin-bottom: $gap-xs;
+  color: $text-dark;
+}
+
+.details {
+  margin-bottom: $gap-md;
+}
+
+.price {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: $primary;
+  margin-bottom: $gap-xs;
+}
+
+.meta {
+  display: flex;
+  gap: $gap-sm;
+  color: $text-light;
+  font-size: 0.875rem;
+}
+
+.link {
+  display: inline-block;
+  padding: $gap-xs $gap-md;
+  background: $primary;
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.3s ease;
+
+  &:hover {
+    background: $primary-hover;
+  }
+}
+
+@include mobile {
+  .imageContainer {
+    height: 150px;
+  }
+  
+  .price {
+    font-size: 1.25rem;
+  }
+}

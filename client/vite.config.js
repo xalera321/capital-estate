@@ -5,7 +5,7 @@ import path from 'path';
 
 export default defineConfig({
     plugins: [
-        react(), // Убрана кастомная конфигурация Babel
+        react(),
         svgr({
             svgrOptions: {
                 icon: true,
@@ -30,23 +30,24 @@ export default defineConfig({
             '@components': path.resolve(__dirname, './src/components'),
             '@assets': path.resolve(__dirname, './src/assets'),
             '@app': path.resolve(__dirname, './src/app'),
+            '@styles': path.resolve(__dirname, './src/assets/styles'),
         },
     },
     server: {
-        port: 3000,
+        port: 5173,
         host: true,
         strictPort: true
     },
     preview: {
-        port: 3000
+        port: 5173
     },
     css: {
         preprocessorOptions: {
             scss: {
                 additionalData: `
-          @use "@assets/styles/variables" as *;
-          @use "@assets/styles/mixins" as *;
-        `,
+        @use "@styles/variables" as *;
+        @use "@styles/mixins" as *;
+      `,
             },
         },
     },

@@ -48,9 +48,9 @@ module.exports = (sequelize, DataTypes) => {
             }
         },
         operation_type: {
-            type: DataTypes.ENUM('rent', 'sale'),
+            type: DataTypes.ENUM('buy', 'rent'),
             allowNull: false,
-            defaultValue: 'sale'
+            defaultValue: 'buy'
         },
         city: {
             type: DataTypes.STRING,

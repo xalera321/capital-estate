@@ -8,12 +8,16 @@ const {
     updateProperty,
     deleteProperty,
     toggleVisibility,
-    uploadPhotos
+    uploadPhotos,
+    getLatestProperties,
+    getPropertiesCount
 } = require('../controllers/propertyController');
 const auth = require('../middlewares/auth');
 
 // Получить все объекты
 router.get('/', getProperties);
+router.get('/latest', getLatestProperties);
+router.get('/count', getPropertiesCount);
 
 // Получить конкретный объект
 router.get('/:id', getPropertyById);

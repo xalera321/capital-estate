@@ -1,0 +1,204 @@
+@use '@styles/variables' as *;
+@use '@styles/mixins' as *;
+
+.infoSlider {
+  padding: 120px 0;
+  background: linear-gradient(45deg, #f9fafe, #ffffff);
+  overflow: hidden;
+
+  @include tablet {
+    padding: 80px 0;
+  }
+
+  @include mobile {
+    padding: 60px 0;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: start;
+
+  @include tablet {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  @include mobile {
+    gap: 30px;
+  }
+}
+
+.content {
+  padding-right: 40px;
+  max-width: 600px;
+
+  @include tablet {
+    padding-right: 0;
+    max-width: 100%;
+  }
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 30px;
+  color: $text-dark;
+
+  @include tablet {
+    font-size: 2rem;
+  }
+
+  @include mobile {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+  }
+}
+
+.textGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.text {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: $text-light;
+
+  @include mobile {
+    font-size: 1rem;
+  }
+}
+
+.sliderWrapper {
+  position: relative;
+  background: rgba($primary, 0.05);
+  border-radius: 24px;
+  padding: 40px;
+  max-width: 600px;
+  margin: 0 auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  @include tablet {
+    padding: 30px;
+    max-width: 100%;
+  }
+
+  @include mobile {
+    margin-top: 0 !important;
+    padding: 20px;
+    border-radius: 16px;
+    height: auto !important;
+  }
+}
+
+.swiper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 1;
+  /* Убираем overflow: hidden */
+  display: flex;
+  flex-direction: column;
+  transition: height 0.3s ease;
+}
+
+.slide {
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.slideNumber {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba($text-dark, 0.4);
+  margin: 0 20px;
+  flex-shrink: 0;
+
+  @include mobile {
+    margin: 0 15px;
+  }
+}
+
+.slideTitle {
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 15px;
+  color: $text-dark;
+  max-width: 480px;
+
+  @include tablet {
+    font-size: 1.5rem;
+  }
+
+  @include mobile {
+    font-size: 1.3rem;
+    max-width: 100%;
+  }
+}
+
+.slideText {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: $text-light;
+  max-width: 480px;
+  margin-bottom: 15px;
+
+  @include mobile {
+    font-size: 1rem;
+    max-width: 100%;
+  }
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px; /* Заменяем auto на фиксированный отступ */
+  position: relative;
+  z-index: 3;
+  width: 100%;
+
+  @include mobile {
+    padding-top: 15px;
+  }
+}
+
+.navButton {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.2rem;
+  color: $text-dark;
+  flex-shrink: 0;
+  @include flex-center;
+
+  &:hover {
+    background: $primary;
+    color: white;
+    transform: translateY(-2px);
+  }
+
+  @include mobile {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+}

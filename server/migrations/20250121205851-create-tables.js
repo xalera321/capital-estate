@@ -83,9 +83,9 @@ module.exports = {
                 allowNull: false
             },
             operation_type: {
-                type: Sequelize.ENUM('rent', 'sale'),
+                type: Sequelize.ENUM('buy', 'rent'),
                 allowNull: false,
-                defaultValue: 'sale'
+                defaultValue: 'buy'
             },
             city: {
                 type: Sequelize.STRING,

@@ -222,3 +222,66 @@ exports.uploadPhotos = async (req, res) => {
         res.status(500).json({ error: 'Upload failed' });
     }
 };
+
+exports.getLatestProperties = async (req, res) => {
+    try {
+        const properties = await Property.findAll({
+            where: {
+                is_hidden: false,
+                operation_type: 'buy' // Пример фильтра
+            },
+            order: [['createdAt', 'DESC']],
+            limit: 4,
+            include: [
+                {
+                    model: Category,
+                    as: 'category',
+                    attributes: ['id', 'name']
+                },
+                {
+                    model: PropertyPhoto,
+                    as: 'photos',
+                    attributes: ['url'],
+                    limit: 1
+                }
+            ]
+        });
+        res.json(properties);
+    } catch (error) {
+        console.error('Latest properties error:', error);
+        res.status(500).json({ error: 'Server Error' });
+    }
+};
+
+exports.getPropertiesCount = async (req, res) => {
+    try {
+        const where = {
+            is_hidden: false,
+            operation_type: req.query.operationType || 'buy'
+        };
+
+        if (req.query.categoryId) {
+            where.category_id = req.query.categoryId;
+        }
+
+        if (req.query.minPrice) {
+            where.price = {
+                ...where.price,
+                [Op.gte]: Number(req.query.minPrice)
+            };
+        }
+
+        if (req.query.maxPrice) {
+            where.price = {
+                ...where.price,
+                [Op.lte]: Number(req.query.maxPrice)
+            };
+        }
+
+        const count = await Property.count({ where });
+        res.json({ count });
+    } catch (error) {
+        console.error('Count error:', error);
+        res.status(500).json({ error: 'Server Error' });
+    }
+};
