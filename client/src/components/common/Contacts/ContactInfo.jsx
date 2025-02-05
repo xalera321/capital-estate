@@ -32,7 +32,10 @@ export const ContactInfo = () => {
 			<ContactItem
 				icon={EmailIcon}
 				title='Электронная почта'
-				content={{ href: 'mailto:info@capital.ru', text: 'info@capital.ru' }}
+				content={{
+					href: 'mailto:vip.kapitalned@mail.ru',
+					text: 'vip.kapitalned@mail.ru',
+				}}
 				isLink
 				iconClassName={styles.contactIcon}
 			/>

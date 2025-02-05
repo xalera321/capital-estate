@@ -36,17 +36,21 @@ exports.createProperty = async (req, res) => {
 exports.getProperties = async (req, res) => {
     try {
         const {
-            operationType,
-            minPrice,
-            maxPrice,
-            city,
-            district,
-            categoryId,
-            type,
-            minArea,
-            maxArea,
-            rooms,
-            sortBy
+           page = 1,
+           limit = 12,
+           operationType,
+           minPrice,
+           maxPrice,
+           city,
+           district,
+           categoryId,
+           type,
+           minArea,
+           maxArea,
+           rooms,
+           features,
+           sortBy,
+           keyword
         } = req.query;
 
         const where = { is_hidden: false };
@@ -85,6 +89,20 @@ exports.getProperties = async (req, res) => {
             };
         }
         if (rooms) where.rooms = rooms;
+        
+        if (features) {
+            where['$features.id$'] = {
+                [Op.in]: features.split(',')
+            };
+        }
+
+        if (keyword) {
+            where[Op.or] = [
+                { title: { [Op.iLike]: `%${keyword}%` } },
+                { description: { [Op.iLike]: `%${keyword}%` } },
+                { address: { [Op.iLike]: `%${keyword}%` } }
+            ];
+        }
 
         const sortOptions = {
             newest: [['createdAt', 'DESC']],
@@ -96,7 +114,17 @@ exports.getProperties = async (req, res) => {
 
         order.push(sortOptions[sortBy] || sortOptions.newest);
 
+        const total = await Property.count({
+            where,
+            include: [
+                ...include,
+                { model: Feature, as: 'features' }
+            ]
+        });
+
         const properties = await Property.findAll({
+            offset: (page - 1) * limit,
+            limit: parseInt(limit),
             where,
             include: [
                 ...include,
@@ -111,7 +139,13 @@ exports.getProperties = async (req, res) => {
             order
         });
 
-        res.json(properties);
+        res.json({
+            total,
+            page: parseInt(page),
+            limit: parseInt(limit),
+            totalPages: Math.ceil(total / limit),
+            data: properties
+        });
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: 'Server Error' });

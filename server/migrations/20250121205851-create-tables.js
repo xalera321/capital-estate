@@ -207,6 +207,59 @@ module.exports = {
             deletedAt: { type: Sequelize.DATE }
         });
 
+        await queryInterface.createTable('Feedback', {
+            id: {
+                type: Sequelize.INTEGER,
+                primaryKey: true,
+                autoIncrement: true
+            },
+            name: {
+                type: Sequelize.STRING,
+                allowNull: false,
+                validate: {
+                    notEmpty: { msg: 'Имя обязательно' }
+                }
+            },
+            phone: {
+                type: Sequelize.STRING,
+                validate: {
+                    is: {
+                        args: /^\+?[0-9]{7,15}$/,
+                        msg: 'Некорректный формат телефона'
+                    }
+                }
+            },
+            email: {
+                type: Sequelize.STRING,
+                validate: {
+                    isEmail: {
+                        msg: 'Некорректный формат email'
+                    }
+                }
+            },
+            message: {
+                type: Sequelize.TEXT,
+                allowNull: false,
+                validate: {
+                    len: {
+                        args: [10, 2000],
+                        msg: 'Сообщение должно быть от 10 до 2000 символов'
+                    }
+                }
+            },
+            createdAt: {
+                type: Sequelize.DATE,
+                allowNull: false
+            },
+            updatedAt: {
+                type: Sequelize.DATE,
+                allowNull: false
+            },
+            deletedAt: {
+                type: Sequelize.DATE
+            }
+        });
+
         await queryInterface.createTable('PropertyFeatures', {
             property_id: {
                 type: Sequelize.INTEGER,
@@ -235,6 +288,8 @@ module.exports = {
         await queryInterface.addIndex('Properties', ['area']);
         await queryInterface.addIndex('Properties', ['rooms']);
         await queryInterface.addIndex('Properties', ['is_hidden']);
+        await queryInterface.addIndex('Feedback', ['email']);
+        await queryInterface.addIndex('Feedback', ['phone']);
     },
 
     async down(queryInterface) {

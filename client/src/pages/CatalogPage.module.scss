@@ -1,0 +1,171 @@
+@use '@styles/variables' as *;
+@use '@styles/mixins' as *;
+@use "sass:color";
+
+.catalog {
+  padding: 3rem 0 5rem;
+  background: $gray-50;
+}
+
+.pageTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: $gray-900;
+  margin-bottom: 2.5rem;
+  position: relative;
+  padding-bottom: 1.5rem;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 80px;
+    height: 4px;
+    background: $primary;
+    border-radius: 2px;
+  }
+}
+
+.mainContent {
+  gap: 2rem;
+  
+  @include tablet {
+    gap: 1rem;
+  }
+}
+
+.filtersSection {
+  position: relative;
+  
+  @include mobile {
+    margin-bottom: 2rem;
+  }
+}
+
+.filtersCard {
+  border: 1px solid $gray-200;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background: $white;
+  
+  .card-body {
+    padding: 1.5rem;
+  }
+}
+
+.filtersTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: $gray-900;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid $gray-100;
+}
+
+.resultsSection {
+  background: $white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.resultsHeader {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 2rem;
+}
+
+.resultsCount {
+  font-size: 0.9rem;
+  color: $gray-600;
+  background: $gray-50;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+}
+
+.propertiesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+  
+  @include tablet {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.loadingWrapper {
+  min-height: 60vh;
+}
+
+.skeletonGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  
+  @include tablet {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.propertySkeleton {
+  background: $gray-100;
+  border-radius: 8px;
+  height: 380px;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.emptyState, .errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  text-align: center;
+  padding: 3rem;
+  background: $gray-50;
+  border-radius: 12px;
+  margin: 2rem 0;
+}
+
+.emptyIcon, .errorIcon {
+  width: 80px;
+  height: 80px;
+  color: $gray-400;
+  margin-bottom: 1.5rem;
+}
+
+.errorIcon {
+  color: $danger;
+}
+
+.emptyTitle, .errorTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: $gray-900;
+  margin-bottom: 1rem;
+}
+
+.emptyText, .errorText {
+  color: $gray-600;
+  max-width: 400px;
+  line-height: 1.5;
+}
+
+.paginationWrapper {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0 1rem;
+}

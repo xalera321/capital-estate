@@ -1,0 +1,71 @@
+@use '@styles/variables' as *;
+@use '@styles/mixins' as *;
+@use "sass:color";
+
+.pagination {
+    margin: 2rem 0;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    &Item {
+        $size: 2.5rem;
+        width: $size;
+        height: $size;
+        border: 2px solid $primary;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s $ease-out;
+        font-weight: 500;
+        background: white;
+        color: $primary;
+        
+        &:hover:not(.active) {
+            background: rgba($primary, 0.1);
+            transform: translateY(-1px);
+        }
+
+        &.active {
+            background: $primary;
+            color: white;
+            box-shadow: $shadow-md;
+        }
+
+        &.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+    }
+
+    &Arrow {
+        padding: 0 1rem;
+        &:hover:not(.disabled) {
+            svg path {
+                fill: $primary-hover;
+            }
+        }
+
+        svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            path {
+                transition: fill 0.3s $ease-out;
+            }
+        }
+    }
+
+    @include mobile {
+        gap: 0.25rem;
+        
+        &Item {
+            $size: 2rem;
+            width: $size;
+            height: $size;
+            font-size: 0.9rem;
+        }
+    }
+}

@@ -54,11 +54,11 @@ export const Footer = () => {
 								<div>
 									<span>Email:</span>
 									<motion.a
-										href='mailto:info@capital.ru'
+										href='mailto:vip.kapitalned@mail.ru'
 										className={styles.emailLink}
 										whileHover={{ x: 5 }}
 									>
-										info@capital.ru
+										vip.kapitalned@mail.ru
 									</motion.a>
 								</div>
 							</li>
@@ -66,7 +66,9 @@ export const Footer = () => {
 								<ClockIcon className={styles.contactIcon} />
 								<div>
 									<span>Часы работы:</span>
-									Пн-Пт: 9:00 - 20:00
+									Пн-Пт: 09:00 - 18:00
+									<br />
+									Сб-Вс: 10:00 - 13:00
 								</div>
 							</li>
 						</ul>

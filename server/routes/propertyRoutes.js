@@ -16,6 +16,7 @@ const auth = require('../middlewares/auth');
 
 // Получить все объекты
 router.get('/', getProperties);
+router.get('/count', getPropertiesCount);
 router.get('/latest', getLatestProperties);
 router.get('/count', getPropertiesCount);
 
