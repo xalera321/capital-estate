@@ -1,0 +1,238 @@
+@use '@styles/variables' as *;
+@use '@styles/mixins' as *;
+
+.hero {
+  padding: 120px 0 80px;
+  background: linear-gradient(45deg, darken($primary, 10%), $primary);
+  color: white;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+
+  @include tablet {
+    padding: 100px 0 60px;
+  }
+}
+
+.heroContent {
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.title {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+  
+  @include tablet {
+    font-size: 2rem;
+  }
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+.about {
+  padding: 100px 0;
+  
+  @include tablet {
+    padding: 60px 0;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 60px;
+  
+  @include desktop {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sectionTitle {
+  font-size: 2rem;
+  margin-bottom: 40px;
+  color: $text-dark;
+}
+
+.text {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: $text-light;
+  margin-bottom: 30px;
+}
+
+.highlight {
+  background: $light-bg;
+  padding: 30px;
+  border-radius: 12px;
+  margin: 40px 0;
+
+  blockquote {
+    font-size: 1.2rem;
+    font-style: italic;
+    margin: 0 0 30px;
+    color: $primary;
+    line-height: 1.4;
+  }
+}
+
+.director {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+  img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  h4 {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+
+  p {
+    margin: 5px 0 0;
+    color: $text-light;
+  }
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: $shadow-md;
+  
+  @include desktop {
+    margin-top: 40px;
+    max-width: 600px;
+  }
+}
+
+.statItem {
+  text-align: center;
+  padding: 20px;
+  border: 2px solid $border-color;
+  border-radius: 12px;
+}
+
+.statNumber {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: $primary;
+  margin-bottom: 10px;
+}
+
+.statText {
+  font-size: 0.95rem;
+  color: $text-light;
+}
+
+.team {
+  padding: 100px 0;
+  background: $light-bg;
+  
+  @include tablet {
+    padding: 60px 0;
+  }
+}
+
+.teamGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+
+  @include tablet {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.teamMember {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: $shadow-md;
+
+  img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin-bottom: 15px;
+  }
+
+  .memberInfo {
+    h3 {
+      font-size: 1.2rem;
+      margin-bottom: 5px;
+      color: $text-dark;
+    }
+    
+    p {
+      font-size: 1rem;
+      margin-bottom: 5px;
+      color: $primary;
+    }
+    
+    span {
+      font-size: 0.9rem;
+      color: $text-light;
+    }
+  }
+}
+
+.values {
+  padding: 100px 0;
+
+  @include tablet {
+    padding: 60px 0;
+  }
+}
+
+.valuesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+
+  @include tablet {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.valueCard {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: $shadow-md;
+
+  h3 {
+    font-size: 1.5rem;
+    color: $primary;
+    margin-bottom: 15px;
+  }
+
+  p {
+    font-size: 1rem;
+    color: $text-light;
+  }
+}
