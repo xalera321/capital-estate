@@ -5,6 +5,9 @@ exports.createProperty = async (req, res) => {
     try {
         const { features, photos, ...propertyData } = req.body;
 
+        // Debug log to see what's being received
+        console.log('Received property data:', JSON.stringify(propertyData, null, 2));
+        
         const property = await Property.create(propertyData);
 
         if (features && features.length) {
@@ -26,9 +29,15 @@ exports.createProperty = async (req, res) => {
 
         res.status(201).json(createdProperty);
     } catch (error) {
+        console.error('Property validation error:', error);
         res.status(400).json({
             error: 'Validation Error',
-            details: error.errors?.map(e => e.message)
+            message: error.message,
+            details: error.errors?.map(e => ({
+                message: e.message,
+                path: e.path,
+                value: e.value
+            })) || []
         });
     }
 };
@@ -316,6 +325,80 @@ exports.getPropertiesCount = async (req, res) => {
         res.json({ count });
     } catch (error) {
         console.error('Count error:', error);
+        res.status(500).json({ error: 'Server Error' });
+    }
+};
+
+exports.getPropertiesAdmin = async (req, res) => {
+    try {
+        const properties = await Property.scope('admin').findAll({
+            include: [
+                { model: Category, as: 'category' },
+                {
+                    model: PropertyPhoto,
+                    as: 'photos',
+                    attributes: ['url'],
+                    order: [['order', 'ASC']]
+                }
+            ],
+            order: [['updatedAt', 'DESC']]
+        });
+        
+        res.json(properties);
+    } catch (error) {
+        console.error('Admin properties error:', error);
+        res.status(500).json({ error: 'Server Error' });
+    }
+};
+
+exports.exportProperties = async (req, res) => {
+    try {
+        const properties = await Property.scope('admin').findAll({
+            include: [
+                { model: Category, as: 'category' },
+                { model: Feature, as: 'features' }
+            ],
+            order: [['updatedAt', 'DESC']]
+        });
+        
+        // Transform properties for CSV
+        const csvData = properties.map(property => {
+            const data = property.toJSON();
+            return {
+                id: data.id,
+                title: data.title,
+                description: data.description,
+                price: data.price,
+                category: data.category?.name || '',
+                area: data.area,
+                rooms: data.rooms,
+                address: data.address,
+                city: data.city,
+                district: data.district,
+                is_hidden: data.is_hidden ? 'Да' : 'Нет',
+                operation_type: data.operation_type === 'sale' ? 'Продажа' : 'Аренда',
+                created_at: new Date(data.createdAt).toLocaleDateString('ru-RU'),
+                updated_at: new Date(data.updatedAt).toLocaleDateString('ru-RU')
+            };
+        });
+        
+        // Create CSV headers
+        const headers = Object.keys(csvData[0] || {}).join(',');
+        
+        // Create CSV content
+        const csvContent = [
+            headers,
+            ...csvData.map(row => Object.values(row).join(','))
+        ].join('\n');
+        
+        // Set headers for download
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename=properties.csv');
+        
+        // Send CSV data
+        res.send(csvContent);
+    } catch (error) {
+        console.error('Export error:', error);
         res.status(500).json({ error: 'Server Error' });
     }
 };

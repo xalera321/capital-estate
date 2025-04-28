@@ -23,6 +23,14 @@ module.exports = (sequelize, DataTypes) => {
             validate: {
                 len: { args: [8, 100], msg: 'Пароль должен быть от 8 до 100 символов' }
             }
+        },
+        twoFactorSecret: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        twoFactorEnabled: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
         }
     }, {
         sequelize,

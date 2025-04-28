@@ -1,0 +1,323 @@
+@use '@styles/variables' as *;
+@use '@styles/mixins' as *;
+
+.propertyForm {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: $shadow-md;
+  padding: 1.5rem;
+}
+
+.formHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+    color: $text;
+  }
+  
+  @include mobile {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    
+    .formActions {
+      width: 100%;
+      justify-content: flex-start;
+    }
+  }
+}
+
+.formActions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.form {
+  width: 100%;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.formSection {
+  h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0 0 1.25rem 0;
+    color: $text;
+    border-bottom: 1px solid $gray-200;
+    padding-bottom: 0.75rem;
+  }
+  
+  &.fullWidth {
+    grid-column: 1 / -1;
+  }
+}
+
+.formGroup {
+  margin-bottom: 1.25rem;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.formLabel {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: $text;
+}
+
+.formControl {
+  width: 100%;
+  padding: 0.625rem;
+  border: 1px solid $gray-300;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  color: $text;
+  transition: all 0.2s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: $primary;
+    box-shadow: $shadow-primary;
+  }
+  
+  &:disabled {
+    background-color: $gray-100;
+    cursor: not-allowed;
+  }
+  
+  &.hasError {
+    border-color: $danger;
+  }
+}
+
+.formTextarea {
+  width: 100%;
+  padding: 0.625rem;
+  border: 1px solid $gray-300;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  color: $text;
+  resize: vertical;
+  transition: all 0.2s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: $primary;
+    box-shadow: $shadow-primary;
+  }
+  
+  &:disabled {
+    background-color: $gray-100;
+    cursor: not-allowed;
+  }
+}
+
+.checkboxControl {
+  display: flex;
+  align-items: center;
+  
+  input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.5rem;
+  }
+  
+  label {
+    margin-bottom: 0;
+    font-size: 0.875rem;
+    color: $text;
+  }
+}
+
+.formHint {
+  display: block;
+  margin-top: 0.375rem;
+  font-size: 0.75rem;
+  color: $gray-500;
+}
+
+.errorMessage {
+  margin-top: 0.375rem;
+  font-size: 0.75rem;
+  color: $danger;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+  
+  @include mobile {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.featureItem {
+  margin-bottom: 0.625rem;
+}
+
+.photosContainer {
+  margin-top: 1rem;
+}
+
+.photosList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.photoItem {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: $shadow-sm;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.removePhotoBtn {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: none;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: $danger;
+  }
+  
+  &:disabled {
+    background-color: $gray-400;
+    cursor: not-allowed;
+  }
+}
+
+.uploadContainer {
+  margin-top: 1rem;
+}
+
+.uploadButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 1rem;
+  background-color: $gray-100;
+  border: 1px dashed $gray-400;
+  border-radius: 0.5rem;
+  color: $text;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  svg {
+    margin-right: 0.5rem;
+  }
+  
+  &:hover {
+    background-color: $gray-200;
+    border-color: $primary;
+    color: $primary;
+  }
+  
+  &[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  input[type="file"] {
+    display: none;
+  }
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  svg {
+    margin-right: 0.5rem;
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.primaryButton {
+  background-color: $primary;
+  color: white;
+  box-shadow: $shadow-sm;
+  
+  &:hover:not(:disabled) {
+    background-color: $primary-dark;
+    transform: translateY(-1px);
+    box-shadow: $shadow-md;
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+}
+
+.secondaryButton {
+  background-color: $gray-100;
+  color: $text;
+  
+  &:hover:not(:disabled) {
+    background-color: $gray-200;
+  }
+} 

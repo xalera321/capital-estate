@@ -7,6 +7,18 @@
   background: $gray-50;
 }
 
+.propertyRow {
+  gap: 2rem;
+  
+  @include tablet {
+    gap: 1.5rem;
+  }
+  
+  @include mobile {
+    gap: 1rem;
+  }
+}
+
 .pageTitle {
   font-size: 2.5rem;
   font-weight: 700;
@@ -37,9 +49,14 @@
 
 .filtersSection {
   position: relative;
+  margin-bottom: 1.5rem;
   
   @include mobile {
     margin-bottom: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    margin-bottom: 0;
   }
 }
 
@@ -63,11 +80,16 @@
   border-bottom: 1px solid $gray-100;
 }
 
-.resultsSection {
-  background: $white;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+.propertiesSection {
+  padding: 0;
+}
+
+.propertiesWrapper {
+  padding-top: 2rem;
+  
+  @media (min-width: 992px) {
+    padding-top: 1.5rem;
+  }
 }
 
 .resultsHeader {
@@ -78,10 +100,16 @@
 
 .resultsCount {
   font-size: 0.9rem;
-  color: $gray-600;
-  background: $gray-50;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
+  font-weight: 500;
+  color: $gray-700;
+  background: rgba($primary, 0.08);
+  padding: 0.6rem 1.5rem;
+  border-radius: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba($primary, 0.1);
+  border: 1px solid rgba($primary, 0.15);
 }
 
 .propertiesGrid {

@@ -16,8 +16,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
-                isUrl: {
-                    msg: 'Invalid URL format'
+                isValidUrl(value) {
+                    // Accept both full URLs and server paths starting with /uploads/
+                    if (!value || 
+                        !(value.startsWith('http://') || 
+                          value.startsWith('https://') ||
+                          value.startsWith('/uploads/'))) {
+                        throw new Error('Invalid URL format');
+                    }
                 }
             }
         },

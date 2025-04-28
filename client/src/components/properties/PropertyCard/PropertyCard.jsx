@@ -1,5 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { getImageUrl } from '@/utils/formatters'
+import FavoriteButton from '@/components/ui/FavoriteButton/FavoriteButton'
 import styles from './PropertyCard.module.scss'
 
 export const PropertyCard = ({ property }) => {
@@ -8,11 +10,16 @@ export const PropertyCard = ({ property }) => {
 			<div className={styles.imageContainer}>
 				{property.photos?.[0]?.url && (
 					<img
-						src={property.photos[0].url}
+						src={getImageUrl(property.photos[0].url)}
 						alt={property.title}
 						className={styles.image}
 					/>
 				)}
+				<FavoriteButton 
+					propertyId={property.id} 
+					className={styles.favoriteButton}
+					size="small"
+				/>
 			</div>
 
 			<div className={styles.content}>

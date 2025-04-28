@@ -5,8 +5,14 @@ import { Toaster } from 'react-hot-toast'
 import { HomePage } from '@/pages/HomePage'
 import { CatalogPage } from '@/pages/CatalogPage'
 import { PropertyPage } from '@/pages/PropertyPage'
+import { FavoritesPage } from '@/pages/FavoritesPage'
 import { AdminPage } from '@/pages/AdminPage'
 import { ContactsPage } from '@/pages/ContactsPage'
+import ProtectedRoute from '@/components/management/ProtectedRoute'
+import AdminLayout from '@/components/management/AdminLayout'
+import LoginPage from '@/pages/management/LoginPage'
+import AdminHomePage from '@/pages/management/AdminHomePage'
+import PropertiesPage from '@/pages/management/PropertiesPage'
 import '@assets/styles/main.scss'
 
 function App() {
@@ -14,11 +20,29 @@ function App() {
 		<Provider store={store}>
 			<Router>
 				<Routes>
+					{/* Public routes */}
 					<Route path='/' element={<HomePage />} />
 					<Route path='/properties' element={<CatalogPage />} />
 					<Route path='/properties/:id' element={<PropertyPage />} />
-					<Route path='/admin' element={<AdminPage />} />
+					<Route path='/favorites' element={<FavoritesPage />} />
 					<Route path='/contacts' element={<ContactsPage />} />
+          
+					{/* Management routes */}
+					<Route path='/management/login' element={<LoginPage />} />
+					<Route path='/management' element={<ProtectedRoute />}>
+						<Route element={<AdminLayout />}>
+							<Route index element={<AdminHomePage />} />
+							<Route path='properties' element={<PropertiesPage />} />
+							{/* Add other admin routes here */}
+							<Route path='categories' element={<div>Управление категориями</div>} />
+							<Route path='requests' element={<div>Управление заявками</div>} />
+						</Route>
+					</Route>
+
+					{/* Legacy routes */}
+					<Route path='/admin' element={<AdminPage />} />
+          
+					{/* Fallback route */}
 					<Route path='*' element={<HomePage />} />
 				</Routes>
 

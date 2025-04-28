@@ -1,0 +1,17 @@
+.header {
+  padding: 40px 20px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  margin-bottom: 30px;
+}
+.header .title {
+  font-size: 2.5rem;
+  color: #2d3436;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+.header .subtitle {
+  font-size: 1.8rem;
+  color: #636e72;
+  font-weight: 500;
+}/*# sourceMappingURL=PrivacyHeader.module.css.map */

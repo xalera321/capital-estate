@@ -102,7 +102,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.JSONB,
             validate: {
                 isValid(value) {
-                    if (typeof value !== 'object' || !value?.lat || !value?.lng) {
+                    if (typeof value !== 'object' || value === null || 
+                        typeof value.lat !== 'number' || typeof value.lng !== 'number') {
                         throw new Error('Invalid coordinates format');
                     }
                 }

@@ -113,9 +113,35 @@
   }
 }
 
-.resetButton {
-  width: 100%;
+.buttonGroup {
+  display: flex;
+  gap: 0.75rem;
   margin-top: 0.75rem;
+}
+
+.applyButton {
+  flex: 1;
+  padding: 0.5rem;
+  background: $primary;
+  color: white;
+  border: 1px solid $primary;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s $ease-out;
+  cursor: pointer;
+
+  &:hover {
+    background: darken($primary, 5%);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.resetButton {
+  flex: 1;
   padding: 0.5rem;
   background: rgba($primary, 0.06);
   color: $primary;
@@ -147,5 +173,9 @@
 
   .inputGroup {
     grid-template-columns: 1fr;
+  }
+  
+  .buttonGroup {
+    flex-direction: column;
   }
 }

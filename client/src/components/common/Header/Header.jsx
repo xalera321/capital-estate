@@ -1,13 +1,17 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useSelector } from 'react-redux'
 import Logo from '@assets/images/icons/logo.svg?react'
 import PhoneIcon from '@/assets/images/icons/phone.svg?react'
 import Whatsapp from '@/assets/images/icons/whatsapp.svg?react'
 import Telegram from '@/assets/images/icons/telegram.svg?react'
 import Vk from '@/assets/images/icons/vk.svg?react'
+import { FiUser, FiHeart } from 'react-icons/fi'
+import { selectFavorites } from '@/features/favorites/favoritesSlice'
 import styles from './Header.module.scss'
 import { fetchCategories } from '@/features/properties/api/propertyApi'
+import authService from '@/services/authService'
 
 export const Header = () => {
 	const [isScrolled, setIsScrolled] = useState(false)
@@ -15,6 +19,9 @@ export const Header = () => {
 	const [categories, setCategories] = useState([])
 	const [isObjectsHovered, setIsObjectsHovered] = useState(false)
 	const location = useLocation()
+	const isAuthenticated = authService.isAuthenticated()
+	const isAdminRoute = location.pathname.startsWith('/management')
+	const favorites = useSelector(selectFavorites)
 
 	useEffect(() => {
 		const handleScroll = () => setIsScrolled(window.scrollY > 50)
@@ -177,6 +184,33 @@ export const Header = () => {
 								<NavLink to='/services'>Услуги</NavLink>
 								<NavLink to='/about'>О компании</NavLink>
 								<NavLink to='/contacts'>Контакты</NavLink>
+							</div>
+
+							<div className={styles.headerActions}>
+								<motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+									<Link 
+										to='/favorites'
+										className={styles.favoritesButton}
+										aria-label="Избранное"
+									>
+										<FiHeart />
+										{favorites.length > 0 && (
+											<span className={styles.favoritesCount}>{favorites.length}</span>
+										)}
+									</Link>
+								</motion.div>
+
+								{isAuthenticated && (
+									<motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+										<Link 
+											to='/management'
+											className={styles.adminButton}
+										>
+											<FiUser />
+											<span>Панель администратора</span>
+										</Link>
+									</motion.div>
+								)}
 							</div>
 
 							<motion.button

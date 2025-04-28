@@ -252,15 +252,7 @@
       min-width: 100%;
 
       &::before {
-        content: '';
-        position: absolute;
-        top: -8px;
-        left: 15%;
-        transform: translateX(-50%) rotate(45deg);
-        width: 20px;
-        height: 20px;
-        background: white;
-        box-shadow: -2px -2px 5px rgba(0, 0, 0, 0.05);
+        display: none;
       }
     }
 
@@ -331,6 +323,54 @@
       }
     }
   }
+
+  .rightControls {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    
+    @include tablet {
+      margin-left: 16px;
+    }
+    
+    @include mobile {
+      display: none;
+    }
+  }
+
+  .adminButton {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 50px;
+    background-color: $primary;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background-color: color.adjust($primary, $lightness: -5%);
+      color: white;
+    }
+    
+    svg {
+      font-size: 18px;
+    }
+    
+    @include tablet {
+      padding: 8px 12px;
+      
+      span {
+        display: none;
+      }
+      
+      svg {
+        font-size: 20px;
+      }
+    }
+  }
 }
 
 @media (max-width: 992px) {
@@ -395,4 +435,49 @@
       display: flex;
     }
   }
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.favoritesButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  color: #2c3e50;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+  
+  svg {
+    font-size: 1.2rem;
+  }
+  
+  &:hover {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+  }
+}
+
+.favoritesCount {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: #e74c3c;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 600;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
 }

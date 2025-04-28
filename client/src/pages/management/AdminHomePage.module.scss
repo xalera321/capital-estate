@@ -1,0 +1,248 @@
+@use '@styles/variables' as *;
+@use '@styles/mixins' as *;
+
+.adminHome {
+  padding: 2rem 0 3rem;
+  max-width: 100%;
+}
+
+.dashboardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  
+  @include mobile {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
+
+.welcomeSection {
+  h1 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: $gray-900;
+    margin-bottom: 0.25rem;
+    background: linear-gradient(90deg, $primary 0%, darken($primary, 15%) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    
+    @include mobile {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+.welcomeText {
+  color: $gray-600;
+  font-size: 1rem;
+  margin-bottom: 0;
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: $gray-800;
+  margin-bottom: 1.5rem;
+  position: relative;
+  padding-left: 1rem;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.25rem;
+    height: 1.25rem;
+    width: 4px;
+    background: $primary;
+    border-radius: 2px;
+  }
+}
+
+// Секция со статистикой
+.statsOverview {
+  margin-bottom: 2rem;
+}
+
+.statsWrapper {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  
+  @include tablet {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.statCard {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  padding: 1.5rem;
+  display: flex;
+  gap: 1.25rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 6px;
+    background: linear-gradient(180deg, $primary-light 0%, $primary 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    
+    &::after {
+      opacity: 1;
+    }
+  }
+}
+
+.statIconWrapper {
+  height: 60px;
+  width: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.statIcon {
+  font-size: 1.75rem;
+}
+
+.statContent {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  
+  h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: $gray-800;
+    margin: 0.5rem 0 0.25rem;
+  }
+  
+  p {
+    color: $gray-600;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+}
+
+.statCounter {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  color: $gray-900;
+  margin-bottom: 0.5rem;
+}
+
+.statActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: auto;
+}
+
+.viewAllLink, .addItemLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: $primary;
+  text-decoration: none;
+  padding: 0.5rem 0;
+  transition: color 0.3s ease;
+  
+  &:hover {
+    color: darken($primary, 15%);
+  }
+  
+  svg {
+    transition: transform 0.3s ease;
+  }
+  
+  &:hover svg {
+    transform: translateX(3px);
+  }
+}
+
+.addItemLink {
+  color: $gray-700;
+  
+  &:hover {
+    color: $gray-900;
+  }
+}
+
+.logoutButton {
+  background: transparent;
+  border: 1px solid rgba($error, 0.5);
+  color: $error;
+  padding: 0.5rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background-color: rgba($error, 0.05);
+    border-color: $error;
+    color: darken($error, 5%);
+  }
+  
+  svg {
+    font-size: 1.25rem;
+  }
+  
+  @include mobile {
+    padding: 0.5rem 1rem;
+    .buttonText {
+      display: none;
+    }
+  }
+}
+
+// Skeleton loading effect
+.skeleton {
+  height: 2.5rem;
+  width: 3.5rem;
+  background: linear-gradient(90deg, 
+    rgba(0, 0, 0, 0.06) 25%, 
+    rgba(0, 0, 0, 0.10) 37%, 
+    rgba(0, 0, 0, 0.06) 63%
+  );
+  background-size: 400% 100%;
+  animation: skeleton-loading 1.4s ease infinite;
+  border-radius: 4px;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+} 

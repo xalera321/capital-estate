@@ -11,3 +11,13 @@ exports.getCategories = async (req, res) => {
         res.status(500).json({ error: 'Ошибка сервера' });
     }
 };
+
+exports.getCategoriesCount = async (req, res) => {
+    try {
+        const count = await Category.count();
+        res.json({ count });
+    } catch (error) {
+        console.error('Count error:', error);
+        res.status(500).json({ error: 'Server Error' });
+    }
+};

@@ -1,4 +1,4 @@
-const { Request } = require('../models');
+const { Request, Property } = require('../models');
 
 exports.createRequest = async (req, res) => {
     try {
@@ -63,5 +63,15 @@ exports.deleteRequest = async (req, res) => {
         res.json({ message: 'Request deleted successfully' });
     } catch (error) {
         res.status(500).json({ error: 'Server error' });
+    }
+};
+
+exports.getRequestsCount = async (req, res) => {
+    try {
+        const count = await Request.count();
+        res.json({ count });
+    } catch (error) {
+        console.error('Count error:', error);
+        res.status(500).json({ error: 'Server Error' });
     }
 };

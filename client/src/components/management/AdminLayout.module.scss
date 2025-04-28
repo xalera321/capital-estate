@@ -1,0 +1,212 @@
+@use '@styles/variables' as *;
+@use '@styles/mixins' as *;
+
+:root {
+  --sidebar-width: 250px;
+  --sidebar-background: #2c3e50;
+  --active-bg: rgba(255, 255, 255, 0.2);
+  --text-color: #ecf0f1;
+  --text-light: #bdc3c7;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --hover-bg: rgba(255, 255, 255, 0.1);
+  --container-max-width: 1200px;
+  --content-padding: 20px;
+  --header-height-expanded: 140px;
+  --header-height-scrolled: 80px;
+}
+
+.adminLayout {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+  padding-top: var(--header-height-expanded);
+  transition: padding-top 0.3s ease;
+  
+  &.scrolled {
+    padding-top: var(--header-height-scrolled);
+  }
+  
+  @include tablet {
+    --header-height-expanded: 100px;
+    --header-height-scrolled: 70px;
+    padding-top: var(--header-height-expanded);
+    
+    &.scrolled {
+      padding-top: var(--header-height-scrolled);
+    }
+  }
+  
+  @include mobile {
+    --header-height-expanded: 80px;
+    --header-height-scrolled: 60px;
+    padding-top: var(--header-height-expanded);
+    
+    &.scrolled {
+      padding-top: var(--header-height-scrolled);
+    }
+  }
+}
+
+/* Sidebar styles */
+.sidebar {
+  width: var(--sidebar-width);
+  height: calc(100vh - var(--header-height-expanded));
+  background-color: var(--sidebar-background);
+  color: white;
+  position: fixed;
+  top: var(--header-height-expanded);
+  left: 0;
+  z-index: 10;
+  overflow-y: auto;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  transition: top 0.3s ease, height 0.3s ease;
+  
+  &.scrolled {
+    top: var(--header-height-scrolled);
+    height: calc(100vh - var(--header-height-scrolled));
+  }
+  
+  @include tablet {
+    top: var(--header-height-expanded);
+    height: calc(100vh - var(--header-height-expanded));
+    
+    &.scrolled {
+      top: var(--header-height-scrolled);
+      height: calc(100vh - var(--header-height-scrolled));
+    }
+  }
+  
+  @include mobile {
+    top: var(--header-height-expanded);
+    height: calc(100vh - var(--header-height-expanded));
+    
+    &.scrolled {
+      top: var(--header-height-scrolled);
+      height: calc(100vh - var(--header-height-scrolled));
+    }
+  }
+}
+
+.sidebarHeader {
+  padding: 20px;
+  border-bottom: 1px solid var(--border-color);
+  text-align: center;
+  
+  h2 {
+    margin: 0;
+    font-size: 1.4rem;
+    color: var(--text-color);
+  }
+}
+
+.sidebarNav {
+  padding: 20px 0;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  color: var(--text-color);
+  text-decoration: none;
+  transition: background-color 0.3s;
+  
+  &:hover {
+    background-color: var(--hover-bg);
+  }
+  
+  &.active {
+    background-color: var(--active-bg);
+    border-left: 4px solid #3498db;
+  }
+}
+
+.navIcon {
+  margin-right: 15px;
+  font-size: 1.2rem;
+}
+
+.navLabel {
+  font-size: 1rem;
+}
+
+/* Content wrapper styles */
+.contentWrapper {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  width: calc(100% - var(--sidebar-width));
+  display: flex;
+  flex-direction: column;
+  transition: margin-top 0.3s ease;
+}
+
+/* Main content */
+.content {
+  padding: var(--content-padding);
+  padding-top: 30px; /* Добавляем отступ сверху */
+  flex: 1;
+  overflow-x: hidden;
+  min-height: calc(100vh - var(--header-height-expanded));
+  transition: min-height 0.3s ease;
+  
+  .scrolled & {
+    min-height: calc(100vh - var(--header-height-scrolled));
+  }
+  
+  @include tablet {
+    min-height: calc(100vh - var(--header-height-expanded));
+    
+    .scrolled & {
+      min-height: calc(100vh - var(--header-height-scrolled));
+    }
+  }
+  
+  @include mobile {
+    min-height: calc(100vh - var(--header-height-expanded));
+    padding-top: 20px;
+    
+    .scrolled & {
+      min-height: calc(100vh - var(--header-height-scrolled));
+    }
+  }
+}
+
+.container {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 var(--content-padding);
+}
+
+/* Media queries for smaller screens */
+@media (max-width: 991px) {
+  :root {
+    --sidebar-width: 200px;
+    --container-max-width: 900px;
+  }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --sidebar-width: 70px;
+    --container-max-width: 100%;
+    --content-padding: 15px;
+  }
+  
+  .sidebarHeader h2 {
+    display: none;
+  }
+  
+  .navLabel {
+    display: none;
+  }
+  
+  .navIcon {
+    margin-right: 0;
+    font-size: 1.5rem;
+  }
+  
+  .container {
+    padding: 0 10px;
+  }
+}

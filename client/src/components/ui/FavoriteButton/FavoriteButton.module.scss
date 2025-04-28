@@ -1,0 +1,79 @@
+.favoriteButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  color: #6c757d;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: #e74c3c;
+  }
+  
+  &.active {
+    color: #e74c3c;
+    
+    .icon {
+      animation: pulse 0.3s ease-in-out;
+    }
+  }
+  
+  // Different sizes
+  &.small {
+    width: 30px;
+    height: 30px;
+    
+    .icon {
+      font-size: 16px;
+    }
+  }
+  
+  &.medium {
+    width: 40px;
+    height: 40px;
+    
+    .icon {
+      font-size: 20px;
+    }
+  }
+  
+  &.large {
+    width: 50px;
+    height: 50px;
+    
+    .icon {
+      font-size: 24px;
+    }
+  }
+}
+
+.icon {
+  transition: all 0.2s ease;
+  fill: currentColor;
+  stroke: currentColor;
+  
+  &.active {
+    fill: #e74c3c;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+} 

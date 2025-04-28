@@ -1,16 +1,53 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Form } from 'react-bootstrap'
 import { useSearchParams } from 'react-router-dom'
 import styles from './PropertyFilters.module.scss'
 
-const PropertyFilters = ({ categories }) => {
+const PropertyFilters = ({ categories, initialValues }) => {
 	const [searchParams, setSearchParams] = useSearchParams()
+	const [localFilters, setLocalFilters] = useState({
+		operationType: initialValues?.operationType || '',
+		categoryId: initialValues?.categoryId || '',
+		minPrice: initialValues?.minPrice || '',
+		maxPrice: initialValues?.maxPrice || '',
+		rooms: initialValues?.rooms || '',
+	})
+
+	useEffect(() => {
+		setLocalFilters({
+			operationType: searchParams.get('operationType') || '',
+			categoryId: searchParams.get('categoryId') || '',
+			minPrice: searchParams.get('minPrice') || '',
+			maxPrice: searchParams.get('maxPrice') || '',
+			rooms: searchParams.get('rooms') || '',
+		})
+	}, [searchParams])
 
 	const handleFilterChange = (name, value) => {
-		const newParams = new URLSearchParams(searchParams)
-		value ? newParams.set(name, value) : newParams.delete(name)
+		setLocalFilters(prev => ({
+			...prev,
+			[name]: value
+		}))
+	}
+
+	const handleApplyFilters = () => {
+		const newParams = new URLSearchParams()
+		Object.entries(localFilters).forEach(([key, value]) => {
+			if (value) newParams.set(key, value)
+		})
 		newParams.delete('page')
 		setSearchParams(newParams)
+	}
+
+	const handleReset = () => {
+		setLocalFilters({
+			operationType: '',
+			categoryId: '',
+			minPrice: '',
+			maxPrice: '',
+			rooms: '',
+		})
+		setSearchParams(new URLSearchParams())
 	}
 
 	return (
@@ -35,7 +72,7 @@ const PropertyFilters = ({ categories }) => {
 						<Form.Label>Операция</Form.Label>
 						<Form.Select
 							className={styles.select}
-							value={searchParams.get('operationType') || ''}
+							value={localFilters.operationType}
 							onChange={e =>
 								handleFilterChange('operationType', e.target.value)
 							}
@@ -50,7 +87,7 @@ const PropertyFilters = ({ categories }) => {
 						<Form.Label>Категория</Form.Label>
 						<Form.Select
 							className={styles.select}
-							value={searchParams.get('categoryId') || ''}
+							value={localFilters.categoryId}
 							onChange={e => handleFilterChange('categoryId', e.target.value)}
 						>
 							<option value=''>Все</option>
@@ -72,7 +109,7 @@ const PropertyFilters = ({ categories }) => {
 								placeholder='От'
 								type='number'
 								min='0'
-								value={searchParams.get('minPrice') || ''}
+								value={localFilters.minPrice}
 								onChange={e => handleFilterChange('minPrice', e.target.value)}
 							/>
 							<Form.Control
@@ -80,7 +117,7 @@ const PropertyFilters = ({ categories }) => {
 								placeholder='До'
 								type='number'
 								min='0'
-								value={searchParams.get('maxPrice') || ''}
+								value={localFilters.maxPrice}
 								onChange={e => handleFilterChange('maxPrice', e.target.value)}
 							/>
 						</div>
@@ -90,7 +127,7 @@ const PropertyFilters = ({ categories }) => {
 						<Form.Label>Комнаты</Form.Label>
 						<Form.Select
 							className={styles.select}
-							value={searchParams.get('rooms') || ''}
+							value={localFilters.rooms}
 							onChange={e => handleFilterChange('rooms', e.target.value)}
 						>
 							<option value=''>Любое</option>
@@ -103,12 +140,20 @@ const PropertyFilters = ({ categories }) => {
 				</div>
 			</Form>
 
-			<button
-				className={styles.resetButton}
-				onClick={() => setSearchParams(new URLSearchParams())}
-			>
-				Сбросить
-			</button>
+			<div className={styles.buttonGroup}>
+				<button
+					className={styles.applyButton}
+					onClick={handleApplyFilters}
+				>
+					Применить
+				</button>
+				<button
+					className={styles.resetButton}
+					onClick={handleReset}
+				>
+					Сбросить
+				</button>
+			</div>
 		</div>
 	)
 }

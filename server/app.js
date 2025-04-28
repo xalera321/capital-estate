@@ -6,6 +6,8 @@ const authRoutes = require('./routes/authRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const propertyRoutes = require('./routes/propertyRoutes');
 const requestRoutes = require('./routes/requestRoutes');
+const featureRoutes = require('./routes/featureRoutes');
+const uploadRoutes = require('./routes/uploadRoutes');
 const errorHandler = require('./middlewares/errorHandler');
 
 const app = express();
@@ -24,6 +26,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/properties', propertyRoutes);
 app.use('/api/requests', requestRoutes);
+app.use('/api/features', featureRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Error handling
 app.use(errorHandler);

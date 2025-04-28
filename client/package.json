@@ -17,6 +17,7 @@
     "framer-motion": "^12.0.3",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.8",
+    "react-bootstrap-icons": "^1.11.5",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.54.2",
     "react-hot-toast": "^2.5.1",
@@ -25,6 +26,7 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.1.3",
     "react-swiper": "^0.1.5",
+    "react-toastify": "^11.0.5",
     "redux": "^5.0.1",
     "swiper": "^11.2.1",
     "yup": "^1.6.1"
