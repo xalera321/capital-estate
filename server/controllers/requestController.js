@@ -3,16 +3,30 @@ const { Request, Property } = require('../models');
 exports.createRequest = async (req, res) => {
     try {
         const { user_name, user_phone, message, property_id } = req.body;
-
+        
+        // Validate required fields
+        if (!user_name) {
+            return res.status(400).json({ error: 'Имя пользователя обязательно' });
+        }
+        
+        if (!user_phone) {
+            return res.status(400).json({ error: 'Номер телефона обязателен' });
+        }
+        
+        // Create the request with or without property_id
         const request = await Request.create({
             user_name,
             user_phone,
-            message,
-            property_id
+            message: message || '',
+            property_id: property_id || null // Make property_id optional
         });
 
-        res.status(201).json(request);
+        res.status(201).json({
+            id: request.id,
+            message: 'Заявка успешно создана'
+        });
     } catch (error) {
+        console.error('Error creating request:', error);
         res.status(400).json({ error: error.message });
     }
 };
@@ -20,17 +34,18 @@ exports.createRequest = async (req, res) => {
 // Добавляем полный CRUD для заявок
 exports.getRequests = async (req, res) => {
     try {
+        console.log('Getting all requests');
+        
+        // First try without the include to isolate potential issues
         const requests = await Request.findAll({
-            include: [
-                {
-                    model: Property,
-                    attributes: ['id', 'title']
-                }
-            ]
+            order: [['createdAt', 'DESC']] // Newest first
         });
+        
+        console.log(`Successfully found ${requests.length} requests`);
         res.json(requests);
     } catch (error) {
-        res.status(500).json({ error: 'Server error' });
+        console.error('Error fetching requests:', error);
+        res.status(500).json({ error: 'Server error: ' + error.message });
     }
 };
 

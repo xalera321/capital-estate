@@ -27,16 +27,17 @@ export const FavoritesPage = () => {
         setError(null)
         setLoading(true)
         
-        // Fetch all properties and filter out favorites client-side
-        // In a real app with a lot of properties, you'd want to add an API endpoint to fetch by IDs
-        const response = await axios.get('/properties')
-        const allProperties = response.data.data || []
+        // Use the new endpoint that fetches properties by IDs including hidden ones
+        const response = await axios.get(`/properties/by-ids?ids=${favoriteIds.join(',')}`)
+        const properties = response.data || []
         
-        const favorites = allProperties.filter(prop => 
-          favoriteIds.includes(prop.id)
-        )
+        // Mark hidden properties so we can show them differently in the UI
+        const processedProperties = properties.map(prop => ({
+          ...prop,
+          isHidden: prop.is_hidden
+        }))
         
-        setFavoriteProperties(favorites)
+        setFavoriteProperties(processedProperties)
       } catch (err) {
         console.error('Error fetching favorite properties:', err)
         setError('Не удалось загрузить избранные объекты недвижимости')
@@ -58,9 +59,6 @@ export const FavoritesPage = () => {
               <FiHeart className={styles.heartIcon} />
               Избранное
             </h1>
-            <p className={styles.pageDescription}>
-              Объекты недвижимости, которые вам понравились
-            </p>
           </header>
 
           {loading ? (
@@ -74,16 +72,17 @@ export const FavoritesPage = () => {
             </Alert>
           ) : favoriteProperties.length === 0 ? (
             <div className={styles.emptyState}>
-              <div className={styles.emptyIcon}>
-                <FiHeart size={50} />
-              </div>
               <h2>У вас пока нет избранных объектов</h2>
               <p>Добавляйте понравившиеся объекты недвижимости в избранное, и они появятся здесь</p>
             </div>
           ) : (
             <div className={styles.propertiesGrid}>
               {favoriteProperties.map(property => (
-                <PropertyCard key={property.id} property={property} />
+                <PropertyCard 
+                  key={property.id} 
+                  property={property} 
+                  hiddenLabel={property.isHidden ? "Объект скрыт" : null}
+                />
               ))}
             </div>
           )}

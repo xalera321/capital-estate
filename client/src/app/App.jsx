@@ -13,6 +13,8 @@ import AdminLayout from '@/components/management/AdminLayout'
 import LoginPage from '@/pages/management/LoginPage'
 import AdminHomePage from '@/pages/management/AdminHomePage'
 import PropertiesPage from '@/pages/management/PropertiesPage'
+import CategoriesPage from '@/pages/management/CategoriesPage'
+import RequestsPage from '@/pages/management/RequestsPage'
 import '@assets/styles/main.scss'
 
 function App() {
@@ -34,8 +36,8 @@ function App() {
 							<Route index element={<AdminHomePage />} />
 							<Route path='properties' element={<PropertiesPage />} />
 							{/* Add other admin routes here */}
-							<Route path='categories' element={<div>Управление категориями</div>} />
-							<Route path='requests' element={<div>Управление заявками</div>} />
+							<Route path='categories' element={<CategoriesPage />} />
+							<Route path='requests' element={<RequestsPage />} />
 						</Route>
 					</Route>
 

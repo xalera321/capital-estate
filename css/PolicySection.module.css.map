@@ -1,1 +1,0 @@
-{"version":3,"sources":["../client/src/components/common/PrivacyPolicy/PolicySection.module.scss","PolicySection.module.css"],"names":[],"mappings":"AAAA;EACE,mBAAA;EACA,aAAA;EACA,gBAAA;EACA,kBAAA;EACA,wCAAA;ACCF;ADCE;EACE,iBAAA;EACA,cAAA;EACA,mBAAA;EACA,oBAAA;EACA,gCAAA;ACCJ;ADEE;EACE,eAAA;EACA,gBAAA;EACA,cAAA;ACAJ;ADEI;EACE,mBAAA;ACAN","file":"PolicySection.module.css"}

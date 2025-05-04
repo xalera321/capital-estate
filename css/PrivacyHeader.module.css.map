@@ -1,1 +1,0 @@
-{"version":3,"sources":["../client/src/components/common/PrivacyPolicy/PrivacyHeader.module.scss","PrivacyHeader.module.css"],"names":[],"mappings":"AAAA;EACE,kBAAA;EACA,mBAAA;EACA,gCAAA;EACA,mBAAA;ACCF;ADCE;EACE,iBAAA;EACA,cAAA;EACA,mBAAA;EACA,gBAAA;ACCJ;ADEE;EACE,iBAAA;EACA,cAAA;EACA,gBAAA;ACAJ","file":"PrivacyHeader.module.css"}

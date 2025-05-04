@@ -5,7 +5,8 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             this.belongsTo(models.Property, {
                 foreignKey: 'property_id',
-                as: 'property'
+                as: 'property',
+                constraints: false
             });
         }
     }
@@ -36,6 +37,14 @@ module.exports = (sequelize, DataTypes) => {
                 }
             }
         },
+        property_id: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            references: {
+                model: 'Properties',
+                key: 'id'
+            }
+        },
         status: {
             type: DataTypes.ENUM('new', 'in_progress', 'completed'),
             defaultValue: 'new'
@@ -44,7 +53,8 @@ module.exports = (sequelize, DataTypes) => {
         sequelize,
         modelName: 'Request',
         paranoid: true,
-        underscored: true
+        underscored: false,
+        tableName: 'Requests'
     });
 
     return Request;

@@ -1,8 +1,8 @@
 import React from 'react';
-import PropertyForm from './PropertyForm';
-import styles from './PropertyModal.module.scss';
+import CategoryForm from './CategoryForm';
+import styles from './CategoryModal.module.scss'; // Using dedicated styles
 
-const PropertyModal = ({ isOpen, onClose, property, onSave }) => {
+const CategoryModal = ({ isOpen, onClose, category, onSave }) => {
   if (!isOpen) return null;
   
   const handleBackdropClick = (e) => {
@@ -11,16 +11,16 @@ const PropertyModal = ({ isOpen, onClose, property, onSave }) => {
     }
   };
   
-  const handleSave = (savedProperty) => {
-    onSave(savedProperty);
+  const handleSave = (savedCategory) => {
+    onSave(savedCategory);
     onClose();
   };
   
   return (
     <div className={styles.modalBackdrop} onClick={handleBackdropClick}>
       <div className={styles.modalContent}>
-        <PropertyForm 
-          property={property} 
+        <CategoryForm 
+          category={category} 
           onSave={handleSave} 
           onCancel={onClose} 
         />
@@ -29,4 +29,4 @@ const PropertyModal = ({ isOpen, onClose, property, onSave }) => {
   );
 };
 
-export default PropertyModal; 
+export default CategoryModal; 

@@ -4,9 +4,9 @@ import { getImageUrl } from '@/utils/formatters'
 import FavoriteButton from '@/components/ui/FavoriteButton/FavoriteButton'
 import styles from './PropertyCard.module.scss'
 
-export const PropertyCard = ({ property }) => {
+export const PropertyCard = ({ property, hiddenLabel = null }) => {
 	return (
-		<div className={styles.card}>
+		<div className={`${styles.card} ${hiddenLabel ? styles.hiddenProperty : ''}`}>
 			<div className={styles.imageContainer}>
 				{property.photos?.[0]?.url && (
 					<img
@@ -20,6 +20,7 @@ export const PropertyCard = ({ property }) => {
 					className={styles.favoriteButton}
 					size="small"
 				/>
+				{hiddenLabel && <div className={styles.hiddenLabel}>{hiddenLabel}</div>}
 			</div>
 
 			<div className={styles.content}>

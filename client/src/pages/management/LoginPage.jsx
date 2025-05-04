@@ -205,7 +205,7 @@ const LoginPage = () => {
       
       <div className={styles.qrContainer}>
         <img 
-          src={`data:image/png;base64,${qrCode}`} 
+          src={qrCode}
           alt="QR-код для настройки 2FA" 
           className={styles.qrCode} 
         />
@@ -228,9 +228,6 @@ const LoginPage = () => {
           maxLength={6}
           autoComplete="one-time-code"
         />
-        <div className={styles.formHint}>
-          Введите 6-значный код из приложения для завершения настройки
-        </div>
       </Form.Group>
       
       <Button 

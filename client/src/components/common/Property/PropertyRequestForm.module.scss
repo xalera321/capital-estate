@@ -1,0 +1,181 @@
+.formCard {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem;
+}
+
+.formTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+}
+
+.formSubtitle {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-bottom: 1.5rem;
+}
+
+.form {
+  width: 100%;
+}
+
+.formGroup {
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  transition: border-color 0.15s ease-in-out;
+  
+  &:focus {
+    border-color: #3498db;
+    outline: none;
+  }
+  
+  &::placeholder {
+    color: #adb5bd;
+  }
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.errorBorder {
+  border-color: #dc3545;
+}
+
+.error {
+  color: #dc3545;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.formFooter {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.checkboxWrapper {
+  margin-bottom: 0.5rem;
+}
+
+.checkboxContainer {
+  display: flex;
+  align-items: flex-start;
+  cursor: pointer;
+}
+
+.checkboxInput {
+  margin-right: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.checkboxLabel {
+  font-size: 0.85rem;
+  color: #6c757d;
+  line-height: 1.4;
+}
+
+.privacyLink {
+  color: #3498db;
+  text-decoration: none;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.submitButton {
+  background-color: #3498db;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+  width: 100%;
+  
+  &:hover {
+    background-color: #2980b9;
+  }
+}
+
+// Modal form styles
+.requestButton {
+  width: 100%;
+  padding: 0.8rem 1.5rem;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background-color: #2980b9;
+  }
+}
+
+.requestModal {
+  :global(.modal-content) {
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  }
+  
+  :global(.modal-header) {
+    border-bottom: 1px solid #eaeaea;
+    padding: 1.2rem 1.5rem;
+    
+    :global(.modal-title) {
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+  }
+  
+  :global(.modal-body) {
+    padding: 1.5rem;
+  }
+}
+
+.propertyTitle {
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eaeaea;
+  font-size: 1.1rem;
+}
+
+.propertyPrice {
+  display: block;
+  margin-top: 0.5rem;
+  color: #3498db;
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+// Responsive styles
+@media (max-width: 767px) {
+  .submitButton,
+  .requestButton {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.95rem;
+  }
+  
+  .formFooter {
+    flex-direction: column;
+  }
+} 

@@ -1,0 +1,106 @@
+@use '@styles/variables' as *;
+@use '@styles/mixins' as *;
+
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.65); // Darker background for better focus
+  display: flex;
+  justify-content: center;
+  align-items: center; // Center vertically
+  overflow-y: auto;
+  padding: 2rem 1rem;
+  z-index: 1000;
+  backdrop-filter: blur(3px); // Add blur effect to background
+}
+
+.modalContent {
+  position: relative;
+  max-width: 650px; // Smaller width since categories have fewer fields
+  width: 100%;
+  margin: auto;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+  border-radius: 16px; // More rounded corners
+  background-color: white;
+  animation: modalAppear 0.25s ease-out;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); // Enhanced shadow
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+// Form heading styles
+:global(.formHeader) {
+  padding-bottom: 1.5rem;
+  
+  h2 {
+    color: $primary;
+    font-weight: 600;
+  }
+}
+
+// Form field styles
+:global(.formField) {
+  margin-bottom: 1.5rem;
+  
+  label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+  
+  input, textarea {
+    border-radius: 8px;
+    border: 1px solid $gray-300;
+    padding: 0.75rem 1rem;
+    transition: all 0.2s;
+    
+    &:focus {
+      border-color: $primary;
+      box-shadow: 0 0 0 3px rgba($primary, 0.15);
+    }
+  }
+  
+  // Style required field markers
+  .required {
+    color: $danger;
+    margin-left: 0.25rem;
+  }
+}
+
+// Button styles
+:global(.button) {
+  &.primaryButton {
+    background-color: $primary;
+    border-color: $primary;
+    
+    &:hover {
+      background-color: darken($primary, 5%);
+      border-color: darken($primary, 5%);
+    }
+  }
+  
+  &.secondaryButton {
+    background-color: $gray-200;
+    border-color: $gray-300;
+    color: $gray-800;
+    
+    &:hover {
+      background-color: $gray-300;
+      border-color: $gray-400;
+    }
+  }
+}
+
+@keyframes modalAppear {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+} 

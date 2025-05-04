@@ -191,6 +191,9 @@ const PropertiesPage = () => {
       
       if (!property) return;
       
+      // Store the current visibility state before making the request
+      const wasHidden = property.is_hidden;
+      
       await axios.patch(`/properties/${id}/toggle-visibility`);
       
       // Update property in state
@@ -200,7 +203,7 @@ const PropertiesPage = () => {
         )
       );
       
-      toast.success(`Объект ${property.is_hidden ? 'опубликован' : 'скрыт'}`);
+      toast.success(`Объект ${wasHidden ? 'опубликован' : 'скрыт'}`);
     } catch (error) {
       console.error('Error toggling visibility:', error);
       toast.error('Не удалось изменить видимость объекта');

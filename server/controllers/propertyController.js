@@ -163,7 +163,12 @@ exports.getProperties = async (req, res) => {
 
 exports.getPropertyById = async (req, res) => {
     try {
-        const property = await Property.findByPk(req.params.id, {
+        const useAdminScope = req.query.admin === 'true' || req.path.includes('/admin/');
+        
+        // Use admin scope if admin query parameter is true or if accessed through admin route
+        const scopeToUse = useAdminScope ? 'admin' : 'defaultScope';
+        
+        const property = await Property.scope(scopeToUse).findByPk(req.params.id, {
             include: [
                 { model: Category, as: 'category' },
                 { model: Feature, as: 'features' },
@@ -181,6 +186,7 @@ exports.getPropertyById = async (req, res) => {
 
         res.json(property);
     } catch (error) {
+        console.error('Get property by ID error:', error);
         res.status(500).json({ error: 'Server Error' });
     }
 };
@@ -190,7 +196,8 @@ exports.updateProperty = async (req, res) => {
         const { id } = req.params;
         const { features, ...propertyData } = req.body;
 
-        const property = await Property.findByPk(id);
+        // Use the admin scope to find hidden properties too
+        const property = await Property.scope('admin').findByPk(id);
         if (!property) {
             return res.status(404).json({ error: 'Property not found' });
         }
@@ -201,7 +208,7 @@ exports.updateProperty = async (req, res) => {
             await property.setFeatures(features);
         }
 
-        const updatedProperty = await Property.findByPk(id, {
+        const updatedProperty = await Property.scope('admin').findByPk(id, {
             include: [
                 { model: Category, as: 'category' },
                 { model: Feature, as: 'features' },
@@ -211,6 +218,7 @@ exports.updateProperty = async (req, res) => {
 
         res.json(updatedProperty);
     } catch (error) {
+        console.error('Update property error:', error);
         res.status(400).json({
             error: 'Validation Error',
             details: error.errors?.map(e => e.message)
@@ -268,11 +276,21 @@ exports.uploadPhotos = async (req, res) => {
 
 exports.getLatestProperties = async (req, res) => {
     try {
+        const { categoryId } = req.query;
+        
+        // Build where clause
+        const where = {
+            is_hidden: false,
+            operation_type: 'buy'
+        };
+        
+        // Add category filter if categoryId is provided
+        if (categoryId && categoryId !== 'all') {
+            where.category_id = categoryId;
+        }
+        
         const properties = await Property.findAll({
-            where: {
-                is_hidden: false,
-                operation_type: 'buy' // Пример фильтра
-            },
+            where,
             order: [['createdAt', 'DESC']],
             limit: 4,
             include: [
@@ -353,6 +371,17 @@ exports.getPropertiesAdmin = async (req, res) => {
 
 exports.exportProperties = async (req, res) => {
     try {
+        // First, check if ExcelJS is installed
+        let ExcelJS;
+        try {
+            ExcelJS = require('exceljs');
+        } catch (err) {
+            console.error('ExcelJS not found:', err);
+            return res.status(500).json({ 
+                error: 'ExcelJS library not installed. Run: npm install exceljs' 
+            });
+        }
+        
         const properties = await Property.scope('admin').findAll({
             include: [
                 { model: Category, as: 'category' },
@@ -361,44 +390,109 @@ exports.exportProperties = async (req, res) => {
             order: [['updatedAt', 'DESC']]
         });
         
-        // Transform properties for CSV
-        const csvData = properties.map(property => {
+        // Create a new workbook and worksheet
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Объекты недвижимости');
+        
+        // Define columns
+        worksheet.columns = [
+            { header: 'ID', key: 'id', width: 10 },
+            { header: 'Название', key: 'title', width: 30 },
+            { header: 'Категория', key: 'category', width: 20 },
+            { header: 'Цена', key: 'price', width: 15 },
+            { header: 'Операция', key: 'operation_type', width: 15 },
+            { header: 'Площадь', key: 'area', width: 12 },
+            { header: 'Комнат', key: 'rooms', width: 10 },
+            { header: 'Город', key: 'city', width: 20 },
+            { header: 'Район', key: 'district', width: 20 },
+            { header: 'Адрес', key: 'address', width: 30 },
+            { header: 'Статус', key: 'is_hidden', width: 15 },
+            { header: 'Создан', key: 'created_at', width: 15 },
+            { header: 'Обновлен', key: 'updated_at', width: 15 }
+        ];
+        
+        // Style the header row
+        worksheet.getRow(1).font = { bold: true };
+        worksheet.getRow(1).fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFE0E0E0' }
+        };
+        
+        // Add rows from properties data
+        properties.forEach(property => {
             const data = property.toJSON();
-            return {
+            worksheet.addRow({
                 id: data.id,
                 title: data.title,
-                description: data.description,
-                price: data.price,
                 category: data.category?.name || '',
+                price: data.price,
+                operation_type: data.operation_type === 'buy' ? 'Продажа' : 'Аренда',
                 area: data.area,
-                rooms: data.rooms,
-                address: data.address,
+                rooms: data.rooms || '',
                 city: data.city,
-                district: data.district,
-                is_hidden: data.is_hidden ? 'Да' : 'Нет',
-                operation_type: data.operation_type === 'sale' ? 'Продажа' : 'Аренда',
+                district: data.district || '',
+                address: data.address || '',
+                is_hidden: data.is_hidden ? 'Скрыт' : 'Активен',
                 created_at: new Date(data.createdAt).toLocaleDateString('ru-RU'),
                 updated_at: new Date(data.updatedAt).toLocaleDateString('ru-RU')
-            };
+            });
         });
         
-        // Create CSV headers
-        const headers = Object.keys(csvData[0] || {}).join(',');
+        // Format price column as currency
+        worksheet.getColumn('price').numFmt = '#,##0 ₽';
         
-        // Create CSV content
-        const csvContent = [
-            headers,
-            ...csvData.map(row => Object.values(row).join(','))
-        ].join('\n');
+        // Format area column with units
+        worksheet.getColumn('area').numFmt = '#,##0.0 "м²"';
         
-        // Set headers for download
-        res.setHeader('Content-Type', 'text/csv');
-        res.setHeader('Content-Disposition', 'attachment; filename=properties.csv');
+        // Set response headers
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', 'attachment; filename=properties-export.xlsx');
         
-        // Send CSV data
-        res.send(csvContent);
+        // Write the workbook to the response
+        await workbook.xlsx.write(res);
+        
+        // End the response
+        res.end();
     } catch (error) {
         console.error('Export error:', error);
+        res.status(500).json({ error: 'Server Error' });
+    }
+};
+
+exports.getPropertiesByIds = async (req, res) => {
+    try {
+        const { ids } = req.query;
+        
+        if (!ids) {
+            return res.status(400).json({ error: 'Property IDs are required' });
+        }
+        
+        // Parse the IDs from the query string
+        const propertyIds = ids.split(',').map(id => parseInt(id, 10));
+        
+        // Use admin scope to get all properties including hidden ones
+        const properties = await Property.scope('admin').findAll({
+            where: {
+                id: {
+                    [Op.in]: propertyIds
+                }
+            },
+            include: [
+                { model: Category, as: 'category' },
+                { model: Feature, as: 'features' },
+                {
+                    model: PropertyPhoto,
+                    as: 'photos',
+                    attributes: ['url'],
+                    order: [['order', 'ASC']]
+                }
+            ]
+        });
+        
+        res.json(properties);
+    } catch (error) {
+        console.error('Error fetching properties by IDs:', error);
         res.status(500).json({ error: 'Server Error' });
     }
 };

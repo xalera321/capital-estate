@@ -6,6 +6,7 @@ import { Header } from '@/components/common/Header/Header'
 import { Footer } from '@/components/common/Footer/Footer'
 import { FiMapPin, FiHome, FiMaximize2, FiLayers, FiCheckCircle } from 'react-icons/fi'
 import FavoriteButton from '@/components/ui/FavoriteButton/FavoriteButton'
+import PropertyRequestForm from '@/components/common/Property/PropertyRequestForm'
 import axios from '@/services/axios'
 import { formatRUB, getImageUrl } from '@/utils/formatters'
 import styles from './PropertyPage.module.scss'
@@ -224,9 +225,7 @@ export const PropertyPage = () => {
                                 <div className={styles.contactCard}>
                                     <h3>Связаться с нами</h3>
                                     <p>Оставьте заявку, и наш менеджер свяжется с вами для уточнения деталей и организации просмотра объекта</p>
-                                    <button className={styles.contactButton}>
-                                        Оставить заявку
-                                    </button>
+                                    <PropertyRequestForm property={property} isButton={true} />
                                     <div className={styles.contactPhone}>
                                         +7 (495) 123-45-67
                                     </div>

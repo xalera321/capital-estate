@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from 'react-bootstrap';
-import { FiList, FiTag, FiMessageSquare, FiLogOut, FiPlus, FiArrowRight } from 'react-icons/fi';
+import { FiList, FiTag, FiMessageSquare, FiLogOut } from 'react-icons/fi';
 import styles from './AdminHomePage.module.scss';
 import api from '@/services/api';
 import authService from '@/services/authService';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const AdminHomePage = () => {
   const navigate = useNavigate();
@@ -53,9 +53,7 @@ const AdminHomePage = () => {
       icon: <FiList />,
       color: '#4361ee',
       link: '/management/properties',
-      count: stats.properties,
-      addLink: '/management/properties/add',
-      addText: 'Добавить объект'
+      count: stats.properties
     },
     {
       title: 'Категории',
@@ -63,9 +61,7 @@ const AdminHomePage = () => {
       icon: <FiTag />,
       color: '#3a0ca3',
       link: '/management/categories',
-      count: stats.categories,
-      addLink: '/management/categories/add',
-      addText: 'Добавить категорию'
+      count: stats.categories
     },
     {
       title: 'Заявки',
@@ -73,9 +69,7 @@ const AdminHomePage = () => {
       icon: <FiMessageSquare />,
       color: '#f72585',
       link: '/management/requests',
-      count: stats.requests,
-      addLink: '/management/requests?status=new',
-      addText: 'Новые заявки'
+      count: stats.requests
     }
   ];
 
@@ -101,35 +95,31 @@ const AdminHomePage = () => {
         <h2 className={styles.sectionTitle}>Обзор</h2>
         <div className={styles.statsWrapper}>
         {resourceCards.map((card, index) => (
-            <div className={styles.statCard} key={index}>
+            <div 
+              className={styles.statCard} 
+              key={index} 
+              onClick={() => navigate(card.link)}
+            >
               <div className={styles.statIconWrapper} style={{ backgroundColor: `${card.color}10` }}>
                 <div className={styles.statIcon} style={{ color: card.color }}>
-                      {card.icon}
-                    </div>
-                  </div>
-              <div className={styles.statContent}>
-                <div className={styles.statCounter}>
-                    {stats.loading ? (
-                      <div className={styles.skeleton}></div>
-                    ) : (
-                      <span>{card.count}</span>
-                    )}
-                  </div>
-                <h3>{card.title}</h3>
-                <p>{card.description}</p>
-                <div className={styles.statActions}>
-                  <Link to={card.link} className={styles.viewAllLink}>
-                    Управление <FiArrowRight />
-                  </Link>
-                  <Link to={card.addLink} className={styles.addItemLink}>
-                    <FiPlus /> {card.addText}
-                  </Link>
+                  {card.icon}
                 </div>
               </div>
+              <div className={styles.statContent}>
+                <div className={styles.statCounter}>
+                  {stats.loading ? (
+                    <div className={styles.skeleton}></div>
+                  ) : (
+                    <span>{card.count}</span>
+                  )}
+                </div>
+                <h3>{card.title}</h3>
+                <p>{card.description}</p>
               </div>
+            </div>
           ))}
-              </div>
-              </div>
+        </div>
+      </div>
     </div>
   );
 };

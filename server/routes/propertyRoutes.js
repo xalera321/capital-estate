@@ -12,7 +12,8 @@ const {
     getLatestProperties,
     getPropertiesCount,
     getPropertiesAdmin,
-    exportProperties
+    exportProperties,
+    getPropertiesByIds
 } = require('../controllers/propertyController');
 const auth = require('../middlewares/auth');
 
@@ -22,6 +23,7 @@ router.get('/count', getPropertiesCount);
 router.get('/latest', getLatestProperties);
 router.get('/admin', auth, getPropertiesAdmin);
 router.get('/export', auth, exportProperties);
+router.get('/by-ids', getPropertiesByIds);
 
 // Получить конкретный объект
 router.get('/:id', getPropertyById);
