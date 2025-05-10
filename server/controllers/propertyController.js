@@ -194,7 +194,7 @@ exports.getPropertyById = async (req, res) => {
 exports.updateProperty = async (req, res) => {
     try {
         const { id } = req.params;
-        const { features, ...propertyData } = req.body;
+        const { features, photos, ...propertyData } = req.body;
 
         // Use the admin scope to find hidden properties too
         const property = await Property.scope('admin').findByPk(id);
@@ -206,6 +206,21 @@ exports.updateProperty = async (req, res) => {
 
         if (features) {
             await property.setFeatures(features);
+        }
+
+        // Handle photos update if provided
+        if (photos && Array.isArray(photos)) {
+            // First, delete all existing photos for this property
+            await PropertyPhoto.destroy({ where: { property_id: id } });
+            
+            // Then, create new photo records with the correct order
+            const photosData = photos.map((url, index) => ({ 
+                url, 
+                property_id: id,
+                order: index 
+            }));
+            
+            await PropertyPhoto.bulkCreate(photosData);
         }
 
         const updatedProperty = await Property.scope('admin').findByPk(id, {

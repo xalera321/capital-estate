@@ -50,12 +50,20 @@ export const LatestProperties = () => {
 		}
 	}
 
+	// Generate catalog URL with category filter if needed
+	const getCatalogUrl = () => {
+		if (activeCategory === 'all') {
+			return '/properties'
+		}
+		return `/properties?categoryId=${activeCategory}`
+	}
+
 	return (
 		<section className={styles.latestProperties}>
 			<div className={styles.container}>
 				<header className={styles.sectionHeader}>
 					<h2 className={styles.title}>Недвижимость в продаже</h2>
-					<Link to='/properties' className={styles.seeAll}>
+					<Link to={getCatalogUrl()} className={styles.seeAll}>
 						Смотреть все
 						<svg className={styles.arrowIcon} viewBox='0 0 24 24'>
 							<path d='M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z' />

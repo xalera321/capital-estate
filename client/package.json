@@ -27,6 +27,7 @@
     "react-router-dom": "^7.1.3",
     "react-swiper": "^0.1.5",
     "react-toastify": "^11.0.5",
+    "react-yandex-maps": "^4.6.0",
     "redux": "^5.0.1",
     "swiper": "^11.2.1",
     "yup": "^1.6.1"

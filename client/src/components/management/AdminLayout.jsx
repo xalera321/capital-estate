@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { FiHome, FiList, FiGrid, FiMessageSquare } from 'react-icons/fi';
+import { FiHome, FiList, FiGrid, FiMessageSquare, FiMail } from 'react-icons/fi';
 import { Header } from '@/components/common/Header/Header';
 import styles from './AdminLayout.module.scss';
 
@@ -14,6 +14,7 @@ export const AdminLayout = () => {
     { path: '/management/properties', icon: <FiList />, label: 'Объекты' },
     { path: '/management/categories', icon: <FiGrid />, label: 'Категории' },
     { path: '/management/requests', icon: <FiMessageSquare />, label: 'Заявки' },
+    { path: '/management/feedback', icon: <FiMail />, label: 'Обратная связь' },
   ];
 
   // Эффект для отслеживания прокрутки

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from 'react-bootstrap';
-import { FiList, FiTag, FiMessageSquare, FiLogOut } from 'react-icons/fi';
+import { FiList, FiTag, FiMessageSquare, FiLogOut, FiMail } from 'react-icons/fi';
 import styles from './AdminHomePage.module.scss';
 import api from '@/services/api';
 import authService from '@/services/authService';
@@ -12,6 +12,7 @@ const AdminHomePage = () => {
     properties: 0,
     categories: 0,
     requests: 0,
+    feedback: 0,
     loading: true
   });
 
@@ -19,16 +20,18 @@ const AdminHomePage = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [propertiesRes, categoriesRes, requestsRes] = await Promise.all([
+        const [propertiesRes, categoriesRes, requestsRes, feedbackRes] = await Promise.all([
           api.get('/properties/count'),
           api.get('/categories/count'),
-          api.get('/requests/count')
+          api.get('/requests/count'),
+          api.get('/feedback/count')
         ]);
         
       setStats({
           properties: propertiesRes.data.count,
           categories: categoriesRes.data.count,
           requests: requestsRes.data.count,
+          feedback: feedbackRes.data.count,
         loading: false
       });
       } catch (error) {
@@ -65,11 +68,19 @@ const AdminHomePage = () => {
     },
     {
       title: 'Заявки',
-      description: 'Обработка поступивших заявок',
+      description: 'Обработка заявок на просмотр объектов',
       icon: <FiMessageSquare />,
       color: '#f72585',
       link: '/management/requests',
       count: stats.requests
+    },
+    {
+      title: 'Обратная связь',
+      description: 'Обращения от пользователей сайта',
+      icon: <FiMail />,
+      color: '#2196f3',
+      link: '/management/feedback',
+      count: stats.feedback
     }
   ];
 

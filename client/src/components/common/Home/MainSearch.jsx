@@ -10,7 +10,7 @@ import styles from './MainSearch.module.scss'
 export const MainSearch = () => {
 	const [filters, setFilters] = useState({
 		operationType: 'buy',
-		type: 'all',
+		categoryId: '',
 		minPrice: '',
 		maxPrice: '',
 	})
@@ -35,7 +35,7 @@ export const MainSearch = () => {
 			try {
 				const params = {
 					operationType: filters.operationType,
-					categoryId: filters.type !== 'all' ? filters.type : undefined,
+					categoryId: filters.categoryId || undefined,
 					minPrice: filters.minPrice || undefined,
 					maxPrice: filters.maxPrice || undefined,
 				}
@@ -55,11 +55,7 @@ export const MainSearch = () => {
 	const getFilteredParams = () => {
 		return Object.fromEntries(
 			Object.entries(filters)
-				.filter(([key, value]) => {
-					if (key === 'type') return value !== 'all'
-					if (key === 'minPrice' || key === 'maxPrice') return value !== ''
-					return true
-				})
+				.filter(([_, value]) => value !== '')
 				.map(([key, value]) => [key, String(value)])
 		)
 	}
@@ -88,10 +84,10 @@ export const MainSearch = () => {
 
 							<Form.Select
 								className={styles.typeSelect}
-								value={filters.type}
-								onChange={e => setFilters({ ...filters, type: e.target.value })}
+								value={filters.categoryId}
+								onChange={e => setFilters({ ...filters, categoryId: e.target.value })}
 							>
-								<option value='all'>Все типы</option>
+								<option value=''>Все типы</option>
 								{categories.map(cat => (
 									<option key={cat.id} value={cat.id}>
 										{cat.name}

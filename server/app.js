@@ -8,6 +8,7 @@ const propertyRoutes = require('./routes/propertyRoutes');
 const requestRoutes = require('./routes/requestRoutes');
 const featureRoutes = require('./routes/featureRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
+const feedbackRoutes = require('./routes/feedbackRoutes');
 const errorHandler = require('./middlewares/errorHandler');
 
 const app = express();
@@ -28,6 +29,7 @@ app.use('/api/properties', propertyRoutes);
 app.use('/api/requests', requestRoutes);
 app.use('/api/features', featureRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/feedback', feedbackRoutes);
 
 // Error handling
 app.use(errorHandler);

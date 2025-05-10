@@ -1,0 +1,137 @@
+@use '@styles/variables' as *;
+
+.mapSection {
+  padding: 80px 0;
+  background-color: #f8f9fa;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 16px;
+  color: #2c3e50;
+}
+
+.subtitle {
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 40px;
+  color: #6c757d;
+}
+
+.mapContainer {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background-color: #e9ecef;
+  font-size: 18px;
+  color: #6c757d;
+}
+
+.propertyPopup {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 300px;
+  background-color: white;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 2;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.closeButton {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #adb5bd;
+  
+  &:hover {
+    color: #343a40;
+  }
+}
+
+.popupImage {
+  height: 150px;
+  width: 100%;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.popupDetails {
+  font-size: 14px;
+}
+
+.price {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2069a1;
+  margin-bottom: 6px;
+}
+
+.address {
+  color: #495057;
+  margin-bottom: 8px;
+}
+
+.propertyType {
+  color: #6c757d;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.detailsButton {
+  display: inline-block;
+  background-color: #3498db;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  text-align: center;
+  transition: background-color 0.2s;
+  
+  &:hover {
+    background-color: #2980b9;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+} 

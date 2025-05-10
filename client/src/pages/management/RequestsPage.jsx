@@ -1,19 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 import ListPage from '@/components/management/ListPage';
-import { getRequests, updateRequestStatus, deleteRequest } from '@/features/requests/api/requestApi';
+import { formatDate } from '@/utils/formatters';
+import axios from '@/services/axios';
 
 const RequestsPage = () => {
   const [requests, setRequests] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   
-  // Column configuration
+  // Конфигурация колонок для таблицы
   const columns = [
-    {
-      id: 'id',
-      label: 'ID',
-      width: '5%'
-    },
     {
       id: 'user_name',
       label: 'Имя',
@@ -23,71 +19,110 @@ const RequestsPage = () => {
     {
       id: 'user_phone',
       label: 'Телефон',
+      sortable: true,
       width: '15%'
+    },
+    {
+      id: 'property',
+      label: 'Объект',
+      sortable: false,
+      width: '25%',
+      formatter: (property) => property?.title || 'Нет объекта'
     },
     {
       id: 'message',
       label: 'Сообщение',
-      width: '30%',
-      formatter: (value) => value || '—'
+      sortable: false,
+      width: '25%',
+      formatter: (value) => ({ 
+        type: 'text', 
+        value: value && value.length > 100 ? value.substring(0, 100) + '...' : (value || '—')
+      })
     },
     {
       id: 'status',
       label: 'Статус',
       sortable: true,
-      width: '15%',
+      width: '10%',
       formatter: (value) => {
-        let statusText, statusClass;
+        let status = 'pending';
+        let statusLabel = 'Новая';
         
-        switch(value) {
-          case 'new':
-            statusText = 'Новая';
-            statusClass = 'active';
-            break;
-          case 'in_progress':
-            statusText = 'В работе';
-            statusClass = 'warning';
-            break;
-          case 'completed':
-            statusText = 'Завершена';
-            statusClass = 'success';
-            break;
-          default:
-            statusText = value;
-            statusClass = '';
+        if (value === 'in_progress') {
+          status = 'processing';
+          statusLabel = 'В работе';
+        } else if (value === 'completed') {
+          status = 'success';
+          statusLabel = 'Завершена';
         }
         
-        return { 
-          type: 'status', 
-          value: statusText,
-          status: statusClass
-        };
+        return { type: 'status', status, value: statusLabel };
       }
     },
     {
       id: 'createdAt',
-      label: 'Дата создания',
+      label: 'Дата',
       sortable: true,
-      width: '15%',
-      formatter: (value) => {
-        if (!value) return '—';
-        return new Date(value).toLocaleDateString('ru-RU', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        });
-      }
+      width: '10%',
+      formatter: (value) => formatDate(value)
     }
   ];
   
-  // Fetch requests
-  const fetchRequests = useCallback(async () => {
+  // Конфигурация фильтров
+  const filters = [
+    {
+      id: 'status',
+      label: 'Статус',
+      type: 'select',
+      options: [
+        { value: '', label: 'Все' },
+        { value: 'new', label: 'Новые' },
+        { value: 'in_progress', label: 'В работе' },
+        { value: 'completed', label: 'Завершенные' }
+      ]
+    },
+    {
+      id: 'date_from',
+      label: 'Дата от',
+      type: 'date'
+    },
+    {
+      id: 'date_to',
+      label: 'Дата до',
+      type: 'date'
+    }
+  ];
+  
+  // Загрузка данных
+  const fetchRequests = useCallback(async (filters = {}) => {
     setIsLoading(true);
     try {
-      const data = await getRequests();
-      setRequests(data);
+      // Получаем все заявки
+      const response = await axios.get('/requests');
+      
+      let filteredRequests = response.data;
+      
+      // Фильтры на стороне клиента (можно реализовать на сервере)
+      if (filters.status) {
+        filteredRequests = filteredRequests.filter(req => req.status === filters.status);
+      }
+      
+      if (filters.date_from) {
+        const dateFrom = new Date(filters.date_from);
+        filteredRequests = filteredRequests.filter(
+          req => new Date(req.createdAt) >= dateFrom
+        );
+      }
+      
+      if (filters.date_to) {
+        const dateTo = new Date(filters.date_to);
+        dateTo.setHours(23, 59, 59, 999); // Конец дня
+        filteredRequests = filteredRequests.filter(
+          req => new Date(req.createdAt) <= dateTo
+        );
+      }
+      
+      setRequests(filteredRequests);
     } catch (error) {
       console.error('Error fetching requests:', error);
       toast.error('Не удалось загрузить список заявок');
@@ -100,57 +135,104 @@ const RequestsPage = () => {
     fetchRequests();
   }, [fetchRequests]);
   
-  // Handle change status - implemented for future use
-  const handleChangeStatus = async (id, newStatus) => {
+  // Обработка изменения статуса
+  const handleEdit = async (id) => {
+    const request = requests.find(r => r.id === id);
+    if (!request) return;
+    
     try {
-      await updateRequestStatus(id, newStatus);
+      let newStatus = 'in_progress';
+      if (request.status === 'new') {
+        newStatus = 'in_progress';
+      } else if (request.status === 'in_progress') {
+        newStatus = 'completed';
+      } else {
+        newStatus = 'new';
+      }
       
-      // Update the request in state
+      // Обновляем на сервере
+      await axios.put(`/requests/${id}`, { status: newStatus });
+      
+      // Обновляем локально
       setRequests(prev => 
-        prev.map(req => 
-          req.id === id ? { ...req, status: newStatus } : req
-        )
+        prev.map(r => r.id === id ? { ...r, status: newStatus } : r)
       );
       
-      toast.success('Статус заявки обновлен');
+      toast.success(`Статус заявки изменен на ${
+        newStatus === 'new' ? 'Новая' : 
+        newStatus === 'in_progress' ? 'В работе' : 'Завершена'
+      }`);
     } catch (error) {
-      console.error('Error updating request:', error);
-      toast.error('Не удалось обновить статус заявки');
+      console.error('Error updating request status:', error);
+      toast.error('Не удалось изменить статус заявки');
     }
   };
   
-  // Handle delete request
+  // Обработка удаления заявки
   const handleDelete = async (id) => {
-    if (window.confirm('Вы действительно хотите удалить эту заявку?')) {
       try {
-        await deleteRequest(id);
-        setRequests(requests.filter(request => request.id !== id));
-        toast.success('Заявка успешно удалена');
+      await axios.delete(`/requests/${id}`);
+      setRequests(prev => prev.filter(req => req.id !== id));
+      toast.success('Заявка удалена');
       } catch (error) {
         console.error('Error deleting request:', error);
         toast.error('Не удалось удалить заявку');
       }
-    }
   };
   
-  // Handle refresh
-  const handleRefresh = () => {
-    fetchRequests();
+  // Просмотр полной информации о заявке
+  const handleView = (id) => {
+    const request = requests.find(r => r.id === id);
+    if (request) {
+      toast((t) => (
+        <div>
+          <h4 style={{ marginBottom: '10px' }}>Заявка от {request.user_name}</h4>
+          <p style={{ marginBottom: '5px' }}><strong>Телефон:</strong> {request.user_phone}</p>
+          <p style={{ marginBottom: '5px' }}><strong>Объект:</strong> {request.property?.title || 'Не указан'}</p>
+          <p style={{ marginBottom: '5px' }}><strong>Статус:</strong> {
+            request.status === 'new' ? 'Новая' : 
+            request.status === 'in_progress' ? 'В работе' : 'Завершена'
+          }</p>
+          <p style={{ marginBottom: '5px' }}><strong>Дата:</strong> {formatDate(request.createdAt)}</p>
+          {request.message && (
+            <div style={{ marginTop: '10px' }}>
+              <strong>Сообщение:</strong>
+              <p style={{ whiteSpace: 'pre-wrap', marginTop: '5px' }}>{request.message}</p>
+            </div>
+          )}
+          <button 
+            onClick={() => toast.dismiss(t.id)} 
+            style={{ 
+              marginTop: '15px', 
+              padding: '5px 10px', 
+              background: '#f0f0f0', 
+              border: 'none', 
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Закрыть
+          </button>
+        </div>
+      ), { duration: 10000 });
+    }
   };
 
   return (
-    <div>
       <ListPage 
-        title="Заявки пользователей"
-        subtitle="Просмотр и управление заявками от пользователей"
+      title="Заявки на просмотр"
+      subtitle="Управление заявками на просмотр объектов недвижимости"
         columns={columns}
         data={requests}
         isLoading={isLoading}
         onDelete={handleDelete}
-        onRefresh={handleRefresh}
-        emptyMessage="Нет заявок для отображения"
-      />
-    </div>
+      onEdit={handleEdit}
+      onView={handleView}
+      filters={filters}
+      onFilter={fetchRequests}
+      editTooltip="Изменить статус"
+      showAdd={false} // Скрыть кнопку добавления
+    />
   );
 };
 

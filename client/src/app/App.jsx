@@ -15,6 +15,7 @@ import AdminHomePage from '@/pages/management/AdminHomePage'
 import PropertiesPage from '@/pages/management/PropertiesPage'
 import CategoriesPage from '@/pages/management/CategoriesPage'
 import RequestsPage from '@/pages/management/RequestsPage'
+import FeedbackPage from '@/pages/management/FeedbackPage'
 import '@assets/styles/main.scss'
 
 function App() {
@@ -35,9 +36,9 @@ function App() {
 						<Route element={<AdminLayout />}>
 							<Route index element={<AdminHomePage />} />
 							<Route path='properties' element={<PropertiesPage />} />
-							{/* Add other admin routes here */}
 							<Route path='categories' element={<CategoriesPage />} />
 							<Route path='requests' element={<RequestsPage />} />
+							<Route path='feedback' element={<FeedbackPage />} />
 						</Route>
 					</Route>
 

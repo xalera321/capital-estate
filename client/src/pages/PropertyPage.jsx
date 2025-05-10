@@ -4,9 +4,11 @@ import { useParams } from 'react-router-dom'
 import { Container, Row, Col, Spinner } from 'react-bootstrap'
 import { Header } from '@/components/common/Header/Header'
 import { Footer } from '@/components/common/Footer/Footer'
-import { FiMapPin, FiHome, FiMaximize2, FiLayers, FiCheckCircle } from 'react-icons/fi'
+import { FiMapPin, FiHome, FiMaximize2, FiLayers, FiCheckCircle, FiPhone } from 'react-icons/fi'
 import FavoriteButton from '@/components/ui/FavoriteButton/FavoriteButton'
 import PropertyRequestForm from '@/components/common/Property/PropertyRequestForm'
+import PropertyGallery from '@/components/common/Property/PropertyGallery'
+import PropertyMap from '@/components/common/Map/PropertyMap'
 import axios from '@/services/axios'
 import { formatRUB, getImageUrl } from '@/utils/formatters'
 import styles from './PropertyPage.module.scss'
@@ -16,8 +18,6 @@ export const PropertyPage = () => {
     const [property, setProperty] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
-    const [mainImage, setMainImage] = useState(null)
-    const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
     useEffect(() => {
         const fetchProperty = async () => {
@@ -25,11 +25,6 @@ export const PropertyPage = () => {
                 setLoading(true)
                 const response = await axios.get(`/properties/${id}`)
                 setProperty(response.data)
-                
-                // Set the first photo as the main image if available
-                if (response.data.photos && response.data.photos.length > 0) {
-                    setMainImage(response.data.photos[0].url)
-                }
             } catch (error) {
                 console.error('Error fetching property:', error)
                 setError('Не удалось загрузить информацию об объекте недвижимости')
@@ -40,22 +35,6 @@ export const PropertyPage = () => {
 
         fetchProperty()
     }, [id])
-
-    const nextImage = () => {
-        if (property?.photos?.length > 0) {
-            const newIndex = (currentImageIndex + 1) % property.photos.length
-            setCurrentImageIndex(newIndex)
-            setMainImage(property.photos[newIndex].url)
-        }
-    }
-
-    const prevImage = () => {
-        if (property?.photos?.length > 0) {
-            const newIndex = (currentImageIndex - 1 + property.photos.length) % property.photos.length
-            setCurrentImageIndex(newIndex)
-            setMainImage(property.photos[newIndex].url)
-        }
-    }
 
     if (loading) {
         return (
@@ -89,44 +68,10 @@ export const PropertyPage = () => {
             <div className={styles.propertyPage}>
                 <Container fluid className={styles.heroSection}>
                     <div className={styles.galleryContainer}>
-                        {property.photos && property.photos.length > 0 && (
-                            <>
-                                <div 
-                                    className={styles.mainImage}
-                                    style={{ backgroundImage: `url(${getImageUrl(mainImage)})` }}
-                                >
-                                    {property.photos.length > 1 && (
-                                        <>
-                                            <button onClick={prevImage} className={`${styles.navButton} ${styles.prevButton}`}>
-                                                <span>&#10094;</span>
-                                            </button>
-                                            <button onClick={nextImage} className={`${styles.navButton} ${styles.nextButton}`}>
-                                                <span>&#10095;</span>
-                                            </button>
-                                        </>
-                                    )}
-                                    <div className={styles.operationBadge}>
-                                        {property.operation_type === 'rent' ? 'Аренда' : 'Продажа'}
-                                    </div>
-                                </div>
-                                {property.photos.length > 1 && (
-                                    <div className={styles.thumbnailsRow}>
-                                        {property.photos.map((photo, index) => (
-                                            <div 
-                                                key={index} 
-                                                className={`${styles.thumbnail} ${index === currentImageIndex ? styles.active : ''}`}
-                                                onClick={() => {
-                                                    setMainImage(photo.url)
-                                                    setCurrentImageIndex(index)
-                                                }}
-                                            >
-                                                <img src={getImageUrl(photo.url)} alt={`Фото ${index + 1}`} />
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </>
-                        )}
+                        <PropertyGallery 
+                            photos={property.photos} 
+                            operationType={property.operation_type} 
+                        />
                     </div>
                 </Container>
 
@@ -135,10 +80,32 @@ export const PropertyPage = () => {
                         <Col lg={8}>
                             <div className={styles.mainContent}>
                                 <div className={styles.titleSection}>
+                                    <div className={styles.titleRow}>
                                     <h1 className={styles.propertyTitle}>{property.title}</h1>
+                                        <div className={styles.favoritesAction}>
+                                            <FavoriteButton 
+                                                propertyId={property.id} 
+                                                size="large"
+                                            />
+                                            <span className={styles.favoriteLabel}>
+                                                В избранное
+                                            </span>
+                                        </div>
+                                    </div>
                                     <div className={styles.location}>
                                         <FiMapPin className={styles.icon} />
                                         <span>{property.city}{property.district ? `, ${property.district}` : ''}</span>
+                                    </div>
+                                    <div className={styles.priceCategorySection}>
+                                        <div className={styles.priceValue}>
+                                            {formatRUB(property.price)}
+                                            {property.operation_type === 'rent' && <span className={styles.rentLabel}> / мес.</span>}
+                                        </div>
+                                        {property.category && (
+                                            <div className={styles.categoryTag}>
+                                                {property.category.name}
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
 
@@ -196,38 +163,37 @@ export const PropertyPage = () => {
                                         </div>
                                     </div>
                                 )}
+                                
+                                {property.coordinates && property.coordinates.lat && property.coordinates.lng && (
+                                    <div className={styles.mapSection}>
+                                        <h2>Расположение на карте</h2>
+                                        <div className={styles.mapContainer}>
+                                            <PropertyMap property={property} />
+                                        </div>
+                                        {property.address && (
+                                            <div className={styles.addressInfo}>
+                                                <FiMapPin className={styles.icon} />
+                                                <span>{property.address}</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </Col>
                         
                         <Col lg={4}>
                             <div className={styles.sidebar}>
-                                <div className={styles.priceCard}>
-                                    <div className={styles.priceValue}>
-                                        {formatRUB(property.price)}
-                                        {property.operation_type === 'rent' && <span className={styles.rentLabel}> / мес.</span>}
-                                    </div>
-                                    {property.category && (
-                                        <div className={styles.categoryTag}>
-                                            {property.category.name}
-                                        </div>
-                                    )}
-                                    <div className={styles.favoritesAction}>
-                                        <FavoriteButton 
-                                            propertyId={property.id} 
-                                            size="large"
-                                        />
-                                        <span className={styles.favoriteLabel}>
-                                            В избранное
-                                        </span>
-                                    </div>
-                                </div>
-
                                 <div className={styles.contactCard}>
-                                    <h3>Связаться с нами</h3>
-                                    <p>Оставьте заявку, и наш менеджер свяжется с вами для уточнения деталей и организации просмотра объекта</p>
+                                    <h3>Оставить заявку</h3>
+                                    <div className={styles.contactDivider}></div>
+                                    <p>Заинтересовал объект? Оставьте заявку на просмотр, и наш специалист свяжется с вами в ближайшее время</p>
                                     <PropertyRequestForm property={property} isButton={true} />
-                                    <div className={styles.contactPhone}>
+                                    <div className={styles.contactFooter}>
+                                        <div className={styles.contactOr}>или</div>
+                                        <a href="tel:+74951234567" className={styles.contactPhone}>
+                                            <FiPhone className={styles.phoneIcon} />
                                         +7 (495) 123-45-67
+                                        </a>
                                     </div>
                                 </div>
                             </div>

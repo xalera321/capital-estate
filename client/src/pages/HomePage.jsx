@@ -7,6 +7,7 @@ import { LatestProperties } from '@/components/common/Home/LatestProperties'
 import { InfoSlider } from '@/components/common/Home/InfoSlider'
 import { ContactForm } from '@/components/common/Home/ContactForm'
 import { Footer } from '@/components/common/Footer/Footer'
+import { PropertiesMap } from '@/components/common/Map/PropertiesMap'
 import { motion } from 'framer-motion'
 
 export const HomePage = () => {
@@ -24,6 +25,7 @@ export const HomePage = () => {
 			<MainSearch />
 			<Advantages />
 			<LatestProperties />
+			<PropertiesMap />
 			<InfoSlider />
 			<ContactForm />
 			<Footer />
