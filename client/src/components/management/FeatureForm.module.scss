@@ -2,7 +2,7 @@
 @use '@styles/mixins' as *;
 @use "sass:color";
 
-.categoryForm {
+.featureForm {
   padding: 1.5rem;
   
   @include tablet {
@@ -53,12 +53,7 @@
   background-color: $white;
 }
 
-.formSection {
-  margin-bottom: 2rem;
-  position: relative;
-}
-
-.formRow {
+.formGroup {
   margin-bottom: 1.5rem;
   
   &:last-child {
@@ -66,53 +61,42 @@
   }
 }
 
-.formField {
-  position: relative;
-  
-  label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    font-size: 0.95rem;
-  }
-  
-  input, textarea {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border: 1px solid $gray-300;
-    border-radius: 8px;
-    transition: all 0.2s;
-    font-size: 0.95rem;
-    
-    &:focus {
-      outline: none;
-      border-color: $primary;
-      box-shadow: 0 0 0 3px rgba($primary, 0.15);
-    }
-  }
-  
-  textarea {
-    resize: vertical;
-    min-height: 120px;
-  }
+.formLabel {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  font-size: 0.95rem;
 }
 
-.required {
-  color: $danger;
-  margin-left: 0.25rem;
-}
-
-.hasError {
-  border-color: $danger !important;
+.formControl {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid $gray-300;
+  border-radius: 8px;
+  transition: all 0.2s;
+  font-size: 0.95rem;
   
   &:focus {
-    box-shadow: 0 0 0 3px rgba($danger, 0.15) !important;
+    outline: none;
+    border-color: $primary;
+    box-shadow: 0 0 0 3px rgba($primary, 0.15);
+  }
+  
+  &.hasError {
+    border-color: $danger;
   }
 }
 
 .errorText {
   color: $danger;
   font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.formHint {
+  display: block;
+  font-size: 0.8rem;
+  color: $gray-500;
   margin-top: 0.5rem;
 }
 

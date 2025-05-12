@@ -67,25 +67,40 @@
 
 .operationSelect,
 .typeSelect {
-  flex: 1;
-  background: rgba(255, 255, 255, 0.1) !important;
-  border: none !important;
-  border-radius: 12px !important;
-  color: white !important;
-  padding: 1rem 1.5rem !important;
-  font-size: 1rem;
-  backdrop-filter: blur(8px);
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  &:hover {
+    flex: 1;
     background: rgba(255, 255, 255, 0.15) !important;
-  }
+    /* Увеличенная непрозрачность */
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    /* Добавлена тонкая граница */
+    border-radius: 12px !important;
+    color: white !important;
+    padding: 1rem 1.5rem !important;
+    padding-right: 3rem !important;
+    font-size: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+    /* Добавлена тень */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 1rem center !important;
+    background-size: 1rem !important;
 
-  option {
-    background: color.adjust($primary, $lightness: -30%);
-    color: white;
-  }
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.2) !important;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+        background-repeat: no-repeat !important;
+        background-position: right 1rem center !important;
+        background-size: 1rem !important;
+    }
+
+    option {
+        background: color.adjust($primary, $lightness: -30%);
+        color: white;
+    }
 }
 
 .priceFilters {

@@ -79,7 +79,6 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
-  margin-bottom: 1.25rem;
   
   @include mobile {
     grid-template-columns: 1fr;
@@ -128,6 +127,7 @@
   color: $text;
   resize: vertical;
   transition: all 0.2s ease;
+  min-height: 130px;
   
   &:focus {
     outline: none;
@@ -163,6 +163,12 @@
   margin-top: 0.375rem;
   font-size: 0.75rem;
   color: $gray-500;
+
+  .highlightHint {
+    color: $primary;
+    font-weight: 500;
+    margin-left: 0.25rem;
+  }
 }
 
 .errorMessage {
@@ -375,5 +381,23 @@
   & > div {
     width: 100%;
     height: 400px;
+  }
+}
+
+.inputWithIcon {
+  position: relative;
+  
+  .autoFillIcon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $primary;
+    font-size: 0.9rem;
+    opacity: 0.7;
+  }
+  
+  input {
+    padding-right: 2.5rem;
   }
 } 

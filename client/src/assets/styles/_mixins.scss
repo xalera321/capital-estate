@@ -1,6 +1,7 @@
 // src/assets/styles/_mixins.scss
 
 @use './variables' as *;
+@use "sass:color";
 
 @mixin desktop {
   @media (min-width: 1200px) {

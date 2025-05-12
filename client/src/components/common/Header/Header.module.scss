@@ -213,10 +213,19 @@
       text-decoration: none;
       transition: color 0.3s ease;
       position: relative;
+      cursor: pointer;
 
       .chevron {
         transition: transform 0.3s ease;
         margin-left: 6px;
+      }
+      
+      &.active {
+        color: $primary;
+        
+        .chevron {
+          transform: rotate(180deg);
+        }
       }
 
       &::after {
@@ -237,6 +246,10 @@
           width: 100%;
         }
       }
+    }
+    
+    .chevron.rotated {
+      transform: rotate(180deg);
     }
 
     .megaMenu {
@@ -382,6 +395,13 @@
 }
 
 @media (max-width: 768px) {
+  body.no-scroll {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
+  
   .mainNav {
     .navLinks {
       position: fixed;
@@ -396,6 +416,7 @@
       transform: translateX(100%);
       transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       z-index: 999;
+      overflow-y: auto;
 
       &.open {
         transform: translateX(0);
@@ -404,10 +425,31 @@
       .navLink {
         font-size: 1.2rem;
         padding: 16px 0;
+        width: 100%;
+        border-bottom: 1px solid $gray-100;
+        text-align: center;
       }
 
       .dropdownContainer {
         width: 100%;
+      }
+      
+      .dropdownTrigger {
+        width: 100%;
+        border-bottom: 1px solid $gray-100;
+        padding: 16px 0;
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        
+        &::after {
+          display: none;
+        }
+        
+        &.active {
+          color: $primary;
+          background-color: rgba($primary, 0.05);
+        }
       }
 
       .megaMenu {
@@ -415,8 +457,10 @@
         box-shadow: none;
         background: transparent;
         padding: 0;
-        margin-top: 12px;
-
+        margin-top: 0;
+        border-radius: 0;
+        transform: none;
+        
         &::before {
           display: none;
         }
@@ -424,15 +468,49 @@
 
       .megaMenuContent {
         grid-template-columns: 1fr;
+        background-color: rgba($gray-100, 0.5);
+        padding: 8px 0;
       }
 
       .menuItem {
         padding: 12px;
+        text-align: center;
+        border-bottom: 1px solid rgba($gray-200, 0.5);
+        
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+      
+      .menuItemContent {
+        justify-content: center;
+      }
+      
+      .menuItemTitle {
+        text-align: center;
       }
     }
 
     .hamburger {
       display: flex;
+    }
+  }
+  
+  .adminButton {
+    display: none;
+  }
+  
+  .topHeader {
+    .contactsWrapper {
+      gap: 10px;
+    }
+    
+    .phone {
+      padding: 6px 10px;
+      
+      span {
+        font-size: 0.9rem;
+      }
     }
   }
 }

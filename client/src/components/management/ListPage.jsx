@@ -83,7 +83,16 @@ const ListPage = ({
               {formattedValue.value}
             </span>
           );
+        } else if (formattedValue.type === 'text') {
+          return (
+            <span className={styles.textCell}>
+              {formattedValue.value}
+            </span>
+          );
         }
+        
+        // Fallback for unhandled object types
+        return JSON.stringify(formattedValue);
       }
       
       return formattedValue;

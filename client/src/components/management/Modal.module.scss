@@ -1,0 +1,85 @@
+@use '@styles/variables' as *;
+@use '@styles/mixins' as *;
+
+.modal {
+  :global(.modal-content) {
+    border-radius: 12px;
+    border: none;
+    box-shadow: $shadow-lg;
+  }
+  
+  :global(.modal-header) {
+    border-bottom-color: $gray-200;
+    padding: 1.25rem 1.5rem;
+    
+    h5 {
+      font-weight: 600;
+      font-size: 1.25rem;
+    }
+    
+    button {
+      opacity: 0.65;
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+  
+  :global(.modal-body) {
+    padding: 1.5rem;
+  }
+  
+  :global(.modal-footer) {
+    border-top-color: $gray-200;
+    padding: 1.25rem 1.5rem;
+  }
+}
+
+.modalBody {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.requestInfo {
+  background-color: $gray-50;
+  padding: 1rem;
+  border-radius: 8px;
+  
+  p {
+    margin-bottom: 0.5rem;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.select {
+  padding: 0.625rem;
+  border-radius: 8px;
+  border: 1px solid $gray-300;
+  background-color: white;
+  font-size: 0.95rem;
+  
+  &:focus {
+    outline: none;
+    border-color: $primary;
+    box-shadow: $shadow-primary;
+  }
+} 

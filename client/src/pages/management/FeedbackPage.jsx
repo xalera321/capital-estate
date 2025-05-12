@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 import ListPage from '@/components/management/ListPage';
+import DeleteConfirmationModal from '@/components/management/DeleteConfirmationModal';
 import { formatDate } from '@/utils/formatters';
 import { getFeedbacks, deleteFeedback } from '@/features/feedback/api/feedbackApi';
 
 const FeedbackPage = () => {
   const [feedbacks, setFeedbacks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [deleteModal, setDeleteModal] = useState({ isOpen: false, id: null, name: '' });
   
   // Конфигурация колонок для таблицы
   const columns = [
@@ -100,8 +102,22 @@ const FeedbackPage = () => {
     fetchFeedbacks();
   }, [fetchFeedbacks]);
   
-  // Обработка удаления сообщения
-  const handleDelete = async (id) => {
+  // Открытие модального окна для подтверждения удаления
+  const handleDeleteClick = (id) => {
+    const feedback = feedbacks.find(f => f.id === id);
+    if (feedback) {
+      setDeleteModal({
+        isOpen: true,
+        id: id,
+        name: `сообщение от ${feedback.name}`
+      });
+    }
+  };
+  
+  // Подтверждение удаления сообщения
+  const handleDeleteConfirm = async () => {
+    const { id } = deleteModal;
+    
     try {
       await deleteFeedback(id);
       setFeedbacks(prev => prev.filter(feedback => feedback.id !== id));
@@ -109,7 +125,14 @@ const FeedbackPage = () => {
     } catch (error) {
       console.error('Error deleting feedback:', error);
       toast.error('Не удалось удалить сообщение');
+    } finally {
+      setDeleteModal({ isOpen: false, id: null, name: '' });
     }
+  };
+  
+  // Закрытие модального окна удаления
+  const handleDeleteCancel = () => {
+    setDeleteModal({ isOpen: false, id: null, name: '' });
   };
   
   // Просмотр полного сообщения
@@ -143,19 +166,28 @@ const FeedbackPage = () => {
   };
   
   return (
-    <ListPage
-      title="Обратная связь"
-      subtitle="Управление сообщениями обратной связи"
-      columns={columns}
-      data={feedbacks}
-      isLoading={isLoading}
-      onDelete={handleDelete}
-      onView={handleView}
-      filters={filters}
-      onFilter={fetchFeedbacks}
-      showAdd={false} // Скрыть кнопку добавления
-      showEdit={false} // Скрыть кнопку редактирования
-    />
+    <div>
+      <ListPage
+        title="Обратная связь"
+        subtitle="Управление сообщениями обратной связи"
+        columns={columns}
+        data={feedbacks}
+        isLoading={isLoading}
+        onDelete={handleDeleteClick}
+        onView={handleView}
+        filters={filters}
+        onFilter={fetchFeedbacks}
+        showAdd={false} // Скрыть кнопку добавления
+        showEdit={false} // Скрыть кнопку редактирования
+      />
+      
+      <DeleteConfirmationModal
+        isOpen={deleteModal.isOpen}
+        onClose={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+        itemName={deleteModal.name}
+      />
+    </div>
   );
 };
 

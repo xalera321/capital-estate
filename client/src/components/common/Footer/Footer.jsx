@@ -85,13 +85,6 @@ export const Footer = () => {
 							</li>
 							<li>
 								<motion.div whileHover={{ x: 5 }}>
-									<Link to='/services' className={styles.navLink}>
-										Услуги
-									</Link>
-								</motion.div>
-							</li>
-							<li>
-								<motion.div whileHover={{ x: 5 }}>
 									<Link to='/about' className={styles.navLink}>
 										О компании
 									</Link>
@@ -110,8 +103,10 @@ export const Footer = () => {
 					<FooterSection title='Соцсети'>
 						<div className={styles.socials}>
 							<motion.a
-								href='#'
+								href='https://wa.me/79099571995'
 								className={styles.socialLink}
+								target="_blank"
+								rel="noopener noreferrer"
 								whileHover={{ y: -5 }}
 								transition={{ type: 'spring', stiffness: 300 }}
 							>
@@ -119,8 +114,10 @@ export const Footer = () => {
 								<span>WhatsApp</span>
 							</motion.a>
 							<motion.a
-								href='#'
+								href='https://t.me/+79099571995'
 								className={styles.socialLink}
+								target="_blank"
+								rel="noopener noreferrer"
 								whileHover={{ y: -5 }}
 								transition={{ type: 'spring', stiffness: 300 }}
 							>
@@ -128,8 +125,10 @@ export const Footer = () => {
 								<span>Telegram</span>
 							</motion.a>
 							<motion.a
-								href='#'
+								href='https://vk.com/kapitalnedoz'
 								className={styles.socialLink}
+								target="_blank"
+								rel="noopener noreferrer"
 								whileHover={{ y: -5 }}
 								transition={{ type: 'spring', stiffness: 300 }}
 							>
@@ -153,8 +152,7 @@ export const Footer = () => {
 							защищены
 						</p>
 						<div className={styles.legalLinks}>
-							<Link to='/privacy'>Политика конфиденциальности</Link>
-							<Link to='/terms'>Пользовательское соглашение</Link>
+							<Link to='/privacy' target="_blank" rel="noopener noreferrer">Политика конфиденциальности</Link>
 						</div>
 					</div>
 				</motion.div>

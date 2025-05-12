@@ -65,6 +65,10 @@
   gap: 0.75rem;
   flex-wrap: wrap;
   margin-bottom: 2.5rem;
+  
+  @include mobile {
+    gap: 0.5rem;
+  }
 }
 
 .filterButton {
@@ -95,20 +99,26 @@
     outline: 2px solid $primary;
     outline-offset: 2px;
   }
+  
+  @include mobile {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
 }
 
 .propertiesGrid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(280px, 300px));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 2rem;
   position: relative;
-  justify-content: flex-start;
-
+  
   @include tablet {
-    grid-template-columns: repeat(2, minmax(280px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
   }
-
+  
   @include mobile {
     grid-template-columns: 1fr;
+    gap: 1.25rem;
   }
 }

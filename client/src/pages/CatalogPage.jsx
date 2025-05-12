@@ -130,29 +130,27 @@ export function CatalogPage() {
 			<Header />
 			<div className={styles.catalog}>
 				<Container>
-					<Row className={styles.propertyRow}>
-						<Col lg={3} className={styles.filtersSection}>
+					<div className={styles.propertyRow}>
+						<div className={styles.filtersSection}>
 							<Card className={styles.filtersCard}>
 								<Card.Body>
 									<PropertyFilters
 										categories={categories}
 										initialValues={Object.fromEntries(searchParams.entries())}
 									/>
+									<div className={styles.resultsCount}>
+										Найдено объектов: {totalItems}
+									</div>
 								</Card.Body>
 							</Card>
-						</Col>
+						</div>
 						
-						<Col lg={9} className={styles.propertiesSection}>
+						<div className={styles.propertiesSection}>
 							<div className={styles.propertiesWrapper}>
-								<div className={styles.resultsHeader}>
-									<span className={styles.resultsCount}>
-										Найдено объектов: {totalItems}
-									</span>
-								</div>
 								{renderContent()}
 							</div>
-						</Col>
-					</Row>
+						</div>
+					</div>
 				</Container>
 			</div>
 			<Footer />

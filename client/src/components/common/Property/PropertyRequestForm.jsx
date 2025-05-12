@@ -103,7 +103,7 @@ const PropertyRequestForm = ({ property, isButton = false }) => {
       initialValues={{
         user_name: '',
         user_phone: '+7',
-        message: `Интересует просмотр объекта: ${property?.title || ''}`,
+        message: '',
         agree: false,
       }}
       validationSchema={validationSchema}
@@ -185,7 +185,7 @@ const PropertyRequestForm = ({ property, isButton = false }) => {
                 />
                 <span className={styles.checkboxLabel}>
                   Соглашаюсь на обработку{' '}
-                  <a href="/privacy" className={styles.privacyLink}>
+                  <a href="/privacy" target="_blank" rel="noopener noreferrer" className={styles.privacyLink}>
                     персональных данных
                   </a>
                 </span>

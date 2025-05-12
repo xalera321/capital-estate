@@ -173,7 +173,8 @@
 
 .tableWrapper {
   flex: 1;
-  overflow: auto;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* Better scrolling on iOS */
 }
 
 .dataTable {
@@ -185,6 +186,12 @@
     padding: 1rem;
     text-align: left;
     border-bottom: 1px solid $border-color;
+    white-space: nowrap; /* Prevent cell text wrapping */
+    
+    @include mobile {
+      padding: 0.75rem 0.5rem;
+      font-size: 0.875rem;
+    }
   }
   
   th {
@@ -316,7 +323,16 @@
 }
 
 .emptyCell {
-  color: var(--text-secondary);
+  color: $gray-400;
+  font-style: italic;
+}
+
+.textCell {
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  line-height: 1.4;
 }
 
 .imageCell {

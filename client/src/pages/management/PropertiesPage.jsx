@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 import ListPage from '@components/management/ListPage';
 import PropertyModal from '@components/management/PropertyModal';
+import DeleteConfirmationModal from '@components/management/DeleteConfirmationModal';
 import { formatRUB, getImageUrl } from '@utils/formatters';
 import axios from '@services/axios';
 
@@ -11,6 +12,7 @@ const PropertiesPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [isExporting, setIsExporting] = useState(false);
+  const [deleteModal, setDeleteModal] = useState({ isOpen: false, id: null, name: '' });
   
   // Column configuration
   const columns = [
@@ -170,18 +172,37 @@ const PropertiesPage = () => {
     });
   };
   
-  // Handle delete property
-  const handleDelete = async (id) => {
-    if (window.confirm('Вы действительно хотите удалить этот объект недвижимости?')) {
-      try {
-        await axios.delete(`/properties/${id}`);
-        setProperties(properties.filter(property => property.id !== id));
-        toast.success('Объект успешно удален');
-      } catch (error) {
-        console.error('Error deleting property:', error);
-        toast.error('Не удалось удалить объект');
-      }
+  // Open delete confirmation modal
+  const handleDeleteClick = (id) => {
+    const property = properties.find(p => p.id === id);
+    if (property) {
+      setDeleteModal({
+        isOpen: true,
+        id: id,
+        name: property.title || 'объект недвижимости'
+      });
     }
+  };
+  
+  // Handle delete confirmation
+  const handleDeleteConfirm = async () => {
+    const { id } = deleteModal;
+    
+    try {
+      await axios.delete(`/properties/${id}`);
+      setProperties(properties.filter(property => property.id !== id));
+      toast.success('Объект успешно удален');
+    } catch (error) {
+      console.error('Error deleting property:', error);
+      toast.error('Не удалось удалить объект');
+    } finally {
+      setDeleteModal({ isOpen: false, id: null, name: '' });
+    }
+  };
+  
+  // Close delete modal
+  const handleDeleteCancel = () => {
+    setDeleteModal({ isOpen: false, id: null, name: '' });
   };
   
   // Handle toggle visibility
@@ -251,22 +272,29 @@ const PropertiesPage = () => {
   };
 
   return (
-    <>
-      <ListPage
-        title="Объекты недвижимости"
-        subtitle="Управление объектами недвижимости, их информацией и статусом"
+    <div>
+      <ListPage 
+        title="Управление объектами"
+        subtitle="Создание, редактирование и удаление объектов недвижимости"
         columns={columns}
         data={properties}
         isLoading={isLoading}
-        filters={filters}
         onAdd={handleAdd}
         onEdit={handleEdit}
-        onDelete={handleDelete}
+        onDelete={handleDeleteClick}
         onRefresh={handleRefresh}
         onExport={handleExport}
+        filters={filters}
         onFilterChange={handleFilterChange}
+        customActions={[
+          {
+            label: 'Видимость',
+            icon: 'eye',
+            action: handleToggleVisibility
+          }
+        ]}
         addButtonLabel="Добавить объект"
-        emptyMessage="Объекты недвижимости отсутствуют"
+        emptyMessage="Нет объектов для отображения"
       />
       
       <PropertyModal 
@@ -275,7 +303,14 @@ const PropertiesPage = () => {
         property={selectedProperty}
         onSave={handleSave}
       />
-    </>
+      
+      <DeleteConfirmationModal
+        isOpen={deleteModal.isOpen}
+        onClose={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+        itemName={deleteModal.name}
+      />
+    </div>
   );
 };
 

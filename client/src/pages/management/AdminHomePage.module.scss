@@ -1,5 +1,6 @@
 @use '@styles/variables' as *;
 @use '@styles/mixins' as *;
+@use "sass:color";
 
 .adminHome {
   padding: 2rem 0 3rem;
@@ -25,7 +26,7 @@
     font-weight: 600;
     color: $gray-900;
     margin-bottom: 0.25rem;
-    background: linear-gradient(90deg, $primary 0%, darken($primary, 15%) 100%);
+    background: linear-gradient(90deg, $primary 0%, color.adjust($primary, $lightness: -15%) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -180,7 +181,7 @@
   transition: color 0.3s ease;
   
   &:hover {
-    color: darken($primary, 15%);
+    color: color.adjust($primary, $lightness: -15%);
   }
   
   svg {
@@ -215,7 +216,7 @@
   &:hover {
     background-color: rgba($error, 0.05);
     border-color: $error;
-    color: darken($error, 5%);
+    color: color.adjust($error, $lightness: -5%);
   }
   
   svg {

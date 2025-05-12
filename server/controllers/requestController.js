@@ -36,8 +36,12 @@ exports.getRequests = async (req, res) => {
     try {
         console.log('Getting all requests');
         
-        // First try without the include to isolate potential issues
         const requests = await Request.findAll({
+            include: [{
+                model: Property,
+                as: 'property',
+                attributes: ['id', 'title', 'price', 'address']
+            }],
             order: [['createdAt', 'DESC']] // Newest first
         });
         

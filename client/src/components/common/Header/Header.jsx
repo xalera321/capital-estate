@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSelector } from 'react-redux'
 import Logo from '@assets/images/icons/logo.svg?react'
@@ -7,7 +7,7 @@ import PhoneIcon from '@/assets/images/icons/phone.svg?react'
 import Whatsapp from '@/assets/images/icons/whatsapp.svg?react'
 import Telegram from '@/assets/images/icons/telegram.svg?react'
 import Vk from '@/assets/images/icons/vk.svg?react'
-import { FiUser, FiHeart } from 'react-icons/fi'
+import { FiUser, FiHeart, FiChevronDown } from 'react-icons/fi'
 import { selectFavorites } from '@/features/favorites/favoritesSlice'
 import styles from './Header.module.scss'
 import { fetchCategories } from '@/features/properties/api/propertyApi'
@@ -18,10 +18,29 @@ export const Header = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false)
 	const [categories, setCategories] = useState([])
 	const [isObjectsHovered, setIsObjectsHovered] = useState(false)
+	const [isMobileObjectsOpen, setIsMobileObjectsOpen] = useState(false)
 	const location = useLocation()
+	const navigate = useNavigate()
 	const isAuthenticated = authService.isAuthenticated()
 	const isAdminRoute = location.pathname.startsWith('/management')
 	const favorites = useSelector(selectFavorites)
+	const isMobile = window.innerWidth <= 768
+
+	// Handle body scroll lock when mobile menu is open
+	useEffect(() => {
+		if (isMenuOpen) {
+			document.body.style.overflow = 'hidden'
+			document.body.classList.add('no-scroll')
+		} else {
+			document.body.style.overflow = ''
+			document.body.classList.remove('no-scroll')
+		}
+		
+		return () => {
+			document.body.style.overflow = ''
+			document.body.classList.remove('no-scroll')
+		}
+	}, [isMenuOpen])
 
 	useEffect(() => {
 		const handleScroll = () => setIsScrolled(window.scrollY > 50)
@@ -44,7 +63,33 @@ export const Header = () => {
 
 	useEffect(() => {
 		setIsMenuOpen(false)
+		setIsMobileObjectsOpen(false)
 	}, [location])
+	
+	// Handle window resize
+	useEffect(() => {
+		const handleResize = () => {
+			if (window.innerWidth > 768 && isMenuOpen) {
+				setIsMenuOpen(false)
+				setIsMobileObjectsOpen(false)
+			}
+		}
+		
+		window.addEventListener('resize', handleResize)
+		return () => window.removeEventListener('resize', handleResize)
+	}, [isMenuOpen])
+	
+	// Handle "Объекты" click differently on mobile vs. desktop
+	const handleObjectsClick = (e) => {
+		if (window.innerWidth <= 768) {
+			// On mobile, just toggle the dropdown
+			e.preventDefault()
+			setIsMobileObjectsOpen(!isMobileObjectsOpen)
+		} else {
+			// On desktop, navigate to properties page
+			navigate('/properties')
+		}
+	}
 
 	return (
 		<>
@@ -78,24 +123,30 @@ export const Header = () => {
 										</a>
 										<div className={styles.socials}>
 											<motion.a
-												href='#'
+												href='https://wa.me/79099571995'
 												aria-label='WhatsApp'
+												target="_blank"
+												rel="noopener noreferrer"
 												whileHover={{ y: -2 }}
 												transition={{ type: 'spring', stiffness: 300 }}
 											>
 												<Whatsapp />
 											</motion.a>
 											<motion.a
-												href='#'
+												href='https://t.me/+79099571995'
 												aria-label='Telegram'
+												target="_blank"
+												rel="noopener noreferrer"
 												whileHover={{ y: -2 }}
 												transition={{ type: 'spring', stiffness: 300 }}
 											>
 												<Telegram />
 											</motion.a>
 											<motion.a
-												href='#'
+												href='https://vk.com/kapitalnedoz'
 												aria-label='VK'
+												target="_blank"
+												rel="noopener noreferrer"
 												whileHover={{ y: -2 }}
 												transition={{ type: 'spring', stiffness: 300 }}
 											>
@@ -127,31 +178,21 @@ export const Header = () => {
 							>
 								<div
 									className={styles.dropdownContainer}
-									onMouseEnter={() => setIsObjectsHovered(true)}
-									onMouseLeave={() => setIsObjectsHovered(false)}
+									onMouseEnter={() => !isMobile && setIsObjectsHovered(true)}
+									onMouseLeave={() => !isMobile && setIsObjectsHovered(false)}
 								>
 									<motion.div className={styles.dropdownWrapper}>
-										<Link
-											to='/properties'
-											className={styles.dropdownTrigger}
+										<div
+											className={`${styles.dropdownTrigger} ${isMobileObjectsOpen ? styles.active : ''}`}
+											onClick={handleObjectsClick}
 											aria-haspopup='menu'
-											aria-expanded={isObjectsHovered}
+											aria-expanded={isObjectsHovered || isMobileObjectsOpen}
 										>
 											<span>Объекты</span>
-											<svg
-												className={styles.chevron}
-												viewBox='0 0 24 24'
-												width='16'
-												height='16'
-											>
-												<path
-													fill='currentColor'
-													d='M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z'
-												/>
-											</svg>
-										</Link>
+											<FiChevronDown className={`${styles.chevron} ${isMobileObjectsOpen ? styles.rotated : ''}`} />
+										</div>
 										<AnimatePresence>
-											{isObjectsHovered && (
+											{(isObjectsHovered || isMobileObjectsOpen) && (
 												<motion.div
 													className={styles.megaMenu}
 													initial={{ opacity: 0, y: 10 }}
@@ -164,9 +205,10 @@ export const Header = () => {
 														{categories.map(cat => (
 															<Link
 																key={cat.id}
-																to={`/properties?type=${cat.name}`}
+																to={`/properties?categoryId=${cat.id}`}
 																className={styles.menuItem}
 																role='menuitem'
+																onClick={() => setIsMobileObjectsOpen(false)}
 															>
 																<div className={styles.menuItemContent}>
 																	<div className={styles.menuItemTitle}>
@@ -181,7 +223,6 @@ export const Header = () => {
 										</AnimatePresence>
 									</motion.div>
 								</div>
-								<NavLink to='/services'>Услуги</NavLink>
 								<NavLink to='/about'>О компании</NavLink>
 								<NavLink to='/contacts'>Контакты</NavLink>
 							</div>

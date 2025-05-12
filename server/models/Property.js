@@ -57,6 +57,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         district: DataTypes.STRING,
+        address: DataTypes.STRING,
         area: {
             type: DataTypes.FLOAT,
             validate: {

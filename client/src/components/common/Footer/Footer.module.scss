@@ -200,6 +200,11 @@
         color: $primary;
       }
     }
+
+    @include mobile {
+      gap: 1rem;
+      font-size: 0.8rem;
+    }
   }
 
   @include mobile {
@@ -211,6 +216,22 @@
 
     .socialLink {
       padding: 0.75rem;
+    }
+    
+    .footerSection {
+      h4 {
+        margin-bottom: 1rem;
+      }
+    }
+    
+    .contacts {
+      gap: 1rem;
+    }
+    
+    .navLinks {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
     }
   }
 }

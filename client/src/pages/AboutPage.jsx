@@ -3,26 +3,27 @@ import { motion } from 'framer-motion'
 import { Header } from '@/components/common/Header/Header'
 import { Footer } from '@/components/common/Footer/Footer'
 import { ContactForm } from '@/components/common/Home/ContactForm'
-import { Advantages } from '@/components/common/Home/Advantages'
 import styles from './AboutPage.module.scss'
 
 const AboutPage = () => {
-	const teamMembers = [
+	const services = [
 		{
-			name: 'Татьяна Пляскина',
-			position: 'Руководитель агентства',
-			experience: '12 лет в недвижимости',
+			title: 'Купля-продажа квартир',
+			items: ['Новостройки', 'Вторичный рынок']
 		},
 		{
-			name: 'Анна Смирнова',
-			position: 'Старший риелтор',
-			experience: '8 лет в недвижимости',
-		},
-		{
-			name: 'Дмитрий Волков',
-			position: 'Юрист',
-			experience: '10 лет в недвижимости',
-		},
+			title: 'Купля-продажа загородной недвижимости',
+			items: ['Коттеджи', 'Дома', 'Дачи', 'Земельные участки']
+		}
+	]
+
+	const additionalServices = [
+		'Подготовка договоров',
+		'Представительство в суде',
+		'Приватизация квартир',
+		'Оформление наследственных прав',
+		'Сопровождение сделок',
+		'Оформление квартир, домов, земельных участков'
 	]
 
 	return (
@@ -47,64 +48,67 @@ const AboutPage = () => {
 
 			<section className={styles.about}>
 				<div className='container'>
-					<div className={styles.grid}>
-						<div className={styles.content}>
-							<h2 className={styles.sectionTitle}>Наша история</h2>
-							<p className={styles.text}>
-								Агентство недвижимости «Капитал Недвижимость» было основано в
-								2012 году с целью предоставления профессиональных услуг на рынке
-								недвижимости Орехово-Зуево и региона. За 10+ лет работы мы
-								помогли более 2000 клиентам решить их жилищные вопросы.
-							</p>
-							<div className={styles.highlight}>
-								<blockquote>
-									«Наша главная цель — сделать операции с недвижимостью
-									простыми, безопасными и выгодными для клиентов»
-								</blockquote>
-								<div className={styles.director}>
-									<div className={styles.directorInfo}>
-										<h4>Татьяна Пляскина</h4>
-										<p>Основатель и руководитель агентства</p>
-									</div>
+					<div className={styles.content}>
+						<h2 className={styles.sectionTitle}>О нашей компании</h2>
+						<p className={styles.text}>
+							Агентство недвижимости Капитал — это организация, работающая в сфере недвижимости. 
+							Здесь вы сможете получить полную консультацию по интересующим вопросам.
+						</p>
+						<p className={styles.text}>
+							Компания предлагает помощь по всем типам услуг, связанным с недвижимостью — среди них 
+							оформление в собственность, реализация дачных домов, жилой недвижимости, земельных участков, 
+							консультации юриста и многие другие.
+						</p>
+						<div className={styles.highlight}>
+							<blockquote>
+								«Наша главная цель — сделать операции с недвижимостью
+								простыми, безопасными и выгодными для клиентов»
+							</blockquote>
+							<div className={styles.director}>
+								<div className={styles.directorInfo}>
+									<h4>Татьяна Пляскина</h4>
+									<p>Основатель и руководитель агентства</p>
 								</div>
-							</div>
-						</div>
-						<div className={styles.stats}>
-							<div className={styles.statItem}>
-								<div className={styles.statNumber}>12+</div>
-								<div className={styles.statText}>Лет на рынке</div>
-							</div>
-							<div className={styles.statItem}>
-								<div className={styles.statNumber}>2000+</div>
-								<div className={styles.statText}>Успешных сделок</div>
-							</div>
-							<div className={styles.statItem}>
-								<div className={styles.statNumber}>98%</div>
-								<div className={styles.statText}>Довольных клиентов</div>
-							</div>
-							<div className={styles.statItem}>
-								<div className={styles.statNumber}>15</div>
-								<div className={styles.statText}>Профессионалов в команде</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</section>
 
-			<section className={styles.team}>
+			<section className={styles.services}>
 				<div className='container'>
-					<h2 className={styles.sectionTitle}>Наша команда</h2>
-					<div className={styles.teamGrid}>
-						{teamMembers.map((member, index) => (
-							<div key={index} className={styles.teamMember}>
-								<img src={member.photo} alt={member.name} />
-								<div className={styles.memberInfo}>
-									<h3>{member.name}</h3>
-									<p>{member.position}</p>
-									<span>{member.experience}</span>
-								</div>
+					<h2 className={styles.sectionTitle}>Наши услуги</h2>
+					<p className={styles.serviceIntro}>
+						Агентство недвижимости «Капитал» оказывает риелторские услуги в двух основных секторах рынка недвижимости:
+					</p>
+					
+					<div className={styles.servicesGrid}>
+						{services.map((service, index) => (
+							<div key={index} className={styles.serviceCard}>
+								<div className={styles.serviceIcon}></div>
+								<h3 className={styles.serviceTitle}>{service.title}</h3>
+								<ul className={styles.serviceList}>
+									{service.items.map((item, i) => (
+										<li key={i} className={styles.serviceItem}>{item}</li>
+									))}
+								</ul>
 							</div>
 						))}
+					</div>
+					
+					<div className={styles.additionalServices}>
+						<h3 className={styles.additionalTitle}>Дополнительные услуги</h3>
+						<p className={styles.additionalIntro}>
+							Наше агентство также предоставляет широкий спектр дополнительных услуг:
+						</p>
+						<div className={styles.additionalGrid}>
+							{additionalServices.map((service, index) => (
+								<div key={index} className={styles.additionalCard}>
+									<span className={styles.additionalIcon}></span>
+									<p>{service}</p>
+								</div>
+							))}
+						</div>
 					</div>
 				</div>
 			</section>
@@ -131,7 +135,6 @@ const AboutPage = () => {
 				</div>
 			</section>
 
-			<Advantages />
 			<ContactForm />
 			<Footer />
 		</motion.div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 import ListPage from '@/components/management/ListPage';
 import CategoryModal from '@/components/management/CategoryModal';
+import DeleteConfirmationModal from '@/components/management/DeleteConfirmationModal';
 import axios from '@/services/axios';
 
 const CategoriesPage = () => {
@@ -9,6 +10,7 @@ const CategoriesPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [deleteModal, setDeleteModal] = useState({ isOpen: false, id: null, name: '' });
   
   // Column configuration
   const columns = [
@@ -97,8 +99,8 @@ const CategoriesPage = () => {
     });
   };
   
-  // Handle delete category
-  const handleDelete = async (id) => {
+  // Open delete confirmation modal
+  const handleDeleteClick = (id) => {
     const category = categories.find(c => c.id === id);
     
     if (!category) return;
@@ -108,20 +110,36 @@ const CategoriesPage = () => {
       return;
     }
     
-    if (window.confirm('Вы действительно хотите удалить эту категорию?')) {
-      try {
-        await axios.delete(`/categories/${id}`);
-        setCategories(categories.filter(category => category.id !== id));
-        toast.success('Категория успешно удалена');
-      } catch (error) {
-        console.error('Error deleting category:', error);
-        if (error.response?.data?.error) {
-          toast.error(error.response.data.error);
-        } else {
-          toast.error('Не удалось удалить категорию');
-        }
+    setDeleteModal({
+      isOpen: true,
+      id: id,
+      name: category.name
+    });
+  };
+  
+  // Handle delete confirmation
+  const handleDeleteConfirm = async () => {
+    const { id } = deleteModal;
+    
+    try {
+      await axios.delete(`/categories/${id}`);
+      setCategories(categories.filter(category => category.id !== id));
+      toast.success('Категория успешно удалена');
+    } catch (error) {
+      console.error('Error deleting category:', error);
+      if (error.response?.data?.error) {
+        toast.error(error.response.data.error);
+      } else {
+        toast.error('Не удалось удалить категорию');
       }
+    } finally {
+      setDeleteModal({ isOpen: false, id: null, name: '' });
     }
+  };
+  
+  // Close delete modal
+  const handleDeleteCancel = () => {
+    setDeleteModal({ isOpen: false, id: null, name: '' });
   };
   
   // Handle refresh
@@ -139,7 +157,7 @@ const CategoriesPage = () => {
         isLoading={isLoading}
         onAdd={handleAdd}
         onEdit={handleEdit}
-        onDelete={handleDelete}
+        onDelete={handleDeleteClick}
         onRefresh={handleRefresh}
         addButtonLabel="Добавить категорию"
         emptyMessage="Нет категорий для отображения"
@@ -150,6 +168,13 @@ const CategoriesPage = () => {
         onClose={() => setIsModalOpen(false)}
         category={selectedCategory}
         onSave={handleSave}
+      />
+      
+      <DeleteConfirmationModal
+        isOpen={deleteModal.isOpen}
+        onClose={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+        itemName={deleteModal.name}
       />
     </div>
   );

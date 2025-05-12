@@ -8,12 +8,15 @@ import { PropertyPage } from '@/pages/PropertyPage'
 import { FavoritesPage } from '@/pages/FavoritesPage'
 import { AdminPage } from '@/pages/AdminPage'
 import { ContactsPage } from '@/pages/ContactsPage'
+import { PrivacyPage } from '@/pages/PrivacyPage'
+import AboutPage from '@/pages/AboutPage'
 import ProtectedRoute from '@/components/management/ProtectedRoute'
 import AdminLayout from '@/components/management/AdminLayout'
 import LoginPage from '@/pages/management/LoginPage'
 import AdminHomePage from '@/pages/management/AdminHomePage'
 import PropertiesPage from '@/pages/management/PropertiesPage'
 import CategoriesPage from '@/pages/management/CategoriesPage'
+import FeaturesPage from '@/pages/management/FeaturesPage'
 import RequestsPage from '@/pages/management/RequestsPage'
 import FeedbackPage from '@/pages/management/FeedbackPage'
 import '@assets/styles/main.scss'
@@ -29,6 +32,8 @@ function App() {
 					<Route path='/properties/:id' element={<PropertyPage />} />
 					<Route path='/favorites' element={<FavoritesPage />} />
 					<Route path='/contacts' element={<ContactsPage />} />
+					<Route path='/privacy' element={<PrivacyPage />} />
+					<Route path='/about' element={<AboutPage />} />
           
 					{/* Management routes */}
 					<Route path='/management/login' element={<LoginPage />} />
@@ -37,6 +42,7 @@ function App() {
 							<Route index element={<AdminHomePage />} />
 							<Route path='properties' element={<PropertiesPage />} />
 							<Route path='categories' element={<CategoriesPage />} />
+							<Route path='features' element={<FeaturesPage />} />
 							<Route path='requests' element={<RequestsPage />} />
 							<Route path='feedback' element={<FeedbackPage />} />
 						</Route>

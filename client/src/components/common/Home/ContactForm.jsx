@@ -195,7 +195,7 @@ export const ContactForm = () => {
 											/>
 											<span className={styles.checkboxLabel}>
 												Соглашаюсь на обработку{' '}
-												<a href='/privacy' className={styles.privacyLink}>
+												<a href='/privacy' target="_blank" rel="noopener noreferrer" className={styles.privacyLink}>
 													персональных данных
 												</a>
 											</span>

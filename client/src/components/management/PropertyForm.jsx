@@ -159,20 +159,125 @@ const PropertyForm = ({ property = null, onSave, onCancel }) => {
         }
       }));
       
-      // Get address from coordinates
+      // Get address, city and district from coordinates
       try {
         await loadYandexMaps();
         const geocoder = await window.ymaps.geocode(coords);
         const result = geocoder.geoObjects.get(0);
+        
         if (result) {
           const address = result.getAddressLine();
+          // Get GeoObject metadata
+          const geoObjectMetadata = result.properties.get('metaDataProperty').GeocoderMetaData;
+          const addressComponents = geoObjectMetadata.Address.Components;
+          
+          // Log address data to debug
+          console.log('Full address components:', addressComponents);
+          console.log('Full address string:', address);
+          console.log('GeoObject kind:', geoObjectMetadata.kind);
+          console.log('GeoObject text:', geoObjectMetadata.text);
+          
+          // Find city and district in the address components
+          let city = '';
+          let district = '';
+          
+          // Try to extract administrative components
+          let administrativeArea = '';
+          let subAdministrativeArea = '';
+          let locality = '';
+          
+          // First pass: find basic components
+          addressComponents.forEach(component => {
+            switch (component.kind) {
+              case 'locality':
+                locality = component.name;
+                city = component.name; // The city is usually the locality
+                break;
+              case 'area':
+              case 'district':
+              case 'administrative_area':
+                if (!administrativeArea) {
+                  administrativeArea = component.name;
+                } else if (!subAdministrativeArea) {
+                  subAdministrativeArea = component.name;
+                }
+                break;
+              case 'province':
+              case 'country':
+                // Skip these high-level components
+                break;
+              default:
+                // Collect any components that might be districts
+                if (component.name.includes('район') || 
+                    component.name.includes('р-н') || 
+                    component.name.includes('микрорайон')) {
+                  district = component.name;
+                }
+            }
+          });
+          
+          // Second pass: determine district from collected data
+          if (!district) {
+            // Try to use subAdministrativeArea if it exists and doesn't match city
+            if (subAdministrativeArea && subAdministrativeArea !== city) {
+              district = subAdministrativeArea;
+            } 
+            // If no suitable district found, try the administrative area
+            else if (administrativeArea && administrativeArea !== city && 
+                    !administrativeArea.includes('округ')) {
+              district = administrativeArea;
+            }
+          }
+          
+          // Extra check: try to extract district from the full address if not found in components
+          if (!district) {
+            // Common district indicators in Russia
+            const districtIndicators = ['район', 'р-н', 'микрорайон', 'мкр'];
+            
+            // Try to extract district from full address
+            for (const indicator of districtIndicators) {
+              const regex = new RegExp(`(\\S+\\s+${indicator})`, 'i');
+              const match = address.match(regex);
+              if (match) {
+                district = match[1];
+                break;
+              }
+            }
+          }
+          
+          // Clean district name if needed
+          if (district) {
+            // Remove "район" and other common suffixes
+            district = district.replace(/(район|р-н|микрорайон|мкр\.?)\s*$/i, '').trim();
+            
+            // Remove city name if it's included in the district name
+            if (city && district.includes(city)) {
+              district = district.replace(city, '').trim();
+            }
+            
+            // Remove words that indicate it's not a district
+            const nonDistrictIndicators = ['область', 'край', 'республика', 'округ', 'федеральный'];
+            for (const indicator of nonDistrictIndicators) {
+              if (district.toLowerCase().includes(indicator)) {
+                district = ''; // This is not a district
+                break;
+              }
+            }
+          }
+          
+          console.log('Extracted: city =', city, 'district =', district);
+          
+          // Update form with geocoding results
+          // Always include district in the update, even if it's empty
           setFormData(prev => ({
             ...prev,
-            address
+            address,
+            ...(city && { city }),
+            district: district || '' // Always set district, even if empty
           }));
         }
       } catch (error) {
-        console.error('Error getting address:', error);
+        console.error('Error getting address data:', error);
       }
     };
     
@@ -614,29 +719,35 @@ const PropertyForm = ({ property = null, onSave, onCancel }) => {
             <div className={styles.formRow}>
               <div className={styles.formGroup}>
                 <label className={styles.formLabel}>Город*</label>
-                <input
-                  type="text"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleChange}
-                  className={`${styles.formControl} ${errors.city ? styles.hasError : ''}`}
-                  placeholder="Город"
-                  disabled={isLoading}
-                />
+                <div className={styles.inputWithIcon}>
+                  <input
+                    type="text"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleChange}
+                    className={`${styles.formControl} ${errors.city ? styles.hasError : ''}`}
+                    placeholder="Город"
+                    disabled={isLoading}
+                  />
+                  <FiMapPin className={styles.autoFillIcon} title="Заполняется автоматически при выборе точки на карте" />
+                </div>
                 {errors.city && <div className={styles.errorMessage}>{errors.city}</div>}
               </div>
               
               <div className={styles.formGroup}>
                 <label className={styles.formLabel}>Район</label>
-                <input
-                  type="text"
-                  name="district"
-                  value={formData.district}
-                  onChange={handleChange}
-                  className={styles.formControl}
-                  placeholder="Район"
-                  disabled={isLoading}
-                />
+                <div className={styles.inputWithIcon}>
+                  <input
+                    type="text"
+                    name="district"
+                    value={formData.district}
+                    onChange={handleChange}
+                    className={styles.formControl}
+                    placeholder="Район"
+                    disabled={isLoading}
+                  />
+                  <FiMapPin className={styles.autoFillIcon} title="Заполняется автоматически при выборе точки на карте" />
+                </div>
               </div>
             </div>
             
@@ -751,7 +862,10 @@ const PropertyForm = ({ property = null, onSave, onCancel }) => {
           
           <div className={`${styles.formSection} ${styles.fullWidth}`}>
             <h3>Расположение на карте</h3>
-            <p className={styles.formHint}>Нажмите на карту, чтобы выбрать местоположение объекта недвижимости</p>
+            <p className={styles.formHint}>
+              Нажмите на карту, чтобы выбрать местоположение объекта недвижимости. 
+              <span className={styles.highlightHint}>Город и район будут заполнены автоматически.</span>
+            </p>
             
             <div className={styles.formGroup}>
               <label className={styles.formLabel}>Адрес</label>
