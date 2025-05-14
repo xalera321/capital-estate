@@ -89,6 +89,11 @@
     box-shadow: 0 0 0 2px rgba($primary, 0.1);
     outline: none;
   }
+
+  option {
+    background: $white;
+    color: $text-dark;
+  }
 }
 
 .inputGroup {

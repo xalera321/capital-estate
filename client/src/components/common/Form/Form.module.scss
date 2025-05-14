@@ -1,0 +1,174 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+
+  .formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .label {
+    font-weight: 500;
+    color: $text-dark;
+    font-size: 0.875rem;
+  }
+
+  .input {
+    padding: 12px 16px;
+    border: 1px solid $gray-200;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: $white;
+    color: $text-dark;
+
+    &:focus {
+      outline: none;
+      border-color: $primary;
+      box-shadow: 0 0 0 3px rgba($primary, 0.1);
+    }
+
+    &:disabled {
+      background: $gray-100;
+      cursor: not-allowed;
+    }
+
+    &::placeholder {
+      color: $gray-400;
+    }
+  }
+
+  .textarea {
+    @extend .input;
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  .select {
+    @extend .input;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%237A8A82' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
+  }
+
+  .checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+
+    input {
+      display: none;
+
+      &:checked + .checkboxMark {
+        background: $primary;
+        border-color: $primary;
+
+        &::after {
+          transform: scale(1);
+        }
+      }
+    }
+
+    .checkboxMark {
+      width: 20px;
+      height: 20px;
+      border: 2px solid $gray-300;
+      border-radius: 4px;
+      position: relative;
+      transition: all 0.3s ease;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: scale(0) translate(-50%, -50%);
+        width: 12px;
+        height: 12px;
+        background: white;
+        border-radius: 2px;
+        transition: transform 0.3s ease;
+      }
+    }
+
+    .checkboxLabel {
+      font-size: 0.875rem;
+      color: $text-dark;
+    }
+  }
+
+  .radio {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+
+    input {
+      display: none;
+
+      &:checked + .radioMark {
+        border-color: $primary;
+
+        &::after {
+          transform: scale(1);
+        }
+      }
+    }
+
+    .radioMark {
+      width: 20px;
+      height: 20px;
+      border: 2px solid $gray-300;
+      border-radius: 50%;
+      position: relative;
+      transition: all 0.3s ease;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: scale(0) translate(-50%, -50%);
+        width: 10px;
+        height: 10px;
+        background: $primary;
+        border-radius: 50%;
+        transition: transform 0.3s ease;
+      }
+    }
+
+    .radioLabel {
+      font-size: 0.875rem;
+      color: $text-dark;
+    }
+  }
+
+  .error {
+    color: $accent-red;
+    font-size: 0.875rem;
+    margin-top: 4px;
+  }
+
+  .help {
+    color: $text-light;
+    font-size: 0.875rem;
+    margin-top: 4px;
+  }
+
+  .formActions {
+    display: flex;
+    gap: 16px;
+    margin-top: 8px;
+
+    @include mobile {
+      flex-direction: column;
+    }
+  }
+} 

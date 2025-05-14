@@ -23,12 +23,11 @@
 }
 
 .topHeader {
-  $local-primary-dark: color.mix($primary, $black, 85%);
-  background: linear-gradient(145deg, rgba($local-primary-dark, 1) 0%, rgba($primary, 1) 100%);
+  background: $gradient-primary;
   color: white;
   font-size: 0.875rem;
   overflow: hidden;
-  box-shadow: 0 2px 15px rgba($primary, 0.2);
+  box-shadow: $shadow-primary;
 
   .topContent {
     display: flex;
@@ -123,8 +122,9 @@
 }
 
 .mainNav {
-  background: rgba(255, 255, 255);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: $white;
+  border-bottom: 1px solid $gray-200;
+  box-shadow: $shadow-sm;
   
   @include mobile {
     padding: 12px 0 !important;
@@ -142,6 +142,10 @@
   }
 
   .logo {
+    display: flex;
+    align-items: center;
+    height: 48px;
+    
     svg {
       height: 48px;
       width: auto;
@@ -149,6 +153,22 @@
 
       &:hover {
         transform: scale(1.05);
+      }
+    }
+
+    @include tablet {
+      height: 42px;
+      
+      svg {
+        height: 42px;
+      }
+    }
+
+    @include mobile {
+      height: 36px;
+      
+      svg {
+        height: 36px;
       }
     }
   }
@@ -256,9 +276,9 @@
       position: absolute;
       top: calc(100% + 12px);
       transform: translateX(-50%);
-      background: white;
+      background: $white;
       border-radius: 16px;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+      box-shadow: $shadow-lg;
       padding: 16px;
       z-index: 1000;
       overflow: visible;
@@ -364,7 +384,7 @@
     transition: all 0.3s ease;
     
     &:hover {
-      background-color: color.adjust($primary, $lightness: -5%);
+      background-color: $primary-dark;
       color: white;
     }
     
@@ -526,11 +546,11 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  color: #2c3e50;
+  color: $text-dark;
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: $gray-100;
   transition: all 0.2s ease;
   
   svg {
@@ -538,8 +558,8 @@
   }
   
   &:hover {
-    background-color: rgba(231, 76, 60, 0.1);
-    color: #e74c3c;
+    background-color: rgba($accent-red, 0.1);
+    color: $accent-red;
   }
 }
 
@@ -547,7 +567,7 @@
   position: absolute;
   top: -5px;
   right: -5px;
-  background-color: #e74c3c;
+  background-color: $accent-red;
   color: white;
   font-size: 0.7rem;
   font-weight: 600;

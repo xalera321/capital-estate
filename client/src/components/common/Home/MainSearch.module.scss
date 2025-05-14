@@ -98,8 +98,8 @@
     }
 
     option {
-        background: color.adjust($primary, $lightness: -30%);
-        color: white;
+        background: $white;
+        color: $text-dark;
     }
 }
 

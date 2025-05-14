@@ -3,8 +3,8 @@
 @use '@styles/mixins' as *;
 
 .footer {
-  background: linear-gradient(152deg, #0f172a 0%, #1e293b 100%);
-  color: rgba($background-light, 0.85);
+  background: $text-dark;
+  color: rgba($white, 0.85);
   padding: 4rem 0 2rem;
   position: relative;
   font-size: 0.95rem;
@@ -16,7 +16,7 @@
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, $primary 0%, rgba($primary, 0.4) 100%);
+    background: $gradient-primary;
   }
 
   .footerContent {
@@ -183,27 +183,27 @@
       font-size: 0.85rem;
       color: rgba($white, 0.7);
     }
-  }
 
-  .legalLinks {
-    display: flex;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-    justify-content: center;
+    .legalLinks {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
 
-    a {
-      color: inherit;
-      text-decoration: none;
-      transition: color 0.3s ease;
+      a {
+        color: inherit;
+        text-decoration: none;
+        transition: color 0.3s ease;
 
-      &:hover {
-        color: $primary;
+        &:hover {
+          color: $primary;
+        }
       }
-    }
 
-    @include mobile {
-      gap: 1rem;
-      font-size: 0.8rem;
+      @include mobile {
+        gap: 1rem;
+        font-size: 0.8rem;
+      }
     }
   }
 

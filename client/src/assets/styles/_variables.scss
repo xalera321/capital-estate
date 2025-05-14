@@ -5,24 +5,24 @@
 $light: #ffffff;
 $dark: #1a1a1a;
 $gray-50: #f9fafb;
-$gray-100: #f3f4f6;
-$gray-200: #e5e7eb;
-$gray-300: #d1d5db;
-$gray-400: #9ca3af;
-$gray-500: #6b7280;
+$gray-100: #F5F7F6;
+$gray-200: #E9EDEB;
+$gray-300: #D1D9D4;
+$gray-400: #A3B0A8;
+$gray-500: #7A8A82;
 $gray-600: #4b5563;
 $gray-700: #374151;
 $gray-800: #1f2937;
 $gray-900: #111827;
-$white: #ffffff;
+$white: #FFFFFF;
 $black: #000000;
-$primary: #2A5C8B;
-$primary-dark: #1E3A5F;
-$primary-light: #E8F1F7;
+$primary: #7FBD63;
+$primary-dark: #5A9B42;
+$primary-light: #A5D494;
 $primary-hover: #1E3A5F;
 $primary-active: #15304D;
 $primary-transparent: rgba(42, 92, 139, 0.1);
-$background-light: #FFFFFF;
+$background-light: #F8FAF9;
 $background-dark: #F5F7FA;
 $border-color: #E0E0E0;
 $light-bg: #f8f9fa;
@@ -32,8 +32,8 @@ $ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94) !default;
 
 // Текст
 $text: #2d3748; // Основной цвет текста
-$text-light: #718096; // Светлый цвет текста
-$text-dark: #1a202c; // Темный цвет текста
+$text-light: #6C7A89; // Светлый цвет текста
+$text-dark: #000000; // Темный цвет текста
 
 // Размеры иконок
 $icon-size-base: 1rem; // 16px по умолчанию
@@ -50,12 +50,12 @@ $gap-xl: 3rem;
 $gap-xxl: 4rem;
 
 // Тени
-$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
-$shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
-$shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
+$shadow-sm: 0 2px 4px rgba($text-dark, 0.05);
+$shadow-md: 0 4px 8px rgba($text-dark, 0.1);
+$shadow-lg: 0 8px 16px rgba($text-dark, 0.15);
 $shadow-xl: 0 12px 24px -6px rgba(0, 0, 0, 0.12),
             0 16px 48px -4px rgba(0, 0, 0, 0.15);
-$shadow-primary: 0 0 0 3px rgba(59, 130, 246, 0.5);
+$shadow-primary: 0 4px 12px rgba($primary, 0.2);
 $border-light: rgba(0, 0, 0, 0.12) !default;
 $border-medium: rgba(0, 0, 0, 0.24) !default;
 $border-dark: rgba(0, 0, 0, 0.48) !default;
@@ -66,3 +66,14 @@ $text-medium: rgba(255, 255, 255, 0.72);
 // Брейкпоинты
 $mobile: 768px;
 $tablet: 992px;
+
+// Gradients
+$gradient-primary: linear-gradient(145deg, $primary-dark 0%, $primary 100%);
+$gradient-light: linear-gradient(145deg, $background-light 0%, $white 100%);
+$gradient-dark: linear-gradient(145deg, $text-dark 0%, darken($text-dark, 5%) 100%);
+
+// Accent colors
+$accent-blue: #3498DB;
+$accent-orange: #E67E22;
+$accent-red: #E74C3C;
+$accent-yellow: #F1C40F;
