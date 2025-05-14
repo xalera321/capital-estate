@@ -125,8 +125,8 @@ export const Header = () => {
 											<motion.a
 												href='https://wa.me/79099571995'
 												aria-label='WhatsApp'
-												target="_blank"
-												rel="noopener noreferrer"
+												target='_blank'
+												rel='noopener noreferrer'
 												whileHover={{ y: -2 }}
 												transition={{ type: 'spring', stiffness: 300 }}
 											>
@@ -135,8 +135,8 @@ export const Header = () => {
 											<motion.a
 												href='https://t.me/+79099571995'
 												aria-label='Telegram'
-												target="_blank"
-												rel="noopener noreferrer"
+												target='_blank'
+												rel='noopener noreferrer'
 												whileHover={{ y: -2 }}
 												transition={{ type: 'spring', stiffness: 300 }}
 											>
@@ -145,8 +145,8 @@ export const Header = () => {
 											<motion.a
 												href='https://vk.com/kapitalnedoz'
 												aria-label='VK'
-												target="_blank"
-												rel="noopener noreferrer"
+												target='_blank'
+												rel='noopener noreferrer'
 												whileHover={{ y: -2 }}
 												transition={{ type: 'spring', stiffness: 300 }}
 											>
@@ -168,7 +168,12 @@ export const Header = () => {
 					<div className='container'>
 						<div className={styles.navContent}>
 							<Link to='/' className={styles.logo}>
-								<Logo />
+								<Logo
+									width='186'
+									height='48'
+									preserveAspectRatio='xMidYMid meet'
+									viewBox='0 0 725 187'
+								/>
 							</Link>
 
 							<div
@@ -183,13 +188,19 @@ export const Header = () => {
 								>
 									<motion.div className={styles.dropdownWrapper}>
 										<div
-											className={`${styles.dropdownTrigger} ${isMobileObjectsOpen ? styles.active : ''}`}
+											className={`${styles.dropdownTrigger} ${
+												isMobileObjectsOpen ? styles.active : ''
+											}`}
 											onClick={handleObjectsClick}
 											aria-haspopup='menu'
 											aria-expanded={isObjectsHovered || isMobileObjectsOpen}
 										>
 											<span>Объекты</span>
-											<FiChevronDown className={`${styles.chevron} ${isMobileObjectsOpen ? styles.rotated : ''}`} />
+											<FiChevronDown
+												className={`${styles.chevron} ${
+													isMobileObjectsOpen ? styles.rotated : ''
+												}`}
+											/>
 										</div>
 										<AnimatePresence>
 											{(isObjectsHovered || isMobileObjectsOpen) && (
@@ -228,25 +239,30 @@ export const Header = () => {
 							</div>
 
 							<div className={styles.headerActions}>
-								<motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-									<Link 
+								<motion.div
+									whileHover={{ scale: 1.05 }}
+									whileTap={{ scale: 0.95 }}
+								>
+									<Link
 										to='/favorites'
 										className={styles.favoritesButton}
-										aria-label="Избранное"
+										aria-label='Избранное'
 									>
 										<FiHeart />
 										{favorites.length > 0 && (
-											<span className={styles.favoritesCount}>{favorites.length}</span>
+											<span className={styles.favoritesCount}>
+												{favorites.length}
+											</span>
 										)}
 									</Link>
 								</motion.div>
 
 								{isAuthenticated && (
-									<motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-										<Link 
-											to='/management'
-											className={styles.adminButton}
-										>
+									<motion.div
+										whileHover={{ scale: 1.05 }}
+										whileTap={{ scale: 0.95 }}
+									>
+										<Link to='/management' className={styles.adminButton}>
 											<FiUser />
 											<span>Панель администратора</span>
 										</Link>
