@@ -35,11 +35,19 @@ const upload = multer({
         fileSize: 5 * 1024 * 1024 // 5MB limit
     },
     fileFilter: (req, file, cb) => {
-        // Accept only images
-        if (file.mimetype.startsWith('image/')) {
+        // List of explicitly supported image MIME types
+        const supportedMimeTypes = [
+            'image/jpeg', 
+            'image/png', 
+            'image/gif', 
+            'image/webp'
+        ];
+        
+        // Accept only supported image formats
+        if (supportedMimeTypes.includes(file.mimetype) || file.mimetype.startsWith('image/')) {
             cb(null, true);
         } else {
-            cb(new Error('Only image files are allowed'));
+            cb(new Error('Only image files are allowed (JPEG, PNG, GIF, WebP)'));
         }
     }
 });
@@ -51,16 +59,32 @@ exports.uploadPhotos = (req, res) => {
             return res.status(400).json({ error: 'No files uploaded' });
         }
 
-        // Map file paths to URLs
-        const urls = req.files.map(file => {
-            // Convert file path to URL - prepend the domain in production
-            return `/uploads/properties/${file.filename}`;
+        // Map file paths to URLs with additional metadata
+        const uploads = req.files.map(file => {
+            // Get file extension to determine format
+            const ext = path.extname(file.filename).toLowerCase().substring(1);
+            const format = ext === 'webp' ? 'WebP' : 
+                          ext === 'jpg' || ext === 'jpeg' ? 'JPEG' : 
+                          ext === 'png' ? 'PNG' : 
+                          ext === 'gif' ? 'GIF' : 'Unknown';
+            
+            return {
+                url: `/uploads/properties/${file.filename}`,
+                originalName: file.originalname,
+                size: file.size,
+                format: format,
+                mimeType: file.mimetype
+            };
         });
+
+        // Extract just the URLs for backward compatibility
+        const urls = uploads.map(upload => upload.url);
 
         res.status(200).json({ 
             message: 'Files uploaded successfully', 
             count: req.files.length,
-            urls 
+            urls,
+            uploads // Include detailed info about each upload
         });
     } catch (error) {
         console.error('Error uploading files:', error);

@@ -24,9 +24,13 @@ const getFilenameFromUrl = (url) => {
 const deleteFile = async (url) => {
   try {
     const filename = getFilenameFromUrl(url);
-    if (!filename) return false;
+    if (!filename) {
+      console.warn(`Invalid URL format for file deletion: ${url}`);
+      return false;
+    }
     
     const filePath = path.join(process.cwd(), 'uploads/properties', filename);
+    console.log(`Attempting to delete file: ${filePath}`);
     
     // Check if file exists
     if (!fs.existsSync(filePath)) {
@@ -36,10 +40,16 @@ const deleteFile = async (url) => {
     
     // Delete the file
     fs.unlinkSync(filePath);
-    console.log(`Deleted file: ${filePath}`);
+    console.log(`✓ Successfully deleted file: ${filePath}`);
     return true;
   } catch (error) {
-    console.error(`Error deleting file ${url}:`, error);
+    console.error(`Error deleting file ${url}:`, error.message);
+    // More detailed logging for specific error types
+    if (error.code === 'EACCES') {
+      console.error(`Permission denied when trying to delete ${url}. Check file permissions.`);
+    } else if (error.code === 'EBUSY') {
+      console.error(`File ${url} is being used by another process.`);
+    }
     return false;
   }
 };

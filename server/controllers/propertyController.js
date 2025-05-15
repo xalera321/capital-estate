@@ -260,24 +260,36 @@ exports.updateProperty = async (req, res) => {
 
 exports.deleteProperty = async (req, res) => {
     try {
+        console.log(`Starting deletion of property ID: ${req.params.id}`);
+        
         const property = await Property.findByPk(req.params.id, {
             include: [{ model: PropertyPhoto, as: 'photos' }]
         });
         
         if (!property) {
+            console.log(`Property ID ${req.params.id} not found for deletion`);
             return res.status(404).json({ error: 'Property not found' });
         }
 
         // Get all photo URLs before deleting the property
         const photoUrls = property.photos.map(photo => photo.url);
+        console.log(`Found ${photoUrls.length} photos to delete for property ID ${req.params.id}:`, photoUrls);
         
         // Delete the property (and its photos due to CASCADE)
         await property.destroy();
+        console.log(`Property ID ${req.params.id} deleted from database`);
         
         // Delete the photo files from the filesystem
         if (photoUrls.length > 0) {
+            console.log(`Attempting to delete ${photoUrls.length} photo files from filesystem`);
             const { deleted, failed } = await deleteFiles(photoUrls);
             console.log(`Property ${req.params.id} deletion photo cleanup: ${deleted} deleted, ${failed} failed`);
+            
+            if (failed > 0) {
+                console.warn(`Warning: Failed to delete ${failed} photo files for property ${req.params.id}`);
+            }
+        } else {
+            console.log(`No photos to delete for property ID ${req.params.id}`);
         }
         
         res.json({ message: 'Property deleted successfully' });

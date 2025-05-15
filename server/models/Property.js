@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
 
             this.hasMany(models.PropertyPhoto, {
                 foreignKey: 'property_id',
-                as: 'photos'
+                as: 'photos',
+                onDelete: 'CASCADE'
             });
 
             this.hasMany(models.Request, {

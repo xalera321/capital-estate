@@ -1062,14 +1062,14 @@ const PropertyForm = ({ property = null, onSave, onCancel }) => {
                   <FiUpload /> Загрузить фото
                   <input
                     type="file"
-                    accept="image/*"
+                    accept="image/jpeg,image/png,image/gif,image/webp"
                     multiple
                     onChange={handleFileChange}
                     disabled={isLoading}
                   />
                 </label>
                 <small className={styles.uploadHint}>
-                  Можно загружать до 10 фотографий за раз. Поддерживаемые форматы: JPEG, PNG
+                  Можно загружать до 10 фотографий за раз. Поддерживаемые форматы: JPEG, PNG, GIF, WebP
                 </small>
               </div>
             </div>
