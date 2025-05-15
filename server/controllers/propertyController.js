@@ -1,5 +1,6 @@
 const { Property, PropertyPhoto, Feature, Category } = require('../models');
 const { Op } = require('sequelize');
+const { deleteFiles } = require('../utils/fileUtils');
 
 exports.createProperty = async (req, res) => {
     try {
@@ -197,7 +198,10 @@ exports.updateProperty = async (req, res) => {
         const { features, photos, ...propertyData } = req.body;
 
         // Use the admin scope to find hidden properties too
-        const property = await Property.scope('admin').findByPk(id);
+        const property = await Property.scope('admin').findByPk(id, {
+            include: [{ model: PropertyPhoto, as: 'photos' }]
+        });
+        
         if (!property) {
             return res.status(404).json({ error: 'Property not found' });
         }
@@ -210,7 +214,20 @@ exports.updateProperty = async (req, res) => {
 
         // Handle photos update if provided
         if (photos && Array.isArray(photos)) {
-            // First, delete all existing photos for this property
+            // Get the current photo URLs before deleting them
+            const existingPhotoUrls = property.photos.map(photo => photo.url);
+            const newPhotoUrls = photos;
+            
+            // Find photos that are being removed
+            const photosToRemove = existingPhotoUrls.filter(url => !newPhotoUrls.includes(url));
+            
+            // Delete physical files that are no longer in use
+            if (photosToRemove.length > 0) {
+                const { deleted, failed } = await deleteFiles(photosToRemove);
+                console.log(`Property ${id} photo cleanup: ${deleted} deleted, ${failed} failed`);
+            }
+            
+            // First, delete all existing photos for this property in the database
             await PropertyPhoto.destroy({ where: { property_id: id } });
             
             // Then, create new photo records with the correct order
@@ -243,14 +260,29 @@ exports.updateProperty = async (req, res) => {
 
 exports.deleteProperty = async (req, res) => {
     try {
-        const property = await Property.findByPk(req.params.id);
+        const property = await Property.findByPk(req.params.id, {
+            include: [{ model: PropertyPhoto, as: 'photos' }]
+        });
+        
         if (!property) {
             return res.status(404).json({ error: 'Property not found' });
         }
 
+        // Get all photo URLs before deleting the property
+        const photoUrls = property.photos.map(photo => photo.url);
+        
+        // Delete the property (and its photos due to CASCADE)
         await property.destroy();
+        
+        // Delete the photo files from the filesystem
+        if (photoUrls.length > 0) {
+            const { deleted, failed } = await deleteFiles(photoUrls);
+            console.log(`Property ${req.params.id} deletion photo cleanup: ${deleted} deleted, ${failed} failed`);
+        }
+        
         res.json({ message: 'Property deleted successfully' });
     } catch (error) {
+        console.error('Delete property error:', error);
         res.status(500).json({ error: 'Server Error' });
     }
 };

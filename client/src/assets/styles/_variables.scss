@@ -54,7 +54,7 @@ $shadow-sm: 0 2px 4px rgba($text-dark, 0.05);
 $shadow-md: 0 4px 8px rgba($text-dark, 0.1);
 $shadow-lg: 0 8px 16px rgba($text-dark, 0.15);
 $shadow-xl: 0 12px 24px -6px rgba(0, 0, 0, 0.12),
-            0 16px 48px -4px rgba(0, 0, 0, 0.15);
+    0 16px 48px -4px rgba(0, 0, 0, 0.15);
 $shadow-primary: 0 4px 12px rgba($primary, 0.2);
 $border-light: rgba(0, 0, 0, 0.12) !default;
 $border-medium: rgba(0, 0, 0, 0.24) !default;
@@ -70,7 +70,7 @@ $tablet: 992px;
 // Gradients
 $gradient-primary: linear-gradient(145deg, $primary-dark 0%, $primary 100%);
 $gradient-light: linear-gradient(145deg, $background-light 0%, $white 100%);
-$gradient-dark: linear-gradient(145deg, $text-dark 0%, darken($text-dark, 5%) 100%);
+$gradient-dark: linear-gradient(145deg, $text-dark 0%, color.adjust($text-dark, $lightness: -5%) 100%);
 
 // Accent colors
 $accent-blue: #3498DB;

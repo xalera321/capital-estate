@@ -13,10 +13,18 @@ const storage = multer.diskStorage({
         cb(null, uploadDir);
     },
     filename: (req, file, cb) => {
-        // Ensure unique filename with timestamp and original extension
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        // Extract property ID from route params if available (for property photo upload route)
+        const propertyId = req.params.id || 'new';
+        
+        // Generate a clean filename by removing special characters from original name
+        const originalName = path.parse(file.originalname).name;
+        const cleanName = originalName.replace(/[^a-zA-Z0-9]/g, '-').substring(0, 30);
+        
+        // Create a logical filename format: property-{id}-{cleaned-original-name}-{timestamp}{ext}
+        const timestamp = Date.now();
         const ext = path.extname(file.originalname);
-        cb(null, 'property-' + uniqueSuffix + ext);
+        
+        cb(null, `property-${propertyId}-${cleanName}-${timestamp}${ext}`);
     }
 });
 
