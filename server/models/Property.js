@@ -28,16 +28,6 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     Property.init({
-        title: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                len: {
-                    args: [5, 255],
-                    msg: 'Title must be between 5 and 255 characters'
-                }
-            }
-        },
         price: {
             type: DataTypes.INTEGER,
             allowNull: false,

@@ -11,7 +11,7 @@ export const PropertyCard = ({ property, hiddenLabel = null }) => {
 				{property.photos?.[0]?.url && (
 					<img
 						src={getImageUrl(property.photos[0].url)}
-						alt={property.title}
+						alt="Property"
 						className={styles.image}
 					/>
 				)}
@@ -24,8 +24,6 @@ export const PropertyCard = ({ property, hiddenLabel = null }) => {
 			</div>
 
 			<div className={styles.content}>
-				<h3 className={styles.title}>{property.title}</h3>
-
 				<div className={styles.details}>
 					<span className={styles.price}>
 						{new Intl.NumberFormat('ru-RU').format(property.price)} ₽

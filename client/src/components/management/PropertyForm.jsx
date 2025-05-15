@@ -8,7 +8,6 @@ import styles from './PropertyForm.module.scss';
 
 const PropertyForm = ({ property = null, onSave, onCancel }) => {
   const [formData, setFormData] = useState({
-    title: '',
     price: '',
     operation_type: 'buy',
     city: '',
@@ -503,10 +502,6 @@ const PropertyForm = ({ property = null, onSave, onCancel }) => {
   const validateForm = () => {
     const newErrors = {};
     
-    if (!formData.title || formData.title.length < 5) {
-      newErrors.title = 'Название должно содержать минимум 5 символов';
-    }
-    
     if (!formData.price || formData.price <= 0) {
       newErrors.price = 'Цена должна быть больше 0';
     }
@@ -671,20 +666,6 @@ const PropertyForm = ({ property = null, onSave, onCancel }) => {
         <div className={styles.formGrid}>
           <div className={styles.formSection}>
             <h3>Основная информация</h3>
-            
-            <div className={styles.formGroup}>
-              <label className={styles.formLabel}>Название*</label>
-              <input
-                type="text"
-                name="title"
-                value={formData.title}
-                onChange={handleChange}
-                className={`${styles.formControl} ${errors.title ? styles.hasError : ''}`}
-                placeholder="Название объекта недвижимости"
-                disabled={isLoading}
-              />
-              {errors.title && <div className={styles.errorMessage}>{errors.title}</div>}
-            </div>
             
             <div className={styles.formRow}>
               <div className={styles.formGroup}>

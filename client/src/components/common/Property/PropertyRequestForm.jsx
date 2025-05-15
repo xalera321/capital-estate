@@ -220,7 +220,6 @@ const PropertyRequestForm = ({ property, isButton = false }) => {
           </div>
           <div className={styles.modalBody}>
             <p className={styles.propertyTitle}>
-              {property?.title}
               {property?.price && (
                 <span className={styles.propertyPrice}>
                   {new Intl.NumberFormat('ru-RU', {

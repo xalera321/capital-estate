@@ -81,7 +81,10 @@ export const PropertyPage = () => {
                             <div className={styles.mainContent}>
                                 <div className={styles.titleSection}>
                                     <div className={styles.titleRow}>
-                                    <h1 className={styles.propertyTitle}>{property.title}</h1>
+                                        <div className={styles.location}>
+                                            <FiMapPin className={styles.icon} />
+                                            <span>{property.city}{property.district ? `, ${property.district}` : ''}</span>
+                                        </div>
                                         <div className={styles.favoritesAction}>
                                             <FavoriteButton 
                                                 propertyId={property.id} 
@@ -91,10 +94,6 @@ export const PropertyPage = () => {
                                                 В избранное
                                             </span>
                                         </div>
-                                    </div>
-                                    <div className={styles.location}>
-                                        <FiMapPin className={styles.icon} />
-                                        <span>{property.city}{property.district ? `, ${property.district}` : ''}</span>
                                     </div>
                                     <div className={styles.priceCategorySection}>
                                         <div className={styles.priceValue}>
