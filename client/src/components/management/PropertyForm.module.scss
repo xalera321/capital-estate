@@ -400,4 +400,44 @@
   input {
     padding-right: 2.5rem;
   }
+}
+
+.inputWithAction {
+  position: relative;
+  display: flex;
+  
+  .formControl {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    flex: 1;
+  }
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $primary;
+  color: white;
+  border: none;
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  padding: 0 0.75rem;
+  min-width: 40px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover:not(:disabled) {
+    background-color: $primary-dark;
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: $gray-400;
+  }
+  
+  svg {
+    font-size: 1rem;
+  }
 } 

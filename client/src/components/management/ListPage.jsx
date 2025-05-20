@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FiPlus, FiRefreshCw, FiDownload, FiSearch, FiEdit, FiTrash2, FiFilter, FiInbox } from 'react-icons/fi';
+import { FiPlus, FiRefreshCw, FiDownload, FiSearch, FiEdit, FiTrash2, FiFilter, FiInbox, FiEye, FiEyeOff } from 'react-icons/fi';
 import styles from './ListPage.module.scss';
 
 const ListPage = ({
@@ -15,6 +15,7 @@ const ListPage = ({
   onRefresh,
   onExport,
   onFilterChange,
+  customActions = [],
   addButtonLabel = 'Добавить',
   emptyMessage = 'Нет данных для отображения'
 }) => {
@@ -242,6 +243,18 @@ const ListPage = ({
                       </td>
                     ))}
                     <td className={styles.actionsColumn}>
+                      {customActions && customActions.length > 0 && 
+                        customActions.map((action, actionIndex) => (
+                          <button
+                            key={`action-${actionIndex}`}
+                            className={`${styles.button} ${styles.iconButton} ${styles.smallButton}`}
+                            onClick={() => action.action(item.id || item)}
+                            title={typeof action.label === 'function' ? action.label(item) : action.label}
+                          >
+                            {action.icon === 'eye' && (item.is_hidden ? <FiEye /> : <FiEyeOff />)}
+                          </button>
+                        ))
+                      }
                       {onEdit && (
                         <button 
                           className={`${styles.button} ${styles.iconButton} ${styles.smallButton}`} 

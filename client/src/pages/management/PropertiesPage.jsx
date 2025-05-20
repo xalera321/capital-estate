@@ -3,6 +3,7 @@ import { toast } from 'react-hot-toast';
 import ListPage from '@components/management/ListPage';
 import PropertyModal from '@components/management/PropertyModal';
 import DeleteConfirmationModal from '@components/management/DeleteConfirmationModal';
+import HideConfirmationModal from '@components/management/HideConfirmationModal';
 import { formatRUB, getImageUrl } from '@utils/formatters';
 import axios from '@services/axios';
 
@@ -13,6 +14,7 @@ const PropertiesPage = () => {
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [isExporting, setIsExporting] = useState(false);
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, id: null, name: '' });
+  const [hideModal, setHideModal] = useState({ isOpen: false, id: null, name: '', isHidden: false });
   
   // Column configuration
   const columns = [
@@ -205,17 +207,29 @@ const PropertiesPage = () => {
     setDeleteModal({ isOpen: false, id: null, name: '' });
   };
   
-  // Handle toggle visibility
-  const handleToggleVisibility = async (id) => {
+  // Open visibility toggle confirmation modal
+  const handleVisibilityClick = (id) => {
+    const property = properties.find(p => p.id === id);
+    
+    if (property) {
+      setHideModal({
+        isOpen: true,
+        id: id,
+        name: property.title || 'объект недвижимости',
+        isHidden: property.is_hidden
+      });
+    }
+  };
+  
+  // Handle toggle visibility confirmation
+  const handleVisibilityConfirm = async () => {
+    const { id, isHidden } = hideModal;
+    
     try {
-      const property = properties.find(p => p.id === id);
-      
-      if (!property) return;
-      
-      // Store the current visibility state before making the request
-      const wasHidden = property.is_hidden;
-      
-      await axios.patch(`/properties/${id}/toggle-visibility`);
+      // Используем обычный endpoint обновления объекта
+      await axios.put(`/properties/${id}`, {
+        is_hidden: !isHidden
+      });
       
       // Update property in state
       setProperties(prev => 
@@ -224,11 +238,18 @@ const PropertiesPage = () => {
         )
       );
       
-      toast.success(`Объект ${wasHidden ? 'опубликован' : 'скрыт'}`);
+      toast.success(`Объект ${isHidden ? 'отображен' : 'скрыт'}`);
     } catch (error) {
       console.error('Error toggling visibility:', error);
       toast.error('Не удалось изменить видимость объекта');
+    } finally {
+      setHideModal({ isOpen: false, id: null, name: '', isHidden: false });
     }
+  };
+  
+  // Close visibility modal
+  const handleVisibilityCancel = () => {
+    setHideModal({ isOpen: false, id: null, name: '', isHidden: false });
   };
   
   // Handle refresh
@@ -288,9 +309,9 @@ const PropertiesPage = () => {
         onFilterChange={handleFilterChange}
         customActions={[
           {
-            label: 'Видимость',
+            label: (item) => item.is_hidden ? 'Отобразить' : 'Скрыть',
             icon: 'eye',
-            action: handleToggleVisibility
+            action: handleVisibilityClick
           }
         ]}
         addButtonLabel="Добавить объект"
@@ -309,6 +330,14 @@ const PropertiesPage = () => {
         onClose={handleDeleteCancel}
         onConfirm={handleDeleteConfirm}
         itemName={deleteModal.name}
+      />
+
+      <HideConfirmationModal
+        isOpen={hideModal.isOpen}
+        onClose={handleVisibilityCancel}
+        onConfirm={handleVisibilityConfirm}
+        itemName={hideModal.name}
+        isHidden={hideModal.isHidden}
       />
     </div>
   );

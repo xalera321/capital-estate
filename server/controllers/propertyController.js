@@ -76,8 +76,36 @@ exports.getProperties = async (req, res) => {
                 ]
             };
         }
-        if (city) where.city = city;
-        if (district) where.district = district;
+        
+        // Создаем условия поиска по ключевому слову
+        if (keyword) {
+            // Используем существующие поля из модели
+            where[Op.or] = [
+                { description: { [Op.iLike]: `%${keyword}%` } },
+                { address: { [Op.iLike]: `%${keyword}%` } },
+                { city: { [Op.iLike]: `%${keyword}%` } },
+                { district: { [Op.iLike]: `%${keyword}%` } }
+            ];
+        }
+        
+        // Обновляем поиск по городу
+        if (city) {
+            if (where[Op.or]) {
+                where[Op.or].push({ city: { [Op.iLike]: `%${city}%` } });
+            } else {
+                where.city = { [Op.iLike]: `%${city}%` };
+            }
+        }
+        
+        // Обновляем поиск по району
+        if (district) {
+            if (where[Op.or]) {
+                where[Op.or].push({ district: { [Op.iLike]: `%${district}%` } });
+            } else {
+                where.district = { [Op.iLike]: `%${district}%` };
+            }
+        }
+        
         if (categoryId) where.category_id = categoryId;
 
         if (type) {
@@ -106,14 +134,6 @@ exports.getProperties = async (req, res) => {
             };
         }
 
-        if (keyword) {
-            where[Op.or] = [
-                { title: { [Op.iLike]: `%${keyword}%` } },
-                { description: { [Op.iLike]: `%${keyword}%` } },
-                { address: { [Op.iLike]: `%${keyword}%` } }
-            ];
-        }
-
         const sortOptions = {
             newest: [['createdAt', 'DESC']],
             price_asc: [['price', 'ASC']],
@@ -123,6 +143,8 @@ exports.getProperties = async (req, res) => {
         };
 
         order.push(sortOptions[sortBy] || sortOptions.newest);
+
+        console.log('Query conditions:', JSON.stringify(where, null, 2));
 
         const total = await Property.count({
             where,
@@ -375,28 +397,70 @@ exports.getLatestProperties = async (req, res) => {
 
 exports.getPropertiesCount = async (req, res) => {
     try {
+        const {
+            operationType,
+            minPrice,
+            maxPrice,
+            city,
+            district,
+            categoryId,
+            keyword
+        } = req.query;
+
         const where = {
             is_hidden: false,
-            operation_type: req.query.operationType || 'buy'
         };
 
-        if (req.query.categoryId) {
-            where.category_id = req.query.categoryId;
-        }
+        if (operationType) where.operation_type = operationType;
 
-        if (req.query.minPrice) {
+        if (minPrice) {
             where.price = {
                 ...where.price,
-                [Op.gte]: Number(req.query.minPrice)
+                [Op.gte]: Number(minPrice)
             };
         }
 
-        if (req.query.maxPrice) {
+        if (maxPrice) {
             where.price = {
                 ...where.price,
-                [Op.lte]: Number(req.query.maxPrice)
+                [Op.lte]: Number(maxPrice)
             };
         }
+
+        if (categoryId) where.category_id = categoryId;
+
+        // Добавляем поиск по ключевому слову
+        if (keyword) {
+            // Используем существующие поля из модели
+            where[Op.or] = [
+                { description: { [Op.iLike]: `%${keyword}%` } },
+                { address: { [Op.iLike]: `%${keyword}%` } },
+                { city: { [Op.iLike]: `%${keyword}%` } },
+                { district: { [Op.iLike]: `%${keyword}%` } }
+            ];
+        }
+
+        // Добавляем поиск по городу
+        if (city) {
+            // Если у нас уже есть условие Or, добавляем в него город
+            if (where[Op.or]) {
+                where[Op.or].push({ city: { [Op.iLike]: `%${city}%` } });
+            } else {
+                where.city = { [Op.iLike]: `%${city}%` };
+            }
+        }
+
+        // Добавляем поиск по району
+        if (district) {
+            // Если у нас уже есть условие Or, добавляем в него район
+            if (where[Op.or]) {
+                where[Op.or].push({ district: { [Op.iLike]: `%${district}%` } });
+            } else {
+                where.district = { [Op.iLike]: `%${district}%` };
+            }
+        }
+
+        console.log('Query conditions:', JSON.stringify(where, null, 2));
 
         const count = await Property.count({ where });
         res.json({ count });

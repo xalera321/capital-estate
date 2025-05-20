@@ -4,7 +4,7 @@ import { formatRUB, getImageUrl } from '@utils/formatters';
 import { loadYandexMaps, createMap, createPlacemark, createClusterer } from '@services/yandexMapsService';
 import styles from './PropertiesMap.module.scss';
 
-export const PropertiesMap = () => {
+export const PropertiesMap = ({ fullscreen = false }) => {
   const [properties, setProperties] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const mapRef = useRef(null);
@@ -17,7 +17,7 @@ export const PropertiesMap = () => {
       try {
         const response = await axios.get('/properties', {
           params: {
-            limit: 100, // Получаем больше объектов для карты
+            limit: fullscreen ? 500 : 100, // Больше объектов для полноэкранного режима
             is_hidden: false
           }
         });
@@ -38,7 +38,12 @@ export const PropertiesMap = () => {
     };
     
     fetchProperties();
-  }, []);
+    
+    // При открытии модального окна нужно перезагрузить данные
+    if (fullscreen && mapInitialized.current) {
+      mapInitialized.current = false;
+    }
+  }, [fullscreen]);
   
   // Инициализация карты
   useEffect(() => {
@@ -131,6 +136,13 @@ export const PropertiesMap = () => {
         
         // Устанавливаем флаг, что карта инициализирована
         mapInitialized.current = true;
+        
+        // В полноэкранном режиме нужно обновить размер карты после рендера
+        if (fullscreen) {
+          setTimeout(() => {
+            map.container.fitToViewport();
+          }, 100);
+        }
       } catch (error) {
         console.error('Error initializing properties map:', error);
       }
@@ -142,19 +154,27 @@ export const PropertiesMap = () => {
     return () => {
       mapInitialized.current = false;
     };
-  }, [isLoading, properties]);
+  }, [isLoading, properties, fullscreen]);
+  
+  const mapContainerStyles = fullscreen 
+    ? { width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 } 
+    : { width: '100%', height: '600px' };
   
   return (
-    <section className={styles.mapSection}>
+    <section className={`${styles.mapSection} ${fullscreen ? styles.fullscreenMap : ''}`}>
       <div className={styles.container}>
-        <h2 className={styles.title}>Найдите объекты на карте</h2>
-        <p className={styles.subtitle}>Просмотрите все доступные объекты недвижимости на интерактивной карте</p>
+        {!fullscreen && (
+          <>
+            <h2 className={styles.title}>Найдите объекты на карте</h2>
+            <p className={styles.subtitle}>Просмотрите все доступные объекты недвижимости на интерактивной карте</p>
+          </>
+        )}
         
         <div className={styles.mapContainer}>
           {isLoading ? (
             <div className={styles.loader}>Загрузка карты...</div>
           ) : (
-            <div ref={mapRef} style={{ width: '100%', height: '600px' }}></div>
+            <div ref={mapRef} style={mapContainerStyles}></div>
           )}
         </div>
       </div>

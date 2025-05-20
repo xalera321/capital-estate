@@ -5,15 +5,17 @@ import { motion } from 'framer-motion'
 import { Header } from '@/components/common/Header/Header'
 import { Footer } from '@/components/common/Footer/Footer'
 import PropertyFilters from '@/components/properties/PropertyFilters/PropertyFilters'
+import PropertySearch from '@/components/properties/PropertySearch/PropertySearch'
 import { PropertyCard } from '@/components/properties/PropertyCard/PropertyCard'
 import Pagination from '@/components/ui/Pagination/Pagination'
+import { MapModal } from '@/components/common/Map/MapModal'
 import {
 	fetchProperties,
 	fetchCategories,
 	fetchPropertiesCount,
 } from '@/features/properties/api/propertyApi'
 import styles from './CatalogPage.module.scss'
-import { FiAlertTriangle, FiPackage } from 'react-icons/fi'
+import { FiAlertTriangle, FiPackage, FiMap } from 'react-icons/fi'
 
 export function CatalogPage() {
 	const [searchParams] = useSearchParams()
@@ -22,6 +24,7 @@ export function CatalogPage() {
 	const [totalItems, setTotalItems] = useState(0)
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState(null)
+	const [isMapModalOpen, setIsMapModalOpen] = useState(false)
 	const navigate = useNavigate()
 
 	useEffect(() => {
@@ -61,6 +64,10 @@ export function CatalogPage() {
 		navigate(`?${newParams.toString()}`)
 	}
 
+	const toggleMapModal = () => {
+		setIsMapModalOpen(!isMapModalOpen)
+	}
+
 	const renderContent = () => {
 		if (loading) {
 			return (
@@ -90,7 +97,7 @@ export function CatalogPage() {
 					<FiPackage className={styles.emptyIcon} />
 					<h3 className={styles.emptyTitle}>Ничего не найдено</h3>
 					<p className={styles.emptyText}>
-						Попробуйте изменить параметры фильтрации
+						Попробуйте изменить параметры фильтрации или поисковый запрос
 					</p>
 				</div>
 			)
@@ -130,6 +137,7 @@ export function CatalogPage() {
 			<Header />
 			<div className={styles.catalog}>
 				<Container>
+					<PropertySearch initialValue={searchParams.get('search') || ''} />
 					<div className={styles.propertyRow}>
 						<div className={styles.filtersSection}>
 							<Card className={styles.filtersCard}>
@@ -141,6 +149,13 @@ export function CatalogPage() {
 									<div className={styles.resultsCount}>
 										Найдено объектов: {totalItems}
 									</div>
+									<button 
+										className={styles.mapButton}
+										onClick={toggleMapModal}
+									>
+										<FiMap className={styles.mapIcon} />
+										Показать на карте
+									</button>
 								</Card.Body>
 							</Card>
 						</div>
@@ -154,6 +169,7 @@ export function CatalogPage() {
 				</Container>
 			</div>
 			<Footer />
+			<MapModal isOpen={isMapModalOpen} onClose={() => setIsMapModalOpen(false)} />
 		</motion.div>
 	)
 }

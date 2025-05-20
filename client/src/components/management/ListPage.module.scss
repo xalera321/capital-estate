@@ -222,6 +222,14 @@
 .actionsColumn {
   width: 100px;
   text-align: right !important;
+  
+  .button {
+    margin-right: 5px;
+    
+    &:last-child {
+      margin-right: 0;
+    }
+  }
 }
 
 .button {

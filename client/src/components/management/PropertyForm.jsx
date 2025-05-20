@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { toast } from 'react-hot-toast';
-import { FiSave, FiX, FiUpload, FiTrash2, FiMapPin, FiArrowLeft, FiArrowRight, FiStar } from 'react-icons/fi';
+import { FiSave, FiX, FiUpload, FiTrash2, FiMapPin, FiArrowLeft, FiArrowRight, FiStar, FiSearch } from 'react-icons/fi';
+import Spinner from '../ui/Spinner';
 import axios from '@/services/axios';
 import { loadYandexMaps, createMap, createPlacemark } from '@/services/yandexMapsService';
 import { getImageUrl } from '@/utils/formatters';
@@ -33,6 +34,7 @@ const PropertyForm = ({ property = null, onSave, onCancel }) => {
   const [features, setFeatures] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [isGeocoding, setIsGeocoding] = useState(false);
   
   const isEditMode = !!property;
   
@@ -314,6 +316,83 @@ const PropertyForm = ({ property = null, onSave, onCancel }) => {
     updateMapPosition();
   }, [formData.coordinates.lat, formData.coordinates.lng]);
   
+  // Функция геокодирования адреса в координаты
+  const geocodeAddress = async (address) => {
+    if (!address || address.trim() === '') return;
+    
+    try {
+      setIsGeocoding(true);
+      await loadYandexMaps();
+      const geocoder = await window.ymaps.geocode(address);
+      const result = geocoder.geoObjects.get(0);
+      
+      if (result) {
+        const coords = result.geometry.getCoordinates();
+        // Обновляем координаты, это вызовет обновление маркера на карте
+        setFormData(prev => ({
+          ...prev,
+          coordinates: {
+            lat: coords[0],
+            lng: coords[1]
+          }
+        }));
+        
+        // Получаем полный адрес и компоненты
+        const fullAddress = result.getAddressLine();
+        const geoObjectMetadata = result.properties.get('metaDataProperty').GeocoderMetaData;
+        const addressComponents = geoObjectMetadata.Address.Components;
+        
+        // Анализируем компоненты адреса для извлечения города и района
+        let city = '';
+        let district = '';
+        
+        // Поиск города и района в компонентах адреса
+        addressComponents.forEach(component => {
+          if (component.kind === 'locality') {
+            city = component.name;
+          } else if (component.kind === 'district') {
+            district = component.name;
+          }
+        });
+        
+        // Обновляем адрес, город и район
+        setFormData(prev => ({
+          ...prev,
+          address: fullAddress,
+          ...(city && { city }),
+          ...(district && { district })
+        }));
+
+        // Обновляем позицию карты и маркера
+        if (mapRef.current && mapRef.current.__yaMap) {
+          const map = mapRef.current.__yaMap;
+          // Центрируем карту на новых координатах
+          map.setCenter(coords, 15, { duration: 300 });
+          
+          // Обновляем положение метки
+          const placemarks = map.geoObjects.getIterator();
+          let placemark = placemarks.getNext();
+          while (placemark) {
+            if (placemark.options.get('preset') === 'islands#redDotIcon') {
+              placemark.geometry.setCoordinates(coords);
+              break;
+            }
+            placemark = placemarks.getNext();
+          }
+        }
+        
+        toast.success('Адрес успешно найден на карте');
+      } else {
+        toast.error('Не удалось найти координаты по указанному адресу');
+      }
+    } catch (error) {
+      console.error('Error geocoding address:', error);
+      toast.error('Произошла ошибка при поиске адреса');
+    } finally {
+      setIsGeocoding(false);
+    }
+  };
+  
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     
@@ -337,6 +416,20 @@ const PropertyForm = ({ property = null, onSave, onCancel }) => {
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: null }));
     }
+  };
+
+  // Добавляем функцию для обработки ввода адреса и нажатия Enter
+  const handleAddressKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      geocodeAddress(formData.address);
+    }
+  };
+
+  // Функция для обработки клика по кнопке поиска адреса
+  const handleFindOnMap = (e) => {
+    e.preventDefault();
+    geocodeAddress(formData.address);
   };
   
   const handleFeatureToggle = (featureId) => {
@@ -824,21 +917,6 @@ const PropertyForm = ({ property = null, onSave, onCancel }) => {
                 disabled={isLoading}
               />
             </div>
-            
-            <div className={styles.formGroup}>
-              <div className={styles.checkboxControl}>
-                <input
-                  type="checkbox"
-                  name="is_hidden"
-                  id="is_hidden"
-                  checked={formData.is_hidden}
-                  onChange={handleChange}
-                  disabled={isLoading}
-                />
-                <label htmlFor="is_hidden">Скрыть объект</label>
-              </div>
-              <small className={styles.formHint}>Скрытые объекты не отображаются на сайте</small>
-            </div>
           </div>
           
           <div className={`${styles.formSection} ${styles.fullWidth}`}>
@@ -849,16 +927,33 @@ const PropertyForm = ({ property = null, onSave, onCancel }) => {
             </p>
             
             <div className={styles.formGroup}>
-              <label className={styles.formLabel}>Адрес</label>
-              <input
-                type="text"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                className={styles.formControl}
-                placeholder="Адрес объекта недвижимости"
-                disabled={isLoading}
-              />
+              <label htmlFor="address" className={styles.formLabel}>
+                Адрес
+              </label>
+              <div className={styles.inputWithAction}>
+                <input
+                  type="text"
+                  id="address"
+                  name="address"
+                  className={`${styles.formControl} ${errors.address ? styles.hasError : ''}`}
+                  value={formData.address || ''}
+                  onChange={handleChange}
+                  onKeyDown={handleAddressKeyDown}
+                  placeholder="Введите адрес"
+                />
+                <button
+                  type="button"
+                  className={styles.actionButton}
+                  onClick={handleFindOnMap}
+                  disabled={isLoading || !formData.address}
+                  title="Найти на карте"
+                >
+                  {isGeocoding ? <Spinner size="sm" variant="light" /> : <FiSearch />}
+                </button>
+              </div>
+              {errors.address && (
+                <div className={styles.errorMessage}>{errors.address}</div>
+              )}
             </div>
             
             <div className={styles.formRow}>
