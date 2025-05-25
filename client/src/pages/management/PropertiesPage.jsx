@@ -43,12 +43,6 @@ const PropertiesPage = () => {
       }
     },
     {
-      id: 'title',
-      label: 'Название',
-      sortable: true,
-      width: '25%'
-    },
-    {
       id: 'price',
       label: 'Цена',
       sortable: true,
@@ -181,7 +175,7 @@ const PropertiesPage = () => {
       setDeleteModal({
         isOpen: true,
         id: id,
-        name: property.title || 'объект недвижимости'
+        name: property.address || 'объект недвижимости'
       });
     }
   };

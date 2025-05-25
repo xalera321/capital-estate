@@ -2,11 +2,15 @@ const { Request, Property } = require('../models');
 
 exports.createRequest = async (req, res) => {
     try {
-        const { user_name, user_phone, message, property_id } = req.body;
+        const { user_name, user_phone, user_email, message, property_id } = req.body;
         
         // Validate required fields
         if (!user_name) {
             return res.status(400).json({ error: 'Имя пользователя обязательно' });
+        }
+        
+        if (!user_email) {
+            return res.status(400).json({ error: 'Email пользователя обязателен' });
         }
         
         if (!user_phone) {
@@ -17,6 +21,7 @@ exports.createRequest = async (req, res) => {
         const request = await Request.create({
             user_name,
             user_phone,
+            user_email,
             message: message || '',
             property_id: property_id || null // Make property_id optional
         });
@@ -40,7 +45,7 @@ exports.getRequests = async (req, res) => {
             include: [{
                 model: Property,
                 as: 'property',
-                attributes: ['id', 'title', 'price', 'address']
+                attributes: ['id', 'price', 'address']
             }],
             order: [['createdAt', 'DESC']] // Newest first
         });

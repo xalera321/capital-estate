@@ -595,16 +595,17 @@ const PropertyForm = ({ property = null, onSave, onCancel }) => {
   const validateForm = () => {
     const newErrors = {};
     
-    if (!formData.price || formData.price <= 0) {
-      newErrors.price = 'Цена должна быть больше 0';
+    if (!formData.price) newErrors.price = 'Цена обязательна';
+    if (!formData.city) newErrors.city = 'Город обязателен';
+    if (!formData.area) newErrors.area = 'Площадь обязательна';
+    if (!formData.category_id) newErrors.category_id = 'Категория обязательна для выбора';
+    
+    if (formData.price && !/^\d+$/.test(formData.price)) {
+      newErrors.price = 'Цена должна быть числом';
     }
     
-    if (!formData.city) {
-      newErrors.city = 'Город обязателен для заполнения';
-    }
-    
-    if (!formData.area || formData.area <= 0) {
-      newErrors.area = 'Площадь должна быть больше 0';
+    if (!formData.operation_type) {
+      newErrors.operation_type = 'Тип операции обязателен для выбора';
     }
     
     if (photos.length === 0 && newPhotos.length === 0) {
@@ -826,12 +827,12 @@ const PropertyForm = ({ property = null, onSave, onCancel }) => {
             </div>
             
             <div className={styles.formGroup}>
-              <label className={styles.formLabel}>Категория</label>
+              <label className={styles.formLabel}>Категория*</label>
               <select
                 name="category_id"
                 value={formData.category_id}
                 onChange={handleChange}
-                className={styles.formControl}
+                className={`${styles.formControl} ${errors.category_id ? styles.hasError : ''}`}
                 disabled={isLoading || categories.length === 0}
               >
                 <option value="">Выберите категорию</option>
@@ -841,6 +842,7 @@ const PropertyForm = ({ property = null, onSave, onCancel }) => {
                   </option>
                 ))}
               </select>
+              {errors.category_id && <div className={styles.errorMessage}>{errors.category_id}</div>}
             </div>
           </div>
           

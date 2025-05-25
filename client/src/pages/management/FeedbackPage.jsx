@@ -2,13 +2,15 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 import ListPage from '@/components/management/ListPage';
 import DeleteConfirmationModal from '@/components/management/DeleteConfirmationModal';
+import EditFeedbackStatusModal from '@/components/management/EditFeedbackStatusModal';
 import { formatDate } from '@/utils/formatters';
-import { getFeedbacks, deleteFeedback } from '@/features/feedback/api/feedbackApi';
+import { getFeedbacks, deleteFeedback, updateFeedbackStatus } from '@/features/feedback/api/feedbackApi';
 
 const FeedbackPage = () => {
   const [feedbacks, setFeedbacks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, id: null, name: '' });
+  const [editModal, setEditModal] = useState({ isOpen: false, feedback: null });
   
   // Конфигурация колонок для таблицы
   const columns = [
@@ -42,6 +44,26 @@ const FeedbackPage = () => {
       })
     },
     {
+      id: 'status',
+      label: 'Статус',
+      sortable: true,
+      width: '10%',
+      formatter: (value) => {
+        let statusStyle = 'pending'; // Default style
+        let statusLabel = 'Новое'; // Default label
+
+        if (value === 'in_progress') {
+          statusStyle = 'processing';
+          statusLabel = 'В работе';
+        } else if (value === 'resolved') {
+          statusStyle = 'success';
+          statusLabel = 'Решено';
+        }
+        
+        return { type: 'status', status: statusStyle, value: statusLabel };
+      }
+    },
+    {
       id: 'createdAt',
       label: 'Дата',
       sortable: true,
@@ -52,6 +74,17 @@ const FeedbackPage = () => {
   
   // Конфигурация фильтров
   const filters = [
+    {
+      id: 'status',
+      label: 'Статус',
+      type: 'select',
+      options: [
+        { value: '', label: 'Все' },
+        { value: 'new', label: 'Новые' },
+        { value: 'in_progress', label: 'В работе' },
+        { value: 'resolved', label: 'Решенные' }
+      ]
+    },
     {
       id: 'date_from',
       label: 'Дата от',
@@ -69,7 +102,7 @@ const FeedbackPage = () => {
     setIsLoading(true);
     try {
       // Получаем все сообщения обратной связи
-      const data = await getFeedbacks();
+      const data = await getFeedbacks(filters);
       
       // Фильтруем данные, если есть фильтры по дате
       let filteredData = [...data];
@@ -164,7 +197,46 @@ const FeedbackPage = () => {
       ), { duration: 10000 });
     }
   };
-  
+
+  // Add handlers for editing status
+  const handleEdit = (id) => {
+    const feedbackItem = feedbacks.find(f => f.id === id);
+    if (feedbackItem) {
+      setEditModal({
+        isOpen: true,
+        feedback: feedbackItem 
+      });
+    }
+  };
+
+  const handleSaveStatus = async (newStatus) => {
+    const { feedback } = editModal;
+    if (!feedback) return;
+    
+    try {
+      // API call to update status
+      const updatedItem = await updateFeedbackStatus(feedback.id, newStatus); 
+      
+      setFeedbacks(prev => 
+        prev.map(f => f.id === feedback.id ? { ...f, status: updatedItem.status } : f)
+      );
+      
+      const statusText = 
+        newStatus === 'new' ? 'Новое' : 
+        newStatus === 'in_progress' ? 'В работе' : 'Решено';
+      
+      toast.success(`Статус обращения изменен на "${statusText}"`);
+      setEditModal({ isOpen: false, feedback: null });
+    } catch (error) {
+      console.error('Error updating feedback status:', error);
+      toast.error('Не удалось изменить статус обращения');
+    }
+  };
+
+  const handleCloseEditModal = () => {
+    setEditModal({ isOpen: false, feedback: null });
+  };
+
   return (
     <div>
       <ListPage
@@ -175,10 +247,11 @@ const FeedbackPage = () => {
         isLoading={isLoading}
         onDelete={handleDeleteClick}
         onView={handleView}
+        onEdit={handleEdit}
         filters={filters}
         onFilter={fetchFeedbacks}
         showAdd={false} // Скрыть кнопку добавления
-        showEdit={false} // Скрыть кнопку редактирования
+        showEdit={true} // Скрыть кнопку редактирования
       />
       
       <DeleteConfirmationModal
@@ -187,6 +260,16 @@ const FeedbackPage = () => {
         onConfirm={handleDeleteConfirm}
         itemName={deleteModal.name}
       />
+
+      {/* Use new EditFeedbackStatusModal */}
+      {editModal.isOpen && editModal.feedback && (
+        <EditFeedbackStatusModal 
+          isOpen={editModal.isOpen}
+          onClose={handleCloseEditModal}
+          feedback={editModal.feedback}
+          onSave={handleSaveStatus}
+        />
+      )}
     </div>
   );
 };

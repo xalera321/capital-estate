@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 import ListPage from '@/components/management/ListPage';
 import DeleteConfirmationModal from '@/components/management/DeleteConfirmationModal';
-import EditRequestModal from '@/components/management/EditRequestModal';
+import EditRequestStatusModal from '@/components/management/EditRequestStatusModal';
 import { formatDate } from '@/utils/formatters';
 import axios from '@/services/axios';
 import { Link } from 'react-router-dom';
@@ -38,7 +38,7 @@ const RequestsPage = () => {
           type: 'text',
           value: (
             <Link to={`/properties/${property.id}`} target="_blank" rel="noopener noreferrer">
-              {property.title}
+              {property.address || `ID: ${property.id}`}
             </Link>
           )
         };
@@ -152,11 +152,11 @@ const RequestsPage = () => {
   
   // Открытие модального окна для редактирования статуса
   const handleEdit = (id) => {
-    const request = requests.find(r => r.id === id);
-    if (request) {
+    const requestItem = requests.find(r => r.id === id);
+    if (requestItem) {
       setEditModal({
         isOpen: true,
-        request
+        request: requestItem
       });
     }
   };
@@ -302,12 +302,14 @@ const RequestsPage = () => {
         itemName={deleteModal.name}
       />
       
-      <EditRequestModal
-        isOpen={editModal.isOpen}
-        onClose={handleCloseEditModal}
-        request={editModal.request}
-        onSave={handleSaveStatus}
-      />
+      {editModal.isOpen && editModal.request && (
+        <EditRequestStatusModal 
+          isOpen={editModal.isOpen}
+          onClose={handleCloseEditModal}
+          request={editModal.request}
+          onSave={handleSaveStatus}
+        />
+      )}
     </div>
   );
 };

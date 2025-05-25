@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { FiEdit, FiX } from 'react-icons/fi';
-import styles from './EditRequestModal.module.scss';
+import styles from './EditRequestModal.module.scss'; // Reuse styles for now
 
-const EditRequestModal = ({ isOpen, onClose, request, onSave }) => {
-  const [status, setStatus] = useState(request?.status || 'new');
+const EditFeedbackStatusModal = ({ 
+  isOpen, 
+  onClose, 
+  feedback, // Specific prop for feedback item
+  onSave 
+}) => {
+  const [status, setStatus] = useState(feedback?.status || 'new');
   
   useEffect(() => {
-    if (request) {
-      setStatus(request.status);
+    if (feedback) {
+      setStatus(feedback.status);
     }
-  }, [request]);
+  }, [feedback]);
   
   if (!isOpen) return null;
   
@@ -23,37 +28,44 @@ const EditRequestModal = ({ isOpen, onClose, request, onSave }) => {
     onSave(status);
   };
 
+  // Hardcoded status options for Feedbacks
+  const feedbackStatusOptions = [
+    { value: 'new', label: 'Новое' },
+    { value: 'in_progress', label: 'В работе' },
+    { value: 'resolved', label: 'Решено' }
+  ];
+
   return (
     <div className={styles.modalBackdrop} onClick={handleBackdropClick}>
       <div className={styles.modalContent}>
         <div className={styles.modalHeader}>
-          <h3>Редактирование заявки</h3>
+          <h3>Редактирование статуса обращения</h3> 
           <button className={styles.closeButton} onClick={onClose}>
             <FiX />
           </button>
         </div>
         
         <div className={styles.modalBody}>
-          {request && (
+          {feedback && (
             <>
-              <div className={styles.requestInfo}>
-                <p><strong>Клиент:</strong> {request.user_name}</p>
-                <p><strong>Телефон:</strong> {request.user_phone}</p>
-                {request.property && (
-                  <p><strong>Объект:</strong> {request.property.title}</p>
-                )}
+              <div className={styles.requestInfo}> {/* Can rename this style class if needed */}
+                {feedback.name && <p><strong>Имя:</strong> {feedback.name}</p>}
+                {feedback.phone && <p><strong>Телефон:</strong> {feedback.phone}</p>}
+                {feedback.email && <p><strong>Email:</strong> {feedback.email}</p>}
               </div>
               
               <div className={styles.formGroup}>
-                <label className={styles.label}>Статус заявки</label>
+                <label className={styles.label}>Статус</label>
                 <select 
                   className={styles.select}
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
                 >
-                  <option value="new">Новая</option>
-                  <option value="in_progress">В работе</option>
-                  <option value="completed">Завершена</option>
+                  {feedbackStatusOptions.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
                 </select>
               </div>
             </>
@@ -81,4 +93,4 @@ const EditRequestModal = ({ isOpen, onClose, request, onSave }) => {
   );
 };
 
-export default EditRequestModal; 
+export default EditFeedbackStatusModal; 

@@ -46,10 +46,16 @@ module.exports = (sequelize, DataTypes) => {
                     msg: 'Сообщение должно содержать от 10 до 2000 символов'
                 }
             }
+        },
+        status: {
+            type: DataTypes.ENUM('new', 'in_progress', 'resolved'),
+            defaultValue: 'new',
+            allowNull: false
         }
     }, {
         sequelize,
         modelName: 'Feedback',
+        freezeTableName: true,
         paranoid: true,
         underscored: true,
         defaultScope: {

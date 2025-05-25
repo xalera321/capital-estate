@@ -28,6 +28,14 @@ module.exports = (sequelize, DataTypes) => {
                 }
             }
         },
+        user_email: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                isEmail: { msg: 'Некорректный формат email' },
+                notEmpty: { msg: 'Email пользователя обязателен' }
+            }
+        },
         message: {
             type: DataTypes.TEXT,
             validate: {

@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
 import { toast } from 'react-hot-toast'
-import { FiUser, FiPhone, FiMessageCircle } from 'react-icons/fi'
+import { FiUser, FiPhone, FiMessageCircle, FiMail } from 'react-icons/fi'
 import { createRequest } from '@/features/requests/api/requestApi'
 import styles from './PropertyRequestForm.module.scss'
 
@@ -12,6 +12,7 @@ const validationSchema = Yup.object().shape({
   user_phone: Yup.string()
     .matches(/^\+7 \d{3} \d{3} \d{2} \d{2}$/, 'Введите корректный номер')
     .required('Обязательное поле'),
+  user_email: Yup.string().email('Введите корректный email').required('Обязательное поле'),
   message: Yup.string(),
   agree: Yup.boolean()
     .oneOf([true], 'Необходимо согласие')
@@ -103,6 +104,7 @@ const PropertyRequestForm = ({ property, isButton = false }) => {
       initialValues={{
         user_name: '',
         user_phone: '+7',
+        user_email: '',
         message: '',
         agree: false,
       }}
@@ -158,6 +160,23 @@ const PropertyRequestForm = ({ property, isButton = false }) => {
               />
             </div>
             <ErrorMessage name="user_phone">
+              {msg => <span className={styles.error}>{msg}</span>}
+            </ErrorMessage>
+          </div>
+
+          <div className={styles.formGroup}>
+            <div className={styles.inputWrapper}>
+              <FiMail className={styles.inputIcon} />
+              <Field
+                type="email"
+                name="user_email"
+                placeholder="Ваш email"
+                className={`${styles.input} ${
+                  errors.user_email && touched.user_email ? styles.errorBorder : ''
+                }`}
+              />
+            </div>
+            <ErrorMessage name="user_email">
               {msg => <span className={styles.error}>{msg}</span>}
             </ErrorMessage>
           </div>

@@ -100,6 +100,20 @@ module.exports = (sequelize, DataTypes) => {
                     }
                 }
             }
+        },
+        category_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'Categories',
+                key: 'id'
+            },
+            onDelete: 'SET NULL',
+            onUpdate: 'CASCADE',
+            validate: {
+                notNull: { msg: 'Категория обязательна для выбора' },
+                notEmpty: { msg: 'Категория не может быть пустой' }
+            }
         }
     }, {
         sequelize,

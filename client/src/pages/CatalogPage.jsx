@@ -169,7 +169,11 @@ export function CatalogPage() {
 				</Container>
 			</div>
 			<Footer />
-			<MapModal isOpen={isMapModalOpen} onClose={() => setIsMapModalOpen(false)} />
+			<MapModal 
+				isOpen={isMapModalOpen} 
+				onClose={() => setIsMapModalOpen(false)} 
+				properties={properties} 
+			/>
 		</motion.div>
 	)
 }

@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        // 1. Создаем основные таблицы
+        // Таблица Admins
         await queryInterface.createTable('Admins', {
             id: {
                 type: Sequelize.INTEGER,
@@ -19,6 +19,14 @@ module.exports = {
                 type: Sequelize.STRING,
                 allowNull: false
             },
+            twoFactorSecret: {
+                type: Sequelize.STRING,
+                allowNull: true
+            },
+            twoFactorEnabled: {
+                type: Sequelize.BOOLEAN,
+                defaultValue: false
+            },
             createdAt: {
                 type: Sequelize.DATE,
                 allowNull: false
@@ -32,6 +40,7 @@ module.exports = {
             }
         });
 
+        // Таблица Categories
         await queryInterface.createTable('Categories', {
             id: {
                 type: Sequelize.INTEGER,
@@ -52,6 +61,7 @@ module.exports = {
             deletedAt: { type: Sequelize.DATE }
         });
 
+        // Таблица Features
         await queryInterface.createTable('Features', {
             id: {
                 type: Sequelize.INTEGER,
@@ -68,15 +78,12 @@ module.exports = {
             deletedAt: { type: Sequelize.DATE }
         });
 
+        // Таблица Properties
         await queryInterface.createTable('Properties', {
             id: {
                 type: Sequelize.INTEGER,
                 primaryKey: true,
                 autoIncrement: true
-            },
-            title: {
-                type: Sequelize.STRING,
-                allowNull: false
             },
             price: {
                 type: Sequelize.INTEGER,
@@ -93,6 +100,10 @@ module.exports = {
             },
             district: {
                 type: Sequelize.STRING
+            },
+            address: {
+                type: Sequelize.STRING,
+                allowNull: true
             },
             area: {
                 type: Sequelize.FLOAT,
@@ -121,8 +132,9 @@ module.exports = {
                 type: Sequelize.JSONB,
                 validate: {
                     isValid(value) {
-                        if (typeof value !== 'object' || !value?.lat || !value?.lng) {
-                            throw new Error('Invalid coordinates');
+                        if (typeof value !== 'object' || value === null ||
+                            typeof value.lat !== 'number' || typeof value.lng !== 'number') {
+                            throw new Error('Invalid coordinates format');
                         }
                     }
                 }
@@ -140,7 +152,7 @@ module.exports = {
             deletedAt: { type: Sequelize.DATE }
         });
 
-        // 2. Создаем таблицы для связей
+        // Таблица PropertyPhotos
         await queryInterface.createTable('PropertyPhotos', {
             id: {
                 type: Sequelize.INTEGER,
@@ -170,6 +182,7 @@ module.exports = {
             deletedAt: { type: Sequelize.DATE }
         });
 
+        // Таблица Requests
         await queryInterface.createTable('Requests', {
             id: {
                 type: Sequelize.INTEGER,
@@ -184,6 +197,14 @@ module.exports = {
                 type: Sequelize.STRING,
                 validate: {
                     is: /^\+?[0-9]{7,15}$/
+                }
+            },
+            user_email: {
+                type: Sequelize.STRING,
+                allowNull: false,
+                defaultValue: 'placeholder@example.com',
+                validate: {
+                    isEmail: true
                 }
             },
             message: {
@@ -207,7 +228,8 @@ module.exports = {
             deletedAt: { type: Sequelize.DATE }
         });
 
-        await queryInterface.createTable('Feedback', {
+        // Таблица Feedback
+        await queryInterface.createTable('Feedback', { 
             id: {
                 type: Sequelize.INTEGER,
                 primaryKey: true,
@@ -247,6 +269,11 @@ module.exports = {
                     }
                 }
             },
+            status: {
+                type: Sequelize.ENUM('new', 'in_progress', 'resolved'),
+                allowNull: false,
+                defaultValue: 'new'
+            },
             createdAt: {
                 type: Sequelize.DATE,
                 allowNull: false
@@ -260,39 +287,44 @@ module.exports = {
             }
         });
 
+        // Таблица PropertyFeatures (для связи многие-ко-многим Properties и Features)
         await queryInterface.createTable('PropertyFeatures', {
-            property_id: {
+            id: {
                 type: Sequelize.INTEGER,
                 primaryKey: true,
+                autoIncrement: true
+            },
+            property_id: {
+                type: Sequelize.INTEGER,
                 references: {
                     model: 'Properties',
                     key: 'id'
                 },
-                onDelete: 'CASCADE'
+                onDelete: 'CASCADE',
+                allowNull: false
             },
             feature_id: {
                 type: Sequelize.INTEGER,
-                primaryKey: true,
                 references: {
                     model: 'Features',
                     key: 'id'
                 },
-                onDelete: 'CASCADE'
+                onDelete: 'CASCADE',
+                allowNull: false
             },
             createdAt: { type: Sequelize.DATE, allowNull: false },
             updatedAt: { type: Sequelize.DATE, allowNull: false }
         });
-
-        // 3. Добавляем индексы
-        await queryInterface.addIndex('Properties', ['price']);
-        await queryInterface.addIndex('Properties', ['area']);
-        await queryInterface.addIndex('Properties', ['rooms']);
-        await queryInterface.addIndex('Properties', ['is_hidden']);
-        await queryInterface.addIndex('Feedback', ['email']);
-        await queryInterface.addIndex('Feedback', ['phone']);
     },
 
-    async down(queryInterface) {
-        await queryInterface.dropAllTables();
+    async down(queryInterface, Sequelize) {
+        await queryInterface.dropTable('PropertyFeatures');
+        await queryInterface.dropTable('Feedback');
+        await queryInterface.dropTable('Requests');
+        await queryInterface.dropTable('PropertyPhotos');
+        await queryInterface.dropTable('Properties');
+        await queryInterface.dropTable('Features');
+        await queryInterface.dropTable('Categories');
+        await queryInterface.dropTable('Admins');
     }
-};
+}; 

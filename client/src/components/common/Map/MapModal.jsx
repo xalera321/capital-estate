@@ -4,7 +4,7 @@ import { PropertiesMap } from './PropertiesMap';
 import { FiX } from 'react-icons/fi';
 import styles from './MapModal.module.scss';
 
-export const MapModal = ({ isOpen, onClose }) => {
+export const MapModal = ({ isOpen, onClose, properties }) => {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -31,7 +31,7 @@ export const MapModal = ({ isOpen, onClose }) => {
           <FiX />
         </button>
         <div className={styles.mapWrapper}>
-          <PropertiesMap fullscreen />
+          <PropertiesMap fullscreen externalProperties={properties} />
         </div>
       </div>
     </div>,

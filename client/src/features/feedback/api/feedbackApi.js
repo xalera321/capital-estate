@@ -56,4 +56,20 @@ export const deleteFeedback = async (id) => {
     console.error('Ошибка при удалении обратной связи:', error);
     throw error;
   }
+};
+
+/**
+ * Обновляет статус записи обратной связи (для администраторов)
+ * @param {number} id Идентификатор записи
+ * @param {string} status Новый статус
+ * @returns {Promise} Промис с обновленной записью
+ */
+export const updateFeedbackStatus = async (id, status) => {
+  try {
+    const response = await axios.put(`/feedback/${id}`, { status });
+    return response.data;
+  } catch (error) {
+    console.error('Ошибка при обновлении статуса обратной связи:', error);
+    throw error;
+  }
 }; 

@@ -33,7 +33,14 @@ exports.createFeedback = async (req, res) => {
 
 exports.getFeedbacks = async (req, res) => {
     try {
+        const { status } = req.query; // Get status from query parameters
+        const where = {};
+        if (status) {
+            where.status = status;
+        }
+
         const feedbacks = await Feedback.findAll({
+            where, // Apply status filter if present
             order: [['createdAt', 'DESC']] // Newest first
         });
         

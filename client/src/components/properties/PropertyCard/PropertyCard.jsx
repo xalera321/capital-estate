@@ -27,6 +27,7 @@ export const PropertyCard = ({ property, hiddenLabel = null }) => {
 				<div className={styles.details}>
 					<span className={styles.price}>
 						{new Intl.NumberFormat('ru-RU').format(property.price)} ₽
+						{property.operation_type === 'rent' && '/мес.'}
 					</span>
 
 					<div className={styles.meta}>
