@@ -153,19 +153,15 @@
   display: flex;
   justify-content: center;
   width: 100%;
-  height: 100px;
-  box-sizing: border-box;
 }
 
 .thumbsSwiper {
   padding: 0 15px;
   max-width: 800px;
   margin: 0 auto;
-  height: 100%;
   
   :global(.swiper-wrapper) {
     justify-content: center;
-    align-items: center;
     transform: none !important;
   }
   
@@ -177,9 +173,6 @@
     overflow: hidden;
     opacity: 0.6;
     transition: opacity 0.2s, box-shadow 0.2s;
-    display: flex;
-    justify-content: center;
-    align-items: center;
   }
   
   :global(.swiper-slide-thumb-active) {
@@ -194,10 +187,8 @@
 
 .thumbImage {
   height: 100%;
-  width: auto;
-  max-width: 100px;
+  width: 100px;
   object-fit: cover;
-  display: block;
 }
 
 .fullscreenButton {
