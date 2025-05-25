@@ -52,6 +52,7 @@ const PropertyGallery = ({ photos, operationType }) => {
           pagination={{ clickable: true, dynamicBullets: true }}
           thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
           zoom={{ maxRatio: 2 }}
+          loop={true}
           className={styles.mainSwiper}
           // Using a custom slide rendering to achieve blur effect
           watchSlidesProgress={true}
