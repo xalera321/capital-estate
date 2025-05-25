@@ -1,7 +1,7 @@
 {
 	"development": {
-		"username": "xalera",
-		"password": "x@lera321",
+		"username": "admin",
+		"password": "adm!n321",
 		"database": "capital_estate",
 		"host": "localhost",
 		"port": 5432,
