@@ -1,12 +1,25 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { getImageUrl } from '@/utils/formatters'
 import FavoriteButton from '@/components/ui/FavoriteButton/FavoriteButton'
 import styles from './PropertyCard.module.scss'
 
 export const PropertyCard = ({ property, hiddenLabel = null }) => {
+	const navigate = useNavigate();
+
+	const handleCardClick = (e) => {
+		if (e.target.closest(`.${styles.favoriteButton}`) || e.target.closest(`.${styles.link}`)) {
+			return;
+		}
+		navigate(`/properties/${property.id}`);
+	};
+
 	return (
-		<div className={`${styles.card} ${hiddenLabel ? styles.hiddenProperty : ''}`}>
+		<div 
+			className={`${styles.card} ${hiddenLabel ? styles.hiddenProperty : ''}`}
+			onClick={handleCardClick}
+			style={{ cursor: 'pointer' }}
+		>
 			<div className={styles.imageContainer}>
 				{property.photos?.[0]?.url && (
 					<img
