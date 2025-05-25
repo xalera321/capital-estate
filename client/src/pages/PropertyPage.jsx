@@ -83,7 +83,7 @@ export const PropertyPage = () => {
                                     <div className={styles.titleRow}>
                                         <div className={styles.location}>
                                             <FiMapPin className={styles.icon} />
-                                            <span>{property.city}{property.district ? `, ${property.district}` : ''}</span>
+                                            <span>{property.address}</span>
                                         </div>
                                         <div className={styles.favoritesAction}>
                                             <FavoriteButton 
@@ -169,12 +169,6 @@ export const PropertyPage = () => {
                                         <div className={styles.mapContainer}>
                                             <PropertyMap property={property} />
                                         </div>
-                                        {property.address && (
-                                            <div className={styles.addressInfo}>
-                                                <FiMapPin className={styles.icon} />
-                                                <span>{property.address}</span>
-                                            </div>
-                                        )}
                                     </div>
                                 )}
                             </div>
@@ -189,9 +183,9 @@ export const PropertyPage = () => {
                                     <PropertyRequestForm property={property} isButton={true} />
                                     <div className={styles.contactFooter}>
                                         <div className={styles.contactOr}>или</div>
-                                        <a href="tel:+74951234567" className={styles.contactPhone}>
+                                        <a href="tel:+79099571995" className={styles.contactPhone}>
                                             <FiPhone className={styles.phoneIcon} />
-                                        +7 (495) 123-45-67
+                                        +7 (909) 957-19-95
                                         </a>
                                     </div>
                                 </div>
