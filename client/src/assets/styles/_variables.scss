@@ -24,16 +24,19 @@ $primary-active: #15304D;
 $primary-transparent: rgba(42, 92, 139, 0.1);
 $background-light: #F8FAF9;
 $background-dark: #F5F7FA;
+$bg-main: $gray-50;
 $border-color: #E0E0E0;
 $light-bg: #f8f9fa;
 $error: #dc3545;
 $danger: #ff4444;
+$success: #28a745;
 $ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94) !default;
 
 // Текст
 $text: #2d3748; // Основной цвет текста
 $text-light: #6C7A89; // Светлый цвет текста
 $text-dark: #000000; // Темный цвет текста
+$text-body: $text; // Added $text-body definition
 
 // Размеры иконок
 $icon-size-base: 1rem; // 16px по умолчанию

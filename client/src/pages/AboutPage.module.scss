@@ -1,17 +1,33 @@
-@use '@styles/variables' as *;
-@use '@styles/mixins' as *;
+@use '@/assets/styles/variables' as *;
+@use '@/assets/styles/mixins' as *;
 @use "sass:color";
 
+.aboutPage {
+  background-color: $bg-main;
+}
+
 .hero {
-  padding: 120px 0 80px;
-  background: linear-gradient(45deg, color.adjust($primary, $lightness: -10%), $primary);
+  padding: 100px 0;
+  background: linear-gradient(135deg, $primary-dark 0%, $primary 100%);
   color: white;
   text-align: center;
   position: relative;
   overflow: hidden;
 
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    // background: url('/path/to/your/hero-background-pattern.svg');
+    opacity: 0.1;
+    pointer-events: none;
+  }
+
   @include tablet {
-    padding: 100px 0 60px;
+    padding: 80px 0 60px;
   }
 }
 
@@ -23,89 +39,188 @@
 }
 
 .title {
-  font-size: 2.5rem;
+  font-size: 3rem;
+  font-weight: 700;
   margin-bottom: 1.5rem;
   line-height: 1.2;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
   
   @include tablet {
-    font-size: 2rem;
+    font-size: 2.5rem;
   }
 }
 
 .subtitle {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
+  font-weight: 300;
   opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .about {
-  padding: 100px 0;
-  
+  padding: 80px 0;
+  background-color: $white;
+
   @include tablet {
     padding: 60px 0;
   }
 }
 
-.content {
-  max-width: 800px;
-  margin: 0 auto;
+.aboutGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+  align-items: center;
+
+  @include tablet {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+}
+
+.aboutText {
+  order: 1;
+  @include tablet {
+    order: 2;
+  }
+}
+
+.aboutImageContainer {
+  order: 2;
+  text-align: center;
+  @include tablet {
+    order: 1;
+    margin-bottom: 30px;
+  }
+}
+
+.aboutImage {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: $shadow-lg;
 }
 
 .sectionTitle {
-  font-size: 2rem;
+  font-size: 2.2rem;
+  font-weight: 600;
   margin-bottom: 40px;
   color: $text-dark;
   text-align: center;
+  position: relative;
+  padding-bottom: 15px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background-color: $primary;
+    border-radius: 2px;
+  }
 }
 
 .text {
   font-size: 1.1rem;
-  line-height: 1.6;
-  color: $text-light;
-  margin-bottom: 30px;
+  line-height: 1.7;
+  color: $text-body;
+  margin-bottom: 25px;
 }
 
-.highlight {
-  background: $light-bg;
-  padding: 30px;
-  border-radius: 12px;
-  margin: 40px 0;
+.team {
+  padding: 80px 0;
+  background-color: $light-bg;
 
-  blockquote {
-    font-size: 1.2rem;
-    font-style: italic;
-    margin: 0 0 30px;
-    color: $primary;
-    line-height: 1.4;
+  @include tablet {
+    padding: 60px 0;
   }
 }
 
-.director {
+.teamGrid {
   display: flex;
-  align-items: center;
-  gap: 20px;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 40px;
 
-  img {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-
-  h4 {
-    margin: 0;
-    font-size: 1.2rem;
-  }
-
-  p {
-    margin: 5px 0 0;
-    color: $text-light;
+  @include tablet {
+    flex-direction: column;
+    align-items: center;
   }
 }
 
-// Services section
+.teamMemberCard {
+  background: $white;
+  border-radius: 15px;
+  box-shadow: $shadow-xl;
+  padding: 40px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-align: left;
+  max-width: 700px;
+
+  @include tablet {
+    padding: 30px;
+    max-width: 90%;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+.teamMemberImage {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+  margin-right: 0;
+  margin-left: 30px;
+  border: 5px solid $primary-light;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  order: 2;
+  flex-shrink: 0;
+}
+
+.teamMemberInfo {
+  order: 1;
+  flex-grow: 1;
+
+  h4.teamMemberName {
+    font-size: 1.8rem;
+    color: $primary-dark;
+    margin-bottom: 8px;
+    font-weight: 600;
+    text-align: left;
+  }
+
+  p.teamMemberRole {
+    font-size: 1.1rem;
+    color: $text-light;
+    margin-bottom: 20px;
+    font-style: italic;
+    text-align: left;
+  }
+
+  p.teamMemberQuote {
+    font-size: 1.05rem;
+    color: $text-body;
+    line-height: 1.6;
+    font-style: italic;
+    border-left: 3px solid $primary;
+    padding-left: 15px;
+    margin-top: 15px;
+    text-align: left;
+  }
+}
+
 .services {
-  padding: 100px 0;
-  background: $light-bg;
+  padding: 80px 0;
+  background: $white;
   
   @include tablet {
     padding: 60px 0;
@@ -116,152 +231,154 @@
   text-align: center;
   max-width: 800px;
   margin: 0 auto 50px;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   line-height: 1.6;
-  color: $text-light;
+  color: $text-body;
 }
 
 .servicesGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 30px;
   margin-bottom: 60px;
-
-  @include tablet {
-    grid-template-columns: 1fr;
-  }
 }
 
 .serviceCard {
-  background: white;
-  padding: 40px;
-  border-radius: 15px;
+  background: $light-bg;
+  padding: 30px;
+  border-radius: 12px;
   box-shadow: $shadow-md;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  position: relative;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   
   &:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px);
     box-shadow: $shadow-lg;
   }
 
   .serviceIcon {
-    width: 60px;
-    height: 60px;
-    border-radius: 30px;
-    background: color.adjust($primary, $alpha: -0.9);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: $primary;
+    color: white;
     margin-bottom: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 1.5rem;
+    align-self: flex-start;
     
-    &::before {
-      content: '';
-      width: 30px;
-      height: 30px;
-      background: $primary;
-      border-radius: 15px;
+    svg {
+      width: 24px;
+      height: 24px;
     }
   }
 }
 
 .serviceTitle {
-  font-size: 1.5rem;
-  color: $primary;
-  margin-bottom: 20px;
-  position: relative;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: $primary-dark;
+  margin-bottom: 15px;
 }
 
 .serviceList {
   list-style-type: none;
   padding: 0;
-  margin: 0;
+  margin: 0 0 20px 0;
+  flex-grow: 1;
   
   .serviceItem {
     position: relative;
     padding-left: 25px;
-    margin-bottom: 12px;
-    font-size: 1.05rem;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    color: $text-body;
     
     &:before {
-      content: '';
+      content: '\2713';
       position: absolute;
       left: 0;
-      top: 8px;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background-color: $primary;
+      top: 2px;
+      color: $success;
+      font-weight: bold;
     }
   }
 }
 
 .additionalServices {
-  background: white;
-  padding: 40px;
+  background: $light-bg;
+  padding: 50px 40px;
   border-radius: 15px;
-  box-shadow: $shadow-md;
+  box-shadow: $shadow-lg;
 }
 
 .additionalTitle {
   font-size: 1.8rem;
   color: $text-dark;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   text-align: center;
 }
 
 .additionalIntro {
   text-align: center;
-  max-width: 600px;
-  margin: 0 auto 30px;
-  font-size: 1.05rem;
-  color: $text-light;
+  max-width: 700px;
+  margin: 0 auto 40px;
+  font-size: 1.1rem;
+  color: $text-body;
 }
 
 .additionalGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  
-  @include tablet {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  @include mobile {
-    grid-template-columns: 1fr;
-  }
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
 }
 
 .additionalCard {
-  background: $light-bg;
-  padding: 20px;
+  background: $white;
+  padding: 25px;
   border-radius: 10px;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 15px;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: $shadow-sm;
   
   &:hover {
-    transform: translateY(-3px);
+    transform: translateY(-5px);
+    box-shadow: $shadow-md;
   }
   
   .additionalIcon {
-    width: 10px;
-    height: 10px;
-    background-color: $primary;
-    border-radius: 50%;
-    flex-shrink: 0;
+    // Styles removed as icons are no longer used here
+    // width: 24px; 
+    // height: 24px;
+    // background-color: $primary-light;
+    // border-radius: 50%;
+    // display: flex;
+    // align-items: center;
+    // justify-content: center;
+    // color: $primary;
+    // font-weight: bold;
+    // svg { 
+    //   width: 18px; 
+    //   height: 18px;
+    // }
   }
-  
   p {
     margin: 0;
     font-size: 1rem;
+    color: $text-body;
+    text-align: center;
   }
 }
 
 .values {
-  padding: 100px 0;
+  padding: 80px 0;
+  background-color: $bg-main;
 
   @include tablet {
     padding: 60px 0;
@@ -270,7 +387,7 @@
 
 .valuesGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
   gap: 30px;
 
   @include tablet {
@@ -283,20 +400,45 @@
 }
 
 .valueCard {
-  background: white;
-  padding: 30px;
+  background: $white;
+  padding: 25px;
   border-radius: 12px;
+  box-shadow: $shadow-lg;
   text-align: center;
-  box-shadow: $shadow-md;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: $shadow-xl;
+  }
+
+  .valueIcon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: $primary;
+    color: white;
+    margin: 0 auto 25px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    svg {
+      width: 28px;
+      height: 28px;
+    }
+  }
+  
   h3 {
-    font-size: 1.5rem;
-    color: $primary;
-    margin-bottom: 15px;
+    font-size: 1.3rem;
+    color: $primary-dark;
+    margin-bottom: 10px;
+    font-weight: 600;
   }
 
   p {
-    font-size: 1rem;
-    color: $text-light;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: $text-body;
   }
 }
