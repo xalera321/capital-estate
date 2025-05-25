@@ -69,7 +69,8 @@ const PropertyFilters = ({ categories, initialValues }) => {
 			<Form className={styles.filtersForm}>
 				<div className={styles.columns}>
 					<Form.Group className={styles.formGroup} controlId='operationType'>
-						<Form.Label>Операция</Form.Label>
+						<p className={styles.filterDescriptiveLabel}>Тип операции</p>
+						{/* <Form.Label>Операция</Form.Label> */}
 						<Form.Select
 							className={styles.select}
 							value={localFilters.operationType}
@@ -84,7 +85,8 @@ const PropertyFilters = ({ categories, initialValues }) => {
 					</Form.Group>
 
 					<Form.Group className={styles.formGroup} controlId='categoryId'>
-						<Form.Label>Категория</Form.Label>
+						<p className={styles.filterDescriptiveLabel}>Категория недвижимости</p>
+						{/* <Form.Label>Категория</Form.Label> */}
 						<Form.Select
 							className={styles.select}
 							value={localFilters.categoryId}
@@ -102,7 +104,8 @@ const PropertyFilters = ({ categories, initialValues }) => {
 
 				<div className={styles.columns}>
 					<Form.Group className={styles.formGroup} controlId='priceRange'>
-						<Form.Label>Цена, ₽</Form.Label>
+						<p className={styles.filterDescriptiveLabel}>Цена, ₽</p>
+						{/* <Form.Label>Цена, ₽</Form.Label> */}
 						<div className={styles.inputGroup}>
 							<Form.Control
 								className={styles.input}
@@ -124,7 +127,8 @@ const PropertyFilters = ({ categories, initialValues }) => {
 					</Form.Group>
 
 					<Form.Group className={styles.formGroup} controlId='rooms'>
-						<Form.Label>Комнаты</Form.Label>
+						<p className={styles.filterDescriptiveLabel}>Количество комнат</p>
+						{/* <Form.Label>Комнаты</Form.Label> */}
 						<Form.Select
 							className={styles.select}
 							value={localFilters.rooms}
