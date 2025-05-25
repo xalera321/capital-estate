@@ -6,8 +6,8 @@
   $local-primary-dark: color.mix($primary, $black, 85%);
   
   background: linear-gradient(135deg, 
-    rgba($primary, 0.98) 0%, 
-    rgba($local-primary-dark, 0.98) 100%
+    rgba($gray-600, 0.98) 0%, 
+    rgba($black, 0.98) 100%
   );
   padding: 5rem 0;
   position: relative;
